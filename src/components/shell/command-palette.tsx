@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import { createTask } from "@/server/actions/tasks";
 import { parseQuickAdd } from "@/lib/quick-add";
 import { formatDay, formatMinutes } from "@/lib/time";
-import { CalendarRange, ChartColumn, CornerDownLeft, FileText, FileUp, LibraryBig, Plus, Repeat, Settings } from "lucide-react";
+import { CalendarRange, CornerDownLeft, Trophy, FileText, FileUp, LibraryBig, Plus, Repeat, Settings } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { dyeVars } from "@/lib/dyes";
 import type { TabSection } from "./fore-edge";
@@ -90,7 +90,7 @@ export function CommandPalette({
         <Dialog.Overlay className="fixed inset-0 z-40 bg-[oklch(0.15_0.02_163/0.35)] data-[state=open]:animate-[fade_150ms_ease-out]" />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed left-1/2 top-[12vh] z-50 w-[min(36rem,calc(100vw-1.5rem))] -translate-x-1/2 overflow-hidden rounded-lg border border-rule bg-paper shadow-lift data-[state=open]:animate-[rise_180ms_var(--ease-out)]"
+          className="fixed left-1/2 top-[12vh] z-50 w-[min(36rem,calc(100vw-1.5rem))] -translate-x-1/2 overflow-hidden rounded-xl border border-rule bg-card shadow-lift data-[state=open]:animate-[rise_180ms_var(--ease-out)]"
         >
           <Dialog.Title className="sr-only">Opdrachten</Dialog.Title>
           <Command loop className="flex flex-col">
@@ -126,11 +126,11 @@ export function CommandPalette({
               <Command.Group heading="Ga naar" className={groupClass}>
                 <Item onSelect={() => go("/week")}>
                   <CalendarRange className="size-4 text-ink-3" strokeWidth={1.75} />
-                  Deze week
+                  Planner
                 </Item>
                 {[
                   { href: "/sections", label: "Alle secties", icon: LibraryBig },
-                  { href: "/dashboard", label: "Dashboard", icon: ChartColumn },
+                  { href: "/dashboard", label: "Voortgang", icon: Trophy },
                   { href: "/schedules", label: "Vaste planning", icon: Repeat },
                   { href: "/import", label: "Schema importeren", icon: FileUp },
                   { href: "/settings", label: "Instellingen en agenda", icon: Settings },

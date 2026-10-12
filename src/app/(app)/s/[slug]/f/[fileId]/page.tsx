@@ -38,7 +38,7 @@ export default async function FilePage({ params }: { params: Params }) {
   const inline = canShowInline(file.contentType);
 
   return (
-    <article className="flex h-full min-h-full flex-col px-5 pb-6 pt-5 lg:px-10 lg:pt-6">
+    <article className="m-3 flex min-h-[calc(100%-1.5rem)] flex-col rounded-xl border border-rule bg-card px-4 pb-5 pt-4 shadow-[0_1px_2px_oklch(0.2_0.02_258/0.04)] sm:mx-4 lg:m-6 lg:h-[calc(100%-3rem)] lg:px-8 lg:pt-6">
       <header className="flex flex-wrap items-start gap-3 pb-4">
         <div className="min-w-0 flex-1">
           <FileTitle id={file.id} name={file.name} />

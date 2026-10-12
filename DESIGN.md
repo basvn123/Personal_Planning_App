@@ -1,6 +1,6 @@
 ---
 name: Planner
-description: A personal planner bound as a book, opened flat on this week.
+description: A personal planner in bottle-green cloth, its pages built from calm white cards.
 colors:
   cloth: "oklch(0.355 0.062 163)"
   cloth-2: "oklch(0.3 0.055 163)"
@@ -13,12 +13,13 @@ colors:
   ribbon-wash: "oklch(0.955 0.045 85)"
   danger: "oklch(0.54 0.17 27)"
   danger-wash: "oklch(0.96 0.025 27)"
+  canvas: "oklch(0.962 0.005 250)"
+  card: "oklch(1 0 0)"
   paper: "oklch(0.986 0.003 250)"
   paper-2: "oklch(0.968 0.004 250)"
   paper-3: "oklch(0.945 0.005 250)"
   rule: "oklch(0.905 0.006 250)"
   rule-strong: "oklch(0.84 0.008 250)"
-  dot: "oklch(0.86 0.008 250)"
   ink: "oklch(0.235 0.014 258)"
   ink-2: "oklch(0.43 0.013 258)"
   ink-3: "oklch(0.56 0.011 258)"
@@ -116,7 +117,6 @@ spacing:
   page-x-phone: "20px"
   page-x-desk: "32px"
   page-top: "24px"
-  dot-grid: "18px"
 components:
   button-primary:
     backgroundColor: "{colors.cloth}"
@@ -213,15 +213,16 @@ components:
 
 **Creative North Star: "The Planner Spread"**
 
-The app is a bound weekly planner opened flat on the desk. A deep bottle-green book cloth wraps everything: it is the spine strip on the left, the window background behind the pages, and the bar along the bottom of a phone. Inside the cloth lie two facing pages of bright, cool paper printed with a faint dot grid, split by a gutter that darkens toward the binding. Index tabs dyed in each section's color stand out of the fore-edge on the right. A marigold satin ribbon runs down the left page through the days already past and ends in a forked tail on today's row. Nothing in the frame is a generic app sidebar or a grid of cards; every structural element is a part of a physical book.
+The app keeps its book cloth and loses the printed paper. A deep bottle-green cloth wraps everything: the spine on the left, the window behind the pages, the section tabs and the bar along the bottom of a phone. Inside it, each page is a calm, cool grey canvas, and everything on it lives in white cards with soft corners. Every card says what it is with a small tinted icon and a sentence-case title, carries its count and one action (usually a round plus), and tells you what to do when it is empty. Index tabs dyed in each section's color stand out along the edge; marigold marks only what is "now".
 
-Density is high and the voice is quiet. Rows are printed lines, not boxes. Structure comes from hairline rules, a small uppercase rubric per block, and tabular mono figures for every time and duration. Color is scarce and meaningful: cloth green for structure and primary action, marigold for "now" (today, the running timer, the drop target, focus, selection), section dyes for identity, and a single danger red. The dark theme is the same book at night: graphite paper with chalk dots, the same cloth, the same ribbon.
+Density is comfortable on a phone and compact on a desktop. Inside a card, rows are split by hairlines; between cards there is one even gap. Color is scarce and meaningful: cloth green for structure and primary action, a soft teal-green "link" tone for card icons and secondary actions, marigold for "now" (today, the running timer, the drop target, focus, selection), section dyes for identity, and a single danger red. The dark theme is the same app at night: a near-black canvas with graphite cards, the same cloth, the same marigold.
 
 Motion is short and physical: tabs slide out of the fore-edge, popovers pop 3px into place, state changes fade in 150 to 250ms on an ease-out curve. Reduced motion collapses all of it.
 
 **Key Characteristics:**
-- Cloth frame, paper pages, a gutter, fore-edge tabs, a ribbon: the book is the layout.
-- Cool paper (hue 250) with an 18px printed dot grid; never cream.
+- Cloth frame, section tabs, and pages of white cards on a grey canvas.
+- Every block is a card with an icon, a title, a count, one action and an empty state.
+- Cool neutrals (hue 250); never cream, no textures.
 - One accent (marigold ribbon) that always means "now".
 - Section dyes are identity tabs, paired fill plus deep tone, never a data palette.
 - Every number is JetBrains Mono with tabular figures.
@@ -245,10 +246,12 @@ A cool, near-neutral paper and graphite ink, framed in bottle-green cloth, with 
 - **Danger** (danger, danger-wash): destructive buttons, the behind-pace line on a project, error text.
 
 ### Neutral
-- **Cool Paper** (paper, paper-2, paper-3): left page, right page (one step darker so the spread reads as two sheets), and recessed wells (segmented tracks, progress tracks, hover fills, code blocks).
-- **Printed Rules** (rule, rule-strong): hairlines between rows, and the heavier rule under block rubrics, chart baselines, quiet button and input borders.
-- **Dot** (dot): the printed dot grid only.
-- **Graphite Ink** (ink, ink-2, ink-3): primary text, secondary text, and metadata, placeholders and rubric labels.
+- **Canvas** (canvas): the background of every page, behind the cards, and the well behind date badges and segmented controls.
+- **Card** (card): the surface of every card, sheet, popover and the login card. White in light, graphite in dark.
+- **Cool Paper** (paper, paper-2, paper-3): inputs (paper), and recessed wells inside cards (paper-3: segmented tracks, progress tracks, hover fills, chips, code blocks).
+- **Rules** (rule, rule-strong): card borders and hairlines between rows (rule); chart baselines, quiet button and input borders (rule-strong).
+- **Link** (link): card icons in their tinted square, card header actions, empty-state buttons, "Toevoegen" rows.
+- **Graphite Ink** (ink, ink-2, ink-3): primary text, secondary text, and metadata, placeholders and field labels.
 - **Heat Ramp** (heat-0 to heat-4) and **Bar** (bar): the single cloth-green hue used for time charts. Heat-0 is an empty cell; the ramp steps light to dark in light theme and reverses in dark so "more" is always more contrast.
 
 ### Named Rules
@@ -272,22 +275,23 @@ The scale is a custom compact ramp (11, 12, 13, 14, 16, 19, 24, 32px); the body 
 - **Body** (400, 14px, 22px line): task titles in the day plan, inputs, popover content.
 - **Body small** (400 or 500, 13px, 20px line): task titles in the week list, buttons, table rows, ranked bar labels.
 - **Meta** (400, 12px, 18px line): task metadata lines, tooltips, hints, tab labels.
-- **Label** (500, 11px, 0.08em tracking, uppercase, ink-3): the rubric that heads each block, sitting on a rule-strong underline; also weekday abbreviations and form field labels.
+- **Card title** (600, 15px, sentence case, ink): the name of a card, next to its icon.
+- **Label** (500, 11px, 0.08em tracking, uppercase, ink-3): form field labels (FieldGroup) and weekday abbreviations only.
 - **Figures** (mono, tabular): durations, clock times, date numbers (24px/500 for the day number in the week margin), percentages, units.
 - **Doc body** (15px, 1.7 line height, 68ch max): rendered markdown only.
 
 ### Named Rules
 **The Ledger Rule.** Any digit that measures time, counts or progress is set in the figures style. Proportional digits in a duration are a bug.
 
-**The Rubric Rule.** A block is named by one 11px uppercase rubric on a hairline, never by a large heading. The rubric is the heading itself; nothing larger sits under it as a headline.
+**The Card Header Rule.** A block is a `Card`: a 28px tinted icon square, a 15px semibold title, an optional count pill, and at most one action on the right (a round plus, a chevron, or one text button). Pages never invent their own block headings.
 
 ## Layout
 
-The desktop layout is a horizontal book: a 56px cloth spine on the left (mark, nav glyphs, command palette, then timer, theme and settings at the foot), the page block in the middle with 12px of cloth above and below it, and a 48px fore-edge of stacked vertical tabs on the right. The page block is a two-column spread at 1024px and up: left page on paper, right page on paper-2, each scrolling independently.
+The desktop layout: a 56px cloth spine on the left (mark, Planner, Secties, Voortgang, Vaste planning, Importeren, the command palette and a round add button, then timer, theme and settings at the foot), the page block in the middle with 12px of cloth above and below it, and a 48px edge of stacked vertical section tabs on the right. The page block is two columns at 1024px and up, each a grey canvas of cards scrolling independently, split by a hairline.
 
-On a phone (below 1024px) the spine becomes a 56px cloth bar along the bottom (safe-area aware), the fore-edge tabs become a horizontal tab strip on cloth along the top, and the spread becomes a horizontal snap scroller holding both pages with a two-way page switcher above it. Swiping and tapping both change pages, and routes can open on the right page.
+On a phone (below 1024px) the spine becomes a five-place cloth bar along the bottom: Planner, Secties, a round add button, Voortgang and Meer (a sheet with Zoeken, Vaste planning, Importeren, Instellingen, the theme and Afmelden). It reaches the real screen edge in the home-screen app. A running timer shows as a marigold strip on top of the bar, pushing the page up, never covering it. The section tabs become a 44px strip on cloth along the top that only scrolls sideways. The two columns become a horizontal snap scroller with a segmented page switcher above it.
 
-Spacing is set by the paper: page side margins are 20px on a phone and 32px on desktop (40px on denser right pages), headers start 24px down, and the right margin reserves 44 to 56px for the ribbon and the time column. Week rows are a three-column grid (52px date, task list, 52px time meter) at least 76px tall; tasks inside them are 3px apart. Day-plan rows are 10px top and bottom with a hairline between them. Blocks are separated by 36px. The 18px dot grid is the only texture.
+Spacing: pages use `pageBody` (12px sides on a phone, 24px on desktop, 12 to 16px between cards). Cards pad 16px; their rows are at least 44px tall on a phone. Every tap target on a phone is at least 40px.
 
 ### Named Rules
 **The Margin Rule.** Time lives in the right margin of a row, right-aligned, in figures; content never runs into it.
@@ -297,13 +301,13 @@ Spacing is set by the paper: page side margins are 20px on a phone and 32px on d
 Depth is physical and sparse. The pages are flat paper; depth appears only where a real book has it.
 
 ### Shadow Vocabulary
-- **Gutter shade** (`inset -28px 0 28px -24px var(--gutter-shade)` on the left page, mirrored on the right): the curve of paper into the binding. Desktop only.
+- **Card** (`0 1px 2px` graphite at 4%): the faint lift of a card off the canvas, with its 1px rule border.
 - **Page stack** (`0 2px 0 var(--paper-3), 0 4px 0 var(--rule), 0 10px 30px -12px oklch(0 0 0 / 0.5)`): the stacked sheets under the page block on desktop.
 - **Lift** (`var(--lift)`: `0 1px 2px` plus `0 4px 14px -4px`, graphite at 6% and 12%; darker in dark theme): anything that floats above paper. Popovers, tooltips, the command palette, a tab or task being dragged.
 - **Tab cast** (`-3px 0 6px -2px`, cloth-tinted): the active fore-edge tab, pulled out over the page.
 
 ### Named Rules
-**The Paper Is Flat Rule.** Rows, blocks and charts never get shadows or card boxes. Lift is only for things that float, and it is the single floating shadow.
+**The One Card Rule.** Blocks are cards and only cards: never a card inside a card, never a shadow heavier than the card lift on the page. Lift stays for things that float (popovers, sheets, the palette, a dragged task).
 
 ## Shapes
 
@@ -340,7 +344,7 @@ Compact and printed, never pill-shaped.
 - **Command palette:** the search and command surface, opened from the spine or keyboard.
 
 ### Spread (signature)
-Two facing pages with gutter shading. Left page carries the overview (week list, dashboard figures), right page the detail (day plan, projects). On a phone a segmented page switcher sits above a snap scroller.
+Two columns of cards. The left one carries the overview (week, progress figures, section list), the right one the detail (the day, projects, a document). On a phone a segmented page switcher sits above a snap scroller; the planner opens on the day.
 
 ### Ribbon marker (signature)
 A 14px marigold band with a soft horizontal sheen (ribbon-2 to ribbon to ribbon-2), hanging in the right margin from the week header through each past day and ending in a forked tail with a small drop shadow on today's row. It appears only on the current week.
@@ -374,7 +378,8 @@ All charts sit on the page with a rule-strong baseline, no frame, one tooltip (i
 ### Do:
 - **Do** take every color from the tokens; set `--dye` and `--dye-deep` from a section and read those, never a specific dye.
 - **Do** set every time, duration, count and percentage in the figures style (JetBrains Mono, tabular).
-- **Do** name blocks with the 11px uppercase rubric on a rule-strong hairline.
+- **Do** build every block from `Card`, `PageHeader`, `EmptyState`, `StatStrip`, `ListRow` and `Segmented` (src/components/ui).
+- **Do** give every card an empty state that says what goes there and offers the way to add it.
 - **Do** keep UI transitions at 150 to 250ms with the ease-out curve (cubic-bezier(0.16, 1, 0.3, 1)), and let reduced motion cancel them.
 - **Do** edit in anchored popovers and add with inline quick-add lines.
 - **Do** keep copy terse: one or two words per label, no instructional sentences, no em dashes, none of the phrases blocked by scripts/copy-lint.mjs.
@@ -382,9 +387,9 @@ All charts sit on the page with a rule-strong baseline, no frame, one tooltip (i
 
 ### Don't:
 - **Don't** use marigold for anything that is not "now": not brand fills, not secondary buttons, not decoration.
-- **Don't** put cards, boxes or drop shadows on rows, blocks or charts on the page; use rules and space.
+- **Don't** nest cards, or add shadows heavier than the card lift on the page.
 - **Don't** build a chart whose series are told apart only by adjacent section dyes, or that omits printed names and values.
-- **Don't** warm the paper toward cream or add a texture other than the dot grid.
+- **Don't** warm the neutrals toward cream or add any texture.
 - **Don't** show a product name or wordmark; the book mark is the only identity.
 - **Don't** use the default Tailwind palette; it is switched off.
 - **Don't** use em dashes, stock AI phrasing or explanatory copy in the UI.

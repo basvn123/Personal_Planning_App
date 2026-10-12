@@ -7,8 +7,8 @@ import { cx } from "@/lib/cx";
 import { useElapsed, useTimer } from "./timer-context";
 
 /**
- * The running timer as a ribbon on the cloth: vertical on the desktop spine,
- * horizontal in the phone bar. Hidden when nothing runs.
+ * The running timer in marigold (it is what runs now): a vertical chip on the
+ * desktop spine, a full-width strip above the phone bar. Hidden when nothing runs.
  */
 export function TimerChip({ orientation }: { orientation: "vertical" | "horizontal" }) {
   const { running, stop } = useTimer();
@@ -35,9 +35,12 @@ export function TimerChip({ orientation }: { orientation: "vertical" | "horizont
   }
 
   return (
-    <div className="flex h-10 min-w-0 max-w-[40%] items-center gap-2 rounded-sm bg-ribbon pl-3 pr-1 text-on-ribbon">
-      <span className="min-w-0 truncate text-xs font-medium">{label}</span>
-      <span className="figures shrink-0 text-xs">{formatClock(elapsed)}</span>
+    <div className="flex h-11 items-center gap-2.5 bg-ribbon pl-4 pr-2 text-on-ribbon" aria-live="off">
+      <span aria-hidden className="size-2 shrink-0 animate-pulse rounded-full bg-on-ribbon" />
+      <Link href={`/s/${running.section.slug}`} className="min-w-0 flex-1 truncate text-sm font-semibold">
+        {label}
+      </Link>
+      <span className="figures shrink-0 text-sm font-medium">{formatClock(elapsed)}</span>
       <StopButton onStop={stop} />
     </div>
   );
@@ -51,7 +54,7 @@ function StopButton({ onStop }: { onStop: () => void }) {
       aria-label="Timer stoppen"
       title="Timer stoppen"
       className={cx(
-        "grid size-8 shrink-0 place-items-center rounded-xs transition-colors hover:bg-[oklch(0.22_0.04_70/0.12)]",
+        "grid size-9 shrink-0 place-items-center rounded-full transition-colors hover:bg-[oklch(0.22_0.04_70/0.12)] lg:size-8",
       )}
     >
       <Square className="size-3.5" fill="currentColor" strokeWidth={0} />

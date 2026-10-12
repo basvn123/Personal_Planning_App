@@ -45,10 +45,10 @@ export function TaskRow({
           style={dyeVars(task.section.color)}
           className={cx(
             "group relative flex items-start gap-2.5",
-            variant === "week" ? "py-[3px]" : "border-b border-rule py-2.5",
+            variant === "week" ? "py-1 max-lg:py-1.5" : "border-t border-rule py-3 first:border-t-0",
             temp && "opacity-60",
             isDragging && "opacity-35",
-            isRunning && variant === "day" && "bg-ribbon-wash/70 -mx-2 px-2",
+            isRunning && variant === "day" && "-mx-2 rounded-lg bg-ribbon-wash/70 px-2",
           )}
         >
           {lead}

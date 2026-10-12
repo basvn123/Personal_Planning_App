@@ -4,7 +4,9 @@ import { InlineAdd } from "@/components/planner/inline-add";
 import { usePlanner } from "@/components/planner/planner-context";
 import { TaskRow } from "@/components/planner/task-row";
 import { formatDay } from "@/lib/time";
-import { Plus } from "lucide-react";
+import { CalendarClock, Inbox, Plus } from "lucide-react";
+import { Card, CardAddButton } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { useUi } from "@/lib/ui-store";
 
 /** Section backlog plus what is already planned from it. */
@@ -18,26 +20,35 @@ export function SectionTasks({ sectionId }: { sectionId: string }) {
 
   return (
     <>
-      <Block title="To-do" count={open.length}>
-        <ul>
-          {open.map((t) => (
-            <TaskRow key={t.id} task={t} variant="week" />
-          ))}
-        </ul>
+      <Card
+        icon={Inbox}
+        title="To-do"
+        count={open.length}
+        action={<CardAddButton label="To-do toevoegen" onClick={() => openAdd({ day: null, sectionId })} />}
+      >
+        {open.length > 0 ? (
+          <ul>
+            {open.map((t) => (
+              <TaskRow key={t.id} task={t} variant="week" />
+            ))}
+          </ul>
+        ) : (
+          <EmptyState icon={Inbox} text="Wat ooit moet, zonder dag. Plan het later in met de kalenderknop." className="lg:hidden" />
+        )}
         <div className="max-lg:hidden">
           <InlineAdd day={null} sectionId={sectionId} compact placeholder="To-do toevoegen" />
         </div>
         <button
           type="button"
           onClick={() => openAdd({ day: null, sectionId })}
-          className="-ml-1 mt-1 inline-flex h-10 items-center gap-1.5 rounded-sm px-1 text-sm text-ink-3 active:bg-paper-3 lg:hidden"
+          className="mt-1 flex h-11 w-full items-center gap-2 rounded-lg px-1 text-sm font-medium text-[var(--link)] active:bg-paper-3 lg:hidden"
         >
-          <Plus className="size-4" strokeWidth={2} />
+          <Plus className="size-4" strokeWidth={2.25} />
           To-do toevoegen
         </button>
         {done.length > 0 && (
           <details className="group mt-1">
-            <summary className="cursor-pointer list-none py-1 text-xs text-ink-3 hover:text-ink-2">
+            <summary className="flex h-10 cursor-pointer list-none items-center text-xs text-ink-3 hover:text-ink-2 lg:h-8">
               {done.length} klaar
             </summary>
             <ul>
@@ -47,10 +58,10 @@ export function SectionTasks({ sectionId }: { sectionId: string }) {
             </ul>
           </details>
         )}
-      </Block>
+      </Card>
 
       {planned.length > 0 && (
-        <Block title="Ingepland" count={planned.length}>
+        <Card icon={CalendarClock} title="Ingepland" count={planned.length}>
           <ul>
             {planned.map((t) => (
               <TaskRow
@@ -65,20 +76,8 @@ export function SectionTasks({ sectionId }: { sectionId: string }) {
               />
             ))}
           </ul>
-        </Block>
+        </Card>
       )}
     </>
-  );
-}
-
-function Block({ title, count, children }: { title: string; count: number; children: React.ReactNode }) {
-  return (
-    <section aria-label={title} className="mt-8">
-      <div className="flex h-8 items-center justify-between border-b border-rule-strong">
-        <h2 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">{title}</h2>
-        <span className="figures text-xs text-ink-3">{count}</span>
-      </div>
-      <div className="pt-1.5">{children}</div>
-    </section>
   );
 }

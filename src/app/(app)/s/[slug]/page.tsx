@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { format } from "date-fns";
-import { nl } from "date-fns/locale";
-import { FileText } from "lucide-react";
+import { ChartColumn, Grid3x3, History, Timer } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { StatStrip } from "@/components/ui/stat-strip";
+import { pageBody } from "@/components/ui/page-body";
+import { RecentList } from "@/components/library/recent-list";
 import { Heatmap } from "@/components/charts/heatmap";
 import { getSectionBySlug, getSectionDocuments } from "@/server/queries/sections";
 import { getSettings } from "@/server/queries/core";
@@ -33,40 +35,40 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
   const total = series.reduce((s, d) => s + d.seconds, 0);
 
   return (
-    <div className="flex min-h-full flex-col px-5 pb-12 pt-6 lg:px-10">
-      <dl className="grid grid-cols-3 border-y border-rule-strong">
-        {[
-          ["Deze week", thisWeek],
-          ["Laatste 4 weken", last4],
-          ["16 weken", total],
-        ].map(([label, secs]) => (
-          <div key={label as string} className="flex flex-col gap-1 border-r border-rule py-3 pl-3 first:pl-0 last:border-r-0">
-            <dt className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">{label}</dt>
-            <dd className="figures text-lg font-medium text-ink">{formatDuration(secs as number)}</dd>
-          </div>
-        ))}
-      </dl>
+    <div className={pageBody}>
+      <Card icon={ChartColumn} title="Overzicht" meta="gelogde tijd">
+        <StatStrip
+          items={[
+            { label: "Deze week", value: formatDuration(thisWeek) },
+            { label: "Laatste 4 weken", value: formatDuration(last4) },
+            { label: "16 weken", value: formatDuration(total) },
+          ]}
+        />
+      </Card>
 
-      <section aria-label="Activiteit" className="mt-8">
-        <h2 className="mb-3 border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Activiteit</h2>
-        <Heatmap days={series} today={today} />
-      </section>
+      <Card icon={Grid3x3} title="Activiteit" meta="hoe donkerder, hoe meer tijd">
+        {total > 0 ? (
+          <div className="pt-1">
+            <Heatmap days={series} today={today} />
+          </div>
+        ) : (
+          <EmptyState icon={Timer} text="Nog geen tijd gelogd in deze sectie. Start een timer op een van haar taken." />
+        )}
+      </Card>
 
       {docs.length > 0 && (
-        <section aria-label="Recente documenten" className="mt-8">
-          <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Laatst bewerkt</h2>
-          <ul>
-            {docs.slice(0, 5).map((d) => (
-              <li key={d.id} className="border-b border-rule">
-                <Link href={`/s/${section.slug}/d/${d.id}`} className="-mx-2 flex h-10 items-center gap-2.5 rounded-xs px-2 text-base hover:bg-paper-3/70">
-                  <FileText className="size-3.5 shrink-0 text-ink-3" strokeWidth={1.75} />
-                  <span className="min-w-0 flex-1 truncate">{d.title || "Zonder titel"}</span>
-                  <span className="figures text-xs text-ink-3">{format(d.updatedAt, "d MMM", { locale: nl })}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Card icon={History} title="Laatst bewerkt">
+          <RecentList
+            showSection={false}
+            items={docs.slice(0, 5).map((d) => ({
+              kind: "doc" as const,
+              id: d.id,
+              title: d.title,
+              updatedAt: d.updatedAt,
+              section: { name: section.name, slug: section.slug, color: section.color },
+            }))}
+          />
+        </Card>
       )}
     </div>
   );

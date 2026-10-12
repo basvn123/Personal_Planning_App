@@ -7,6 +7,7 @@ import { Upload } from "lucide-react";
 import { registerBlobFile } from "@/server/actions/files";
 import { MAX_FILE_BYTES, formatBytes, safeFileName } from "@/lib/files";
 import { cx } from "@/lib/cx";
+import { cardActionClass } from "@/components/ui/card";
 
 type Job = { key: string; name: string; state: "busy" | "done" | "error"; note?: string };
 
@@ -147,9 +148,9 @@ export function UploadButton() {
     <label
       htmlFor="file-upload-input"
       title="Bestand uploaden"
-      className="grid size-7 cursor-pointer place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink"
+      className={cx(cardActionClass, "cursor-pointer")}
     >
-      <Upload className="size-4" strokeWidth={1.75} />
+      <Upload className="size-5 lg:size-4" strokeWidth={2} />
       <span className="sr-only">Bestand uploaden</span>
     </label>
   );

@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState, useTransition } from "react";
-import { Check, Copy, Download, LogOut, RefreshCw } from "lucide-react";
+import Link from "next/link";
+import { CalendarSync, Check, Copy, Download, FileUp, Globe, LogOut, Palette, RefreshCw, type LucideIcon } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Segmented } from "@/components/ui/segmented";
 import { Button, inputClass } from "@/components/ui/button";
 import { rotateCalendarToken, signOut, updateSettings } from "@/server/actions/settings";
 import { cx } from "@/lib/cx";
@@ -40,8 +43,8 @@ export function SettingsForm({
   const webcal = feed.replace(/^https?:/, "webcal:");
 
   return (
-    <div className="flex max-w-lg flex-col gap-9">
-      <Group title="Tijd">
+    <div className="flex flex-col gap-3 lg:gap-4">
+      <Group title="Tijd" icon={Globe}>
         <Row label="Tijdzone">
           <select
             value={timezone}
@@ -57,30 +60,19 @@ export function SettingsForm({
           </select>
         </Row>
         <Row label="Week begint op">
-          <div role="radiogroup" aria-label="Week begint op" className="flex rounded-sm bg-paper-3 p-0.5">
-            {[
-              [1, "maandag"],
-              [0, "zondag"],
-            ].map(([v, label]) => (
-              <button
-                key={v}
-                type="button"
-                role="radio"
-                aria-checked={weekStart === v}
-                onClick={() => run(() => updateSettings({ weekStart: v as number }))}
-                className={cx(
-                  "h-8 flex-1 rounded-xs text-sm transition-colors",
-                  weekStart === v ? "bg-paper font-medium text-ink shadow-[0_1px_2px_oklch(0.2_0.02_258/0.12)]" : "text-ink-2",
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          <Segmented
+            label="Week begint op"
+            value={weekStart}
+            onChange={(v) => run(() => updateSettings({ weekStart: v }))}
+            options={[
+              { value: 1, label: "maandag" },
+              { value: 0, label: "zondag" },
+            ]}
+          />
         </Row>
       </Group>
 
-      <Group title="Agenda">
+      <Group title="Agenda op je telefoon" icon={CalendarSync}>
         <Row label="Abonnementslink">
           <div className="flex gap-1.5">
             <input readOnly value={feed} onFocus={(e) => e.target.select()} aria-label="Abonnementslink" className={cx(inputClass, "figures truncate text-xs")} />
@@ -99,13 +91,13 @@ export function SettingsForm({
         <div className="flex flex-wrap gap-2">
           <a
             href={webcal || undefined}
-            className="inline-flex h-8 items-center gap-1.5 rounded-sm bg-cloth px-3 text-sm font-medium text-cloth-ink transition-colors hover:bg-cloth-3"
+            className="inline-flex h-10 items-center gap-1.5 rounded-full bg-cloth px-4 text-sm font-medium text-cloth-ink transition-colors hover:bg-cloth-3 lg:h-8"
           >
             Abonneren op dit toestel
           </a>
           <a
             href={feed ? `${feed}?from=${weekFrom}&to=${weekTo}&download=1` : undefined}
-            className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-rule-strong bg-paper px-3 text-sm font-medium text-ink transition-colors hover:bg-paper-3"
+            className="inline-flex h-10 items-center gap-1.5 rounded-full border border-rule-strong bg-card px-4 text-sm font-medium text-ink transition-colors hover:bg-paper-3 lg:h-8"
           >
             <Download className="size-3.5" strokeWidth={1.75} />
             Deze week als .ics
@@ -136,12 +128,11 @@ export function SettingsForm({
   );
 }
 
-function Group({ title, children }: { title: string; children: React.ReactNode }) {
+function Group({ title, icon, children }: { title: string; icon: LucideIcon; children: React.ReactNode }) {
   return (
-    <section aria-label={title} className="flex flex-col gap-4">
-      <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">{title}</h2>
+    <Card icon={icon} title={title} bodyClassName="flex flex-col gap-4 pt-1">
       {children}
-    </section>
+    </Card>
   );
 }
 
@@ -178,36 +169,33 @@ export function SettingsAside() {
   }
 
   return (
-    <div className="flex max-w-lg flex-col gap-9">
-      <Group title="Weergave">
+    <div className="flex flex-col gap-3 lg:gap-4">
+      <Group title="Weergave" icon={Palette}>
         <Row label="Uiterlijk">
-          <div role="radiogroup" aria-label="Uiterlijk" className="flex rounded-sm bg-paper-3 p-0.5">
-            {(["system", "light", "dark"] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                role="radio"
-                aria-checked={theme === t}
-                onClick={() => choose(t)}
-                className={cx(
-                  "h-8 flex-1 rounded-xs text-sm transition-colors",
-                  theme === t ? "bg-paper font-medium text-ink shadow-[0_1px_2px_oklch(0.2_0.02_258/0.12)]" : "text-ink-2",
-                )}
-              >
-                {{ system: "Zoals toestel", light: "Licht", dark: "Donker" }[t]}
-              </button>
-            ))}
-          </div>
+          <Segmented
+            label="Uiterlijk"
+            value={theme}
+            onChange={choose}
+            options={[
+              { value: "system", label: "Zoals toestel" },
+              { value: "light", label: "Licht" },
+              { value: "dark", label: "Donker" },
+            ]}
+          />
         </Row>
       </Group>
 
-      <Group title="Gegevens">
-        <a href="/import" className="inline-flex h-8 items-center gap-1.5 self-start rounded-sm border border-rule-strong bg-paper px-3 text-sm font-medium text-ink transition-colors hover:bg-paper-3">
+      <Group title="Gegevens" icon={FileUp}>
+        <Link
+          href="/import"
+          className="inline-flex h-10 items-center gap-1.5 self-start rounded-full border border-rule-strong bg-card px-4 text-sm font-medium text-ink transition-colors hover:bg-paper-3 lg:h-8"
+        >
+          <FileUp className="size-3.5" strokeWidth={1.75} />
           Schema importeren
-        </a>
+        </Link>
       </Group>
 
-      <Group title="Sessie">
+      <Group title="Sessie" icon={LogOut}>
         <form action={signOut}>
           <Button type="submit" variant="ghost">
             <LogOut className="size-3.5" strokeWidth={1.75} />

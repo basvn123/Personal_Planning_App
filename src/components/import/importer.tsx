@@ -109,7 +109,7 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
           const f = e.dataTransfer.files[0];
           if (f) load(f);
         }}
-        className="flex cursor-pointer flex-col items-center gap-2 rounded-md border border-dashed border-rule-strong bg-paper/70 px-6 py-8 text-center transition-colors hover:border-cloth-3 hover:bg-paper"
+        className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-rule-strong bg-canvas px-6 py-8 text-center transition-colors hover:border-cloth-3"
       >
         <FileUp className="size-5 text-ink-2" strokeWidth={1.75} />
         <span className="text-base text-ink">{file ? (
@@ -148,7 +148,7 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
       {mapping && (
         <>
           <section aria-label="Kolommen" className="flex flex-col gap-3">
-            <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Kolommen</h2>
+            <h3 className="border-b border-rule pb-1.5 text-sm font-semibold text-ink">Kolommen</h3>
             <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 sm:grid-cols-4">
               {FIELDS.map(({ key, label }) => (
                 <label key={key} className="flex flex-col gap-1">
@@ -203,8 +203,8 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
           </section>
 
           <section aria-label="Voorbeeld" className="flex flex-col gap-2">
-            <div className="flex items-center border-b border-rule-strong pb-1.5">
-              <h2 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Voorbeeld</h2>
+            <div className="flex items-center border-b border-rule pb-1.5">
+              <h3 className="text-sm font-semibold text-ink">Voorbeeld</h3>
               <span className="figures ml-auto text-xs text-ink-3">
                 {result.rows.length} klaar{result.issues.length > 0 && `, ${result.issues.length} opmerkingen`}
               </span>

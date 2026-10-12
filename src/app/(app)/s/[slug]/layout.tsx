@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, FileText, FolderTree, Target } from "lucide-react";
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
 import { Spread } from "@/components/shell/spread";
@@ -13,7 +13,11 @@ import { FileDrop, UploadButton } from "@/components/files/file-uploader";
 import { FileList } from "@/components/files/file-list";
 import { storageMode } from "@/server/storage";
 import { requireUserId } from "@/server/auth";
-import { InfoButton } from "@/components/help/info-button";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ListRow } from "@/components/ui/list-row";
+import { PageHeader } from "@/components/ui/page-header";
+import { pageBody } from "@/components/ui/page-body";
 import { getProjectOptions, getSections, getSettings } from "@/server/queries/core";
 import { getProjects } from "@/server/queries/dashboard";
 import { ProjectCard } from "@/components/projects/project-card";
@@ -61,63 +65,87 @@ export default async function SectionLayout({
   }
 
   const left = (
-    <div className="flex min-h-full flex-col px-5 pb-10 pt-6 lg:px-8" style={dyeVars(section.color)}>
-      {trail.length > 0 && (
-        <nav aria-label="Bovenliggende secties" className="mb-2 flex flex-wrap items-center gap-1 text-sm text-ink-3">
-          {trail.map((t) => (
-            <span key={t.slug} className="flex items-center gap-1">
-              <Link href={`/s/${t.slug}`} className="hover:text-ink">
-                {t.name}
-              </Link>
-              <ChevronRight className="size-3" strokeWidth={2} />
-            </span>
-          ))}
-        </nav>
-      )}
-      <header className="flex items-start gap-3">
-        <span aria-hidden className="mt-1 h-6 w-1.5 shrink-0 rounded-[1px] bg-[var(--dye)] ring-1 ring-[color-mix(in_oklch,var(--dye-deep)_25%,transparent)]" />
-        <div className="min-w-0 flex-1">
-          <h1 className="flex items-center gap-1.5 text-xl font-semibold tracking-[-0.02em] [overflow-wrap:anywhere]">
-            {section.name}
-            <InfoButton topic="section" />
-          </h1>
-          {section.archivedAt && <p className="text-sm text-ink-3">Gearchiveerd</p>}
-        </div>
-        <SectionSettings
-          section={{
-            id: section.id,
-            name: section.name,
-            color: section.color,
-            parentId: section.parentId,
-            archived: Boolean(section.archivedAt),
-          }}
-          options={options}
+    <div className={pageBody} style={dyeVars(section.color)}>
+      <div className="flex flex-col gap-1 pt-2">
+        {trail.length > 0 && (
+          <nav aria-label="Bovenliggende secties" className="flex flex-wrap items-center gap-1 px-1 text-sm text-ink-3">
+            {trail.map((t) => (
+              <span key={t.slug} className="flex items-center gap-1">
+                <Link href={`/s/${t.slug}`} className="hover:text-ink">
+                  {t.name}
+                </Link>
+                <ChevronRight className="size-3" strokeWidth={2} />
+              </span>
+            ))}
+          </nav>
+        )}
+        <PageHeader
+          title={section.name}
+          info="section"
+          subtitle={section.archivedAt ? "Gearchiveerd" : undefined}
+          lead={
+            <span
+              aria-hidden
+              className="mt-1 h-7 w-2 shrink-0 rounded-[3px] bg-[var(--dye)] ring-1 ring-[color-mix(in_oklch,var(--dye-deep)_25%,transparent)]"
+            />
+          }
+          actions={
+            <SectionSettings
+              section={{
+                id: section.id,
+                name: section.name,
+                color: section.color,
+                parentId: section.parentId,
+                archived: Boolean(section.archivedAt),
+              }}
+              options={options}
+            />
+          }
         />
-      </header>
-
-      <Block title="Projecten" action={<NewProject sections={[]} defaultSectionId={section.id} />}>
-        {projects.map((p) => (
-          <ProjectCard key={p.id} project={p} today={today} />
-        ))}
-      </Block>
+      </div>
 
       <SectionTasks sectionId={section.id} />
 
+      <Card
+        icon={Target}
+        title="Projecten"
+        count={projects.length}
+        action={<NewProject sections={[]} defaultSectionId={section.id} />}
+      >
+        {projects.length > 0 ? (
+          <div className="divide-y divide-rule">
+            {projects.map((p) => (
+              <ProjectCard key={p.id} project={p} today={today} />
+            ))}
+          </div>
+        ) : (
+          <EmptyState icon={Target} text="Een doel met eenheden, bv. 200 lessen. Afgevinkte taken tellen mee." />
+        )}
+      </Card>
+
       <FileDrop sectionId={section.id} mode={storageMode} prefix={`u/${userId}/${section.id}/`}>
-        <Block
+        <Card
+          icon={FileText}
           title="Documenten"
+          count={docs.length + sectionFiles.length}
           action={
-            <span className="flex items-center gap-0.5">
+            <>
               <UploadButton />
               <NewDocButton sectionId={section.id} slug={section.slug} />
-            </span>
+            </>
           }
         >
           {docs.length === 0 && sectionFiles.length === 0 ? (
-            <div className="flex flex-wrap items-center gap-3 py-5">
-              <NewDocButton sectionId={section.id} slug={section.slug} variant="button" />
-              <span className="text-sm text-ink-3 max-lg:hidden">of sleep bestanden hierheen</span>
-            </div>
+            <EmptyState
+              icon={FileText}
+              text={
+                <>
+                  Notities in markdown en bestanden zoals pdf&apos;s.
+                  <span className="max-lg:hidden"> Sleep bestanden hierheen.</span>
+                </>
+              }
+              action={<NewDocButton sectionId={section.id} slug={section.slug} variant="button" />}
+            />
           ) : (
             <>
               <DocList
@@ -141,27 +169,26 @@ export default async function SectionLayout({
               />
             </>
           )}
-        </Block>
+        </Card>
       </FileDrop>
 
-      <Block title="Subsecties" action={<NewSectionPopover parentId={section.id} />}>
-        {children_.length > 0 && (
-          <ul>
+      <Card icon={FolderTree} title="Subsecties" count={children_.length} action={<NewSectionPopover parentId={section.id} />}>
+        {children_.length > 0 ? (
+          <ul className="divide-y divide-rule">
             {children_.map((c) => (
-              <li key={c.id} className="border-b border-rule">
-                <Link
-                  href={`/s/${c.slug}`}
-                  style={dyeVars(c.color)}
-                  className="-mx-2 flex h-10 items-center gap-3 rounded-xs px-2 transition-colors hover:bg-paper-3/70"
-                >
-                  <span className="size-2.5 rounded-[2px] bg-[var(--dye)]" />
-                  {c.name}
-                </Link>
-              </li>
+              <ListRow
+                key={c.id}
+                href={`/s/${c.slug}`}
+                style={dyeVars(c.color)}
+                lead={<span className="h-6 w-1.5 shrink-0 rounded-[3px] bg-[var(--dye)]" />}
+                title={c.name}
+              />
             ))}
           </ul>
+        ) : (
+          <EmptyState icon={FolderTree} text="Splits een grote sectie op, bv. Studie in vakken." />
         )}
-      </Block>
+      </Card>
     </div>
   );
 
@@ -174,19 +201,7 @@ export default async function SectionLayout({
       initialDay={today}
       scope={{ sectionId: section.id }}
     >
-      <Spread left={left} right={children} leftLabel={section.name} rightLabel="Documenten" rightPathPattern="/(d|f)/" />
+      <Spread left={left} right={children} leftLabel={section.name} rightLabel="Overzicht" rightLabelOnPattern="Document" rightPathPattern="/(d|f)/" />
     </PlannerProvider>
-  );
-}
-
-function Block({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <section aria-label={title} className="mt-8">
-      <div className="flex h-8 items-center justify-between border-b border-rule-strong">
-        <h2 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">{title}</h2>
-        {action}
-      </div>
-      {children}
-    </section>
   );
 }

@@ -7,12 +7,13 @@
  */
 :root {
   color-scheme: light;
+  --canvas: oklch(0.962 0.005 250);
+  --card: oklch(1 0 0);
   --paper: oklch(0.986 0.003 250);
   --paper-2: oklch(0.968 0.004 250);
   --paper-3: oklch(0.945 0.005 250);
   --rule: oklch(0.905 0.006 250);
   --rule-strong: oklch(0.84 0.008 250);
-  --dot: oklch(0.86 0.008 250);
   --ink: oklch(0.235 0.014 258);
   --ink-2: oklch(0.43 0.013 258);
   --ink-3: oklch(0.56 0.011 258);
@@ -29,7 +30,6 @@
   --link: oklch(0.42 0.06 163);
   --danger: oklch(0.54 0.17 27);
   --danger-wash: oklch(0.96 0.025 27);
-  --gutter-shade: oklch(0.2 0.02 258 / 0.08);
   --lift: 0 1px 2px oklch(0.2 0.02 258 / 0.06),
     0 4px 14px -4px oklch(0.2 0.02 258 / 0.12);
 
@@ -69,12 +69,13 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
+  --canvas: oklch(0.17 0.008 258);
+  --card: oklch(0.222 0.01 258);
   --paper: oklch(0.205 0.009 258);
   --paper-2: oklch(0.228 0.01 258);
   --paper-3: oklch(0.26 0.011 258);
   --rule: oklch(0.3 0.011 258);
   --rule-strong: oklch(0.37 0.012 258);
-  --dot: oklch(0.33 0.012 258);
   --ink: oklch(0.935 0.006 250);
   --ink-2: oklch(0.76 0.01 250);
   --ink-3: oklch(0.63 0.012 250);
@@ -90,7 +91,6 @@
   --link: oklch(0.8 0.08 178);
   --danger: oklch(0.7 0.15 27);
   --danger-wash: oklch(0.29 0.05 27);
-  --gutter-shade: oklch(0 0 0 / 0.35);
   --lift: 0 1px 2px oklch(0 0 0 / 0.3), 0 6px 18px -6px oklch(0 0 0 / 0.5);
   --heat-0: oklch(0.27 0.01 258);
   --heat-1: oklch(0.36 0.04 163);
@@ -128,12 +128,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
+    --canvas: oklch(0.17 0.008 258);
+    --card: oklch(0.222 0.01 258);
     --paper: oklch(0.205 0.009 258);
     --paper-2: oklch(0.228 0.01 258);
     --paper-3: oklch(0.26 0.011 258);
     --rule: oklch(0.3 0.011 258);
     --rule-strong: oklch(0.37 0.012 258);
-    --dot: oklch(0.33 0.012 258);
     --ink: oklch(0.935 0.006 250);
     --ink-2: oklch(0.76 0.01 250);
     --ink-3: oklch(0.63 0.012 250);
@@ -149,7 +150,6 @@
   --link: oklch(0.8 0.08 178);
     --danger: oklch(0.7 0.15 27);
     --danger-wash: oklch(0.29 0.05 27);
-    --gutter-shade: oklch(0 0 0 / 0.35);
     --lift: 0 1px 2px oklch(0 0 0 / 0.3), 0 6px 18px -6px oklch(0 0 0 / 0.5);
     --heat-0: oklch(0.27 0.01 258);
     --heat-1: oklch(0.36 0.04 163);
@@ -187,6 +187,8 @@
 
 @theme inline {
   --color-*: initial;
+  --color-canvas: var(--canvas);
+  --color-card: var(--card);
   --color-paper: var(--paper);
   --color-paper-2: var(--paper-2);
   --color-paper-3: var(--paper-3);
@@ -329,17 +331,6 @@
     bottom: calc(4.75rem + max(0px, env(safe-area-inset-bottom) - 1.5rem));
   }
 
-  /* A printed dot grid, as on planner paper. */
-  .paper {
-    background-color: var(--paper);
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      var(--dot) 0.9px,
-      transparent 1.1px
-    );
-    background-size: 18px 18px;
-    background-position: 8px 8px;
-  }
   .figures {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;

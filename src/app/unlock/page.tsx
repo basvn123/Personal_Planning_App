@@ -16,7 +16,7 @@ export default async function UnlockPage({
   if (await currentUser()) redirect(safeNext(next ?? "/"));
   return (
     <main className="grid h-dvh place-items-center overflow-y-auto bg-cloth-2 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))]">
-      <div className="paper relative flex w-full max-w-[22rem] flex-col items-center gap-8 rounded-lg px-8 pb-6 pt-12 shadow-lift">
+      <div className="relative flex w-full max-w-[22rem] flex-col items-center gap-8 rounded-2xl bg-card px-8 pb-6 pt-12 shadow-lift">
         <span
           aria-hidden
           className="absolute -top-1 right-10 h-14 w-3.5 bg-ribbon [clip-path:polygon(0_0,100%_0,100%_100%,50%_82%,0_100%)]"

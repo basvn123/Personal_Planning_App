@@ -9,7 +9,7 @@ export const HELP = {
     title: "Je week",
     lead: "Je hele week op één blad: wat er gepland staat en hoeveel tijd je er echt aan besteedde.",
     points: [
-      "Elke rij is een dag. Tik op het getal van een dag om die dag te openen.",
+      "Elke kaart is een dag. Tik op de datum om die dag te openen; op de telefoon opent de planner meteen op vandaag.",
       "Toevoegen: de plusknop (onderaan, links op de computer, of de toets N) of Toevoegen onder een dag. Je kiest meteen de dag, duur, tijd en sectie.",
       <>
         Snel typen kan ook: <K>#italian</K> <K>morgen</K> <K>vr</K> <K>14:00</K> <K>45m</K> in de naam vult de rest in.
@@ -17,8 +17,8 @@ export const HELP = {
       "Sleep een taak naar een andere dag om ze te verplaatsen. Op de telefoon: houd een taak even vast en sleep.",
       "Tik op een taak om ze aan te passen: dezelfde keuzes als bij toevoegen, plus Klaar en Verwijderen bovenaan.",
       "Afvinken levert XP op; de balk bovenaan laat zien hoe ver je van het volgende level bent.",
-      "In de marge zie je per dag: gelogde tijd, geplande tijd en een balkje dat vult.",
-      "Het gele lint markeert vandaag.",
+      "Rechts op elke dag: gelogde tijd, geplande tijd en een balkje dat vult.",
+      "De gele rand markeert vandaag. Vaste planning (lessen, trainingen) open je met de knop bovenaan.",
     ],
     tip: (
       <>
@@ -35,8 +35,9 @@ export const HELP = {
       "Een rode begintijd betekent dat de taak overlapt met de vorige.",
       "Zonder tijd: taken zonder uur, met hun duur ervoor.",
       "Vink een taak af met het vakje. Tik op de naam om dag, duur, tijd, sectie, notities en documenten aan te passen.",
-      "De afspeelknop start een timer op die taak. Er loopt altijd maar één timer; je ziet hem links (of onderaan op je gsm).",
-      "To-do toont open to-do's van al je secties. Sleep ze naar een dag of gebruik de kalenderknop.",
+      "De afspeelknop start een timer op die taak. Er loopt altijd maar één timer; je ziet hem links, of op je telefoon als gele balk boven de knoppen.",
+      "To-do toont open to-do's van al je secties (tik op het pijltje om ze te zien). Sleep ze naar een dag of gebruik de kalenderknop.",
+      "Elke kaart heeft rechtsboven een plus om er meteen iets aan toe te voegen.",
       "Logboek: vergeten te timen? Kies Tijd loggen en vul van en tot in.",
     ],
   },
@@ -93,8 +94,8 @@ export const HELP = {
     ],
   },
   dashboard: {
-    title: "Dashboard",
-    lead: "Waar je tijd naartoe ging en hoe je projecten vorderen.",
+    title: "Voortgang",
+    lead: "Je level, waar je tijd naartoe ging en hoe je projecten vorderen.",
     points: [
       "Level en XP: elke afgevinkte taak is 10 XP, elk uur gelogde tijd ook 10 XP, en elke dag van je reeks geeft 5 XP extra (tot 30 dagen).",
       "Gelogd: totale tijd deze week, met het verschil tegenover vorige week.",
@@ -134,6 +135,7 @@ export const HELP = {
       "Agenda op je iPhone: kopieer de abonnementslink en open Instellingen, Agenda (op nieuwere iOS onder Apps), Accounts, Voeg account toe, Overige, Voeg agenda-abonnement toe. Plak daar de link. Of tik op dit toestel gewoon op Abonneren.",
       "Nieuwe link maakt de oude ongeldig, handig als je hem per ongeluk deelde.",
       "Mensen (alleen voor de eigenaar): nodig iemand uit met een eigen, privé planner.",
+      "Op de telefoon vind je zoeken, vaste planning, importeren, licht of donker en afmelden ook onder Meer, rechtsonder.",
     ],
   },
 } satisfies Record<string, Help>;

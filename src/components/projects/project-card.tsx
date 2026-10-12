@@ -39,7 +39,7 @@ export function ProjectCard({ project: p, today }: { project: ProjectProgress; t
   else paceLine = "Nog geen tempo";
 
   return (
-    <article style={dyeVars(p.section.color)} className="border-b border-rule py-4">
+    <article style={dyeVars(p.section.color)} className="py-4 first:pt-1 last:pb-1">
       <header className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-base font-medium text-ink">{p.name}</h3>

@@ -1,5 +1,6 @@
 "use client";
 
+import { cardActionClass } from "@/components/ui/card";
 import { useState, useTransition } from "react";
 import { Plus } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -22,9 +23,9 @@ export function NewProject({ sections, defaultSectionId }: { sections: { id: str
       <PopoverTrigger
         aria-label="Nieuw project"
         title="Nieuw project"
-        className="grid size-7 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink"
+        className={cardActionClass}
       >
-        <Plus className="size-4" strokeWidth={1.75} />
+        <Plus className="size-5 lg:size-4" strokeWidth={2.25} />
       </PopoverTrigger>
       <PopoverContent align="end" className="w-72">
         <form
