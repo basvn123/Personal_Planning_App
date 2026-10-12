@@ -1,22 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Archive, FileText, Link2, Repeat, Trash2, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { FileText, Link2, Repeat, Trash2, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button, IconButton, inputClass } from "@/components/ui/button";
 import { linkDocumentTask } from "@/server/actions/documents";
 import { listSectionDocuments } from "@/server/actions/tasks";
 import type { PlannerTask } from "@/server/queries/tasks";
 import { usePlanner } from "./planner-context";
+import { DayChips, DurationChips, SectionChips, TimeField } from "./task-fields";
 import { cx } from "@/lib/cx";
-import { formatMinutes } from "@/lib/time";
-
-const DURATIONS = [15, 30, 45, 60, 90, 120, 180];
 
 /** Edit form for one task. Every field saves on change or blur. */
 export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () => void }) {
-  const { sections, projects, patch, remove, removeSeries } = usePlanner();
+  const { sections, projects, today, patch, remove, removeSeries } = usePlanner();
   const [confirmSeries, setConfirmSeries] = useState(false);
   const sectionProjects = projects.filter((pr) => pr.sectionId === task.section.id);
   const project = projects.find((pr) => pr.id === task.projectId);
@@ -28,6 +26,20 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
   const temp = task.id.startsWith("temp-");
 
   useEffect(() => setDocs(task.docs), [task.docs]);
+
+  // The time wheel fires on every turn; save once it settles.
+  const [time, setTime] = useState(task.plannedStart?.slice(0, 5) ?? "");
+  const patchRef = useRef(patch);
+  useEffect(() => {
+    patchRef.current = patch;
+  });
+  useEffect(() => setTime(task.plannedStart?.slice(0, 5) ?? ""), [task.plannedStart]);
+  useEffect(() => {
+    const current = task.plannedStart?.slice(0, 5) ?? "";
+    if (time === current) return;
+    const t = setTimeout(() => patchRef.current(task.id, { plannedStart: time || null }), 600);
+    return () => clearTimeout(t);
+  }, [time, task.id, task.plannedStart]);
   useEffect(() => setUnits(task.units === null ? "" : String(task.units)), [task.units]);
 
   function saveTitle() {
@@ -71,62 +83,38 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
         className="w-full resize-none bg-transparent text-md font-medium leading-snug text-ink outline-none [field-sizing:content]"
       />
 
-      <div className="grid grid-cols-2 gap-2">
-        <Field label="Sectie" className="col-span-2">
-          <select
-            value={task.section.id}
-            disabled={temp}
-            aria-label="Sectie"
-            onChange={(e) => patch(task.id, { sectionId: e.target.value })}
-            className={inputClass}
-          >
-            {sections.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Dag">
-          <input
-            type="date"
-            value={task.plannedDate ?? ""}
-            disabled={temp}
-            aria-label="Dag"
-            onChange={(e) => e.target.value && patch(task.id, { plannedDate: e.target.value })}
-            className={cx(inputClass, "figures")}
-          />
-        </Field>
-        <Field label="Begin">
-          <input
-            type="time"
-            value={task.plannedStart ?? ""}
-            disabled={temp}
-            aria-label="Begintijd"
-            onChange={(e) => patch(task.id, { plannedStart: e.target.value || null })}
-            className={cx(inputClass, "figures")}
-          />
-        </Field>
-        <Field label="Duur" className="col-span-2">
-          <div className="flex flex-wrap gap-1">
-            {DURATIONS.map((m) => (
-              <button
-                key={m}
-                type="button"
-                disabled={temp}
-                aria-pressed={task.plannedMinutes === m}
-                onClick={() => patch(task.id, { plannedMinutes: task.plannedMinutes === m ? null : m })}
-                className={cx(
-                  "figures h-7 rounded-xs px-2 text-xs transition-colors",
-                  task.plannedMinutes === m ? "bg-cloth text-cloth-ink" : "bg-paper-3 text-ink-2 hover:text-ink",
-                )}
-              >
-                {formatMinutes(m)}
-              </button>
-            ))}
-          </div>
-        </Field>
-      </div>
+      <Field label="Wanneer">
+        <DayChips
+          value={task.plannedDate}
+          today={today}
+          disabled={temp}
+          onChange={(d) => patch(task.id, d === null ? { plannedDate: null, plannedStart: null } : { plannedDate: d })}
+        />
+      </Field>
+
+      {task.plannedDate !== null && (
+        <>
+          <Field label="Duur">
+            <DurationChips
+              value={task.plannedMinutes}
+              disabled={temp}
+              onChange={(m) => patch(task.id, { plannedMinutes: m })}
+            />
+          </Field>
+          <Field label="Om">
+            <TimeField value={time} disabled={temp} onChange={setTime} />
+          </Field>
+        </>
+      )}
+
+      <Field label="Sectie">
+        <SectionChips
+          sections={sections}
+          value={task.section.id}
+          disabled={temp}
+          onChange={(id) => id !== task.section.id && patch(task.id, { sectionId: id })}
+        />
+      </Field>
 
       {(sectionProjects.length > 0 || task.projectId) && (
         <div className="grid grid-cols-[1fr_5.5rem] gap-2">
@@ -271,18 +259,6 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
       )}
 
       <div className="flex items-center gap-1 border-t border-rule pt-2.5">
-        <Button
-          variant="ghost"
-          className="max-lg:h-10"
-          disabled={temp || task.plannedDate === null}
-          onClick={() => {
-            patch(task.id, { plannedDate: null, plannedStart: null });
-            onClose();
-          }}
-        >
-          <Archive className="size-3.5" strokeWidth={1.75} />
-          Naar to-do
-        </Button>
         <Button
           variant="ghost"
           className="ml-auto text-danger hover:text-danger max-lg:h-10"

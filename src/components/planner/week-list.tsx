@@ -1,6 +1,8 @@
 "use client";
 
 import { useDroppable } from "@dnd-kit/core";
+import { Plus } from "lucide-react";
+import { useUi } from "@/lib/ui-store";
 import { formatDay, formatDuration } from "@/lib/time";
 import { cx } from "@/lib/cx";
 import { Ribbon } from "./ribbon";
@@ -10,6 +12,7 @@ import { TaskRow } from "./task-row";
 
 export function WeekList({ days, logged }: { days: string[]; logged: Record<string, number> }) {
   const { tasks, today, selectedDay, selectDay } = usePlanner();
+  const openAdd = useUi((s) => s.openAdd);
   const todayIndex = days.indexOf(today);
   const isThisWeek = todayIndex >= 0;
 
@@ -64,12 +67,21 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
               ))}
               <li
                 className={cx(
-                  "transition-opacity duration-150 lg:opacity-0 lg:group-hover/day:opacity-100 lg:focus-within:opacity-100",
+                  "transition-opacity duration-150 max-lg:hidden lg:opacity-0 lg:group-hover/day:opacity-100 lg:focus-within:opacity-100",
                   dayTasks.length === 0 && "lg:opacity-60",
-                  dayTasks.length > 0 && !isToday && "max-lg:hidden",
                 )}
               >
                 <InlineAdd day={day} compact placeholder="Toevoegen" />
+              </li>
+              <li className="lg:hidden">
+                <button
+                  type="button"
+                  onClick={() => openAdd({ day })}
+                  className="-ml-1 mt-0.5 inline-flex h-9 items-center gap-1.5 rounded-sm px-1 text-sm text-ink-3 active:bg-paper-3"
+                >
+                  <Plus className="size-4" strokeWidth={2} />
+                  Toevoegen
+                </button>
               </li>
             </ul>
             <DayMeter planned={planned} logged={spent} />

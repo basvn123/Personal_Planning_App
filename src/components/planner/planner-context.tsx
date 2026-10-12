@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, useTransition } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -58,6 +58,7 @@ export function PlannerProvider({
   projects = [],
   today,
   initialDay,
+  scope,
   children,
 }: {
   initialTasks: PlannerTask[];
@@ -65,6 +66,12 @@ export function PlannerProvider({
   projects?: PlannerProject[];
   today: string;
   initialDay: string;
+  /**
+   * Which new tasks this page shows, so the add sheet can add them here at once:
+   * the week page holds its seven days plus every to-do, a section page its own
+   * to-do and what is planned from today on.
+   */
+  scope: { days: string[] } | { sectionId: string };
   children: React.ReactNode;
 }) {
   const [tasks, setTasks] = useState(initialTasks);
@@ -186,6 +193,28 @@ export function PlannerProvider({
     }),
     [tasks, sections, projects, today, selectedDay, selectDay, pending, error, run],
   );
+
+  // Offer the add sheet an instant add for tasks that belong on this page.
+  const latest = useRef({ value, scope });
+  latest.current = { value, scope };
+  useEffect(() => {
+    const { setPlanner } = useUi.getState();
+    setPlanner({
+      day: selectedDay,
+      sectionId: "sectionId" in scope ? scope.sectionId : null,
+      add: (task) => {
+        const { value: v, scope: sc } = latest.current;
+        const fits =
+          "days" in sc
+            ? task.plannedDate === null || sc.days.includes(task.plannedDate)
+            : task.sectionId === sc.sectionId && (task.plannedDate === null || task.plannedDate >= v.today);
+        if (!fits || !v.sections.some((s) => s.id === task.sectionId)) return false;
+        v.add(task);
+        return true;
+      },
+    });
+    return () => useUi.getState().setPlanner(null);
+  }, [selectedDay, scope]);
 
   return (
     <PlannerCtx.Provider value={value}>

@@ -29,14 +29,15 @@ export function TaskCheck({
       }}
       style={dyeVars(color)}
       className={cx(
-        "grid shrink-0 place-items-center rounded-[3px] border-[1.5px] transition-[background-color,border-color] duration-150",
-        size === "sm" ? "size-3.5" : "size-4",
+        // The box stays small; the invisible ring around it is a thumb-sized target.
+        "relative grid shrink-0 place-items-center rounded-[3px] border-[1.5px] transition-[background-color,border-color] duration-150 before:absolute before:-inset-2.5 before:content-['']",
+        size === "sm" ? "size-3.5 max-lg:size-4" : "size-4 max-lg:size-5",
         done
           ? "border-[var(--dye-deep)] bg-[var(--dye-deep)] text-paper"
           : "border-[color-mix(in_oklch,var(--dye-deep)_70%,var(--paper))] bg-[color-mix(in_oklch,var(--dye)_25%,transparent)] hover:bg-[color-mix(in_oklch,var(--dye)_55%,transparent)]",
       )}
     >
-      {done && <Check className={size === "sm" ? "size-2.5" : "size-3"} strokeWidth={3} />}
+      {done && <Check className={size === "sm" ? "size-2.5 max-lg:size-3" : "size-3 max-lg:size-3.5"} strokeWidth={3} />}
     </button>
   );
 }
