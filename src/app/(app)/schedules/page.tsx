@@ -115,7 +115,7 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
     <div className="px-5 pb-12 pt-6 lg:px-10">
       <ScheduleForm
         key={selected?.id ?? "new"}
-        sections={allSections.map(({ id, name }) => ({ id, name }))}
+        sections={allSections.map(({ id, name, color }) => ({ id, name, color }))}
         draft={
           selected
             ? {

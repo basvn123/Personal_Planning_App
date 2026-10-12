@@ -34,6 +34,17 @@ export function CommandPalette({
       if (e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen(!useUi.getState().paletteOpen);
+        return;
+      }
+      // "N" adds an activity, unless you are typing somewhere.
+      const el = e.target as HTMLElement | null;
+      const typing = el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable);
+      if (e.key.toLowerCase() === "n" && !e.metaKey && !e.ctrlKey && !e.altKey && !typing) {
+        const ui = useUi.getState();
+        if (!ui.paletteOpen && !ui.addOpen) {
+          e.preventDefault();
+          ui.openAdd();
+        }
       }
     }
     window.addEventListener("keydown", onKey);
@@ -48,15 +59,23 @@ export function CommandPalette({
     if (!parsed.title || !quickSection) return;
     const date = parsed.plannedDate === undefined ? today : parsed.plannedDate;
     setOpen(false);
+    const task = {
+      title: parsed.title,
+      sectionId: quickSection.id,
+      plannedDate: date,
+      plannedStart: parsed.plannedStart,
+      plannedMinutes: parsed.plannedMinutes,
+    };
+    const { planner, showToast } = useUi.getState();
+    if (planner?.add(task)) return;
     start(async () => {
-      await createTask({
-        title: parsed.title,
-        sectionId: quickSection.id,
-        plannedDate: date,
-        plannedStart: parsed.plannedStart,
-        plannedMinutes: parsed.plannedMinutes,
-      });
-      router.refresh();
+      try {
+        await createTask(task);
+        showToast("Toegevoegd");
+        router.refresh();
+      } catch {
+        showToast("Niet opgeslagen, probeer opnieuw");
+      }
     });
   }
 

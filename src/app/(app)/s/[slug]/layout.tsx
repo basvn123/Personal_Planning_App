@@ -172,8 +172,9 @@ export default async function SectionLayout({
       projects={projectOptions}
       today={today}
       initialDay={today}
+      scope={{ sectionId: section.id }}
     >
-      <Spread left={left} right={children} leftLabel={section.name} rightLabel="Pagina" rightPathPattern="/(d|f)/" />
+      <Spread left={left} right={children} leftLabel={section.name} rightLabel="Documenten" rightPathPattern="/(d|f)/" />
     </PlannerProvider>
   );
 }

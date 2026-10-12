@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cx } from "@/lib/cx";
 
 /**
@@ -28,7 +28,8 @@ export function Spread({
   const scroller = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState<"left" | "right">(initial);
 
-  useEffect(() => {
+  // Before paint, so a page that opens on the right never flashes the left one first.
+  useLayoutEffect(() => {
     const el = scroller.current;
     if (!el || !window.matchMedia("(max-width: 1023px)").matches) return;
     const wantRight = initial === "right" || (rightPathPattern && new RegExp(rightPathPattern).test(pathname));

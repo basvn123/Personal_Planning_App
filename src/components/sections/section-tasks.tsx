@@ -4,10 +4,13 @@ import { InlineAdd } from "@/components/planner/inline-add";
 import { usePlanner } from "@/components/planner/planner-context";
 import { TaskRow } from "@/components/planner/task-row";
 import { formatDay } from "@/lib/time";
+import { Plus } from "lucide-react";
+import { useUi } from "@/lib/ui-store";
 
 /** Section backlog plus what is already planned from it. */
 export function SectionTasks({ sectionId }: { sectionId: string }) {
   const { tasks, today } = usePlanner();
+  const openAdd = useUi((s) => s.openAdd);
   const backlog = tasks.filter((t) => t.plannedDate === null);
   const open = backlog.filter((t) => t.status !== "done");
   const done = backlog.filter((t) => t.status === "done");
@@ -21,7 +24,17 @@ export function SectionTasks({ sectionId }: { sectionId: string }) {
             <TaskRow key={t.id} task={t} variant="week" />
           ))}
         </ul>
-        <InlineAdd day={null} sectionId={sectionId} compact placeholder="To-do toevoegen" />
+        <div className="max-lg:hidden">
+          <InlineAdd day={null} sectionId={sectionId} compact placeholder="To-do toevoegen" />
+        </div>
+        <button
+          type="button"
+          onClick={() => openAdd({ day: null, sectionId })}
+          className="-ml-1 mt-1 inline-flex h-10 items-center gap-1.5 rounded-sm px-1 text-sm text-ink-3 active:bg-paper-3 lg:hidden"
+        >
+          <Plus className="size-4" strokeWidth={2} />
+          To-do toevoegen
+        </button>
         {done.length > 0 && (
           <details className="group mt-1">
             <summary className="cursor-pointer list-none py-1 text-xs text-ink-3 hover:text-ink-2">

@@ -248,12 +248,16 @@
     /* The shell never bounces or pulls to refresh; only the pages inside it scroll. */
     overscroll-behavior: none;
   }
-  html,
-  body {
-    height: 100%;
-    overflow: hidden;
+  /*
+   * No overflow clipping on the root: iOS 26 home-screen apps get a viewport
+   * one status bar short, and the shell paints into that strip (see
+   * --screen-gap in the root layout). Clipping here would cut the bottom bar off.
+   */
+  html {
+    height: calc(100% + var(--screen-gap, 0px));
   }
   body {
+    height: 100%;
     overscroll-behavior: none;
   }
   /* App chrome: no text selection or callout menu on a long press. */

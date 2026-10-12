@@ -33,7 +33,7 @@ export function TimeLog({
           type="button"
           onClick={() => setAdding((a) => !a)}
           aria-expanded={adding}
-          className="inline-flex h-7 items-center gap-1 rounded-xs px-1.5 text-xs text-ink-2 hover:bg-paper-3 hover:text-ink"
+          className="inline-flex h-9 items-center gap-1 rounded-xs px-1.5 text-sm text-ink-2 hover:bg-paper-3 hover:text-ink lg:h-7 lg:text-xs"
         >
           <Plus className="size-3.5" strokeWidth={1.75} />
           Tijd loggen

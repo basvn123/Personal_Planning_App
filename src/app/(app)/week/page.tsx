@@ -69,7 +69,7 @@ export default async function WeekPage({
           {!isThisWeek && (
             <Link
               href="/week"
-              className="h-8 rounded-sm px-2.5 text-sm leading-8 text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink"
+              className="h-10 rounded-sm px-2.5 text-sm leading-10 text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink lg:h-8 lg:leading-8"
             >
               Vandaag
             </Link>
@@ -106,12 +106,15 @@ export default async function WeekPage({
       projects={projectOptions}
       today={today}
       initialDay={selected}
+      scope={{ days }}
     >
       <Spread
         left={left}
         right={<DayPlan days={days} logged={logged} entries={entries} />}
         leftLabel={`Week ${isoWeekNumber(days[0])}`}
         rightLabel="Dag"
+        // A phone opens on the day itself; the strip on top shows the rest of the week.
+        initial="right"
       />
     </PlannerProvider>
   );
@@ -122,7 +125,7 @@ function WeekNav({ href, label, children }: { href: string; label: string; child
     <Link
       href={href}
       aria-label={label}
-      className="grid size-8 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink"
+      className="grid size-10 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink lg:size-8"
     >
       {children}
     </Link>

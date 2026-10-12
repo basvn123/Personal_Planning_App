@@ -43,6 +43,7 @@ function NavItem({ href, label, icon: Icon }: { href: string; label: string; ico
 /** Desktop: the cloth spine on the left. */
 export function Spine() {
   const openPalette = useUi((s) => s.openPalette);
+  const openAdd = useUi((s) => s.openAdd);
   return (
     <nav
       aria-label="Navigatie"
@@ -62,6 +63,15 @@ export function Spine() {
       >
         <Command className="size-[18px]" strokeWidth={1.75} />
       </button>
+      <button
+        type="button"
+        onClick={() => openAdd()}
+        aria-label="Activiteit toevoegen"
+        title="Activiteit toevoegen (N)"
+        className="mt-2 grid size-10 place-items-center rounded-full bg-cloth-ink text-cloth transition-transform hover:scale-105"
+      >
+        <Plus className="size-5" strokeWidth={2.25} />
+      </button>
       <div className="mt-auto flex flex-col items-center gap-3">
         <TimerChip orientation="vertical" />
         <ThemeToggle />
@@ -77,7 +87,7 @@ export function Spine() {
  */
 export function SpineBar() {
   const openPalette = useUi((s) => s.openPalette);
-  const setAddOpen = useUi((s) => s.setAddOpen);
+  const openAdd = useUi((s) => s.openAdd);
   const [week, sections, dashboard, schedules] = NAV;
   return (
     <nav
@@ -89,7 +99,7 @@ export function SpineBar() {
       <BarItem {...dashboard} />
       <button
         type="button"
-        onClick={() => setAddOpen(true)}
+        onClick={() => openAdd()}
         aria-label="Activiteit toevoegen"
         className="grid size-12 shrink-0 place-items-center rounded-full bg-cloth-ink text-cloth shadow-[0_2px_8px_oklch(0.1_0.03_163/0.45)] transition-transform active:scale-95"
       >

@@ -5,12 +5,11 @@ import { useState, useTransition } from "react";
 import { Button, inputClass } from "@/components/ui/button";
 import { createSchedule, deleteSchedule, setScheduleActive, updateSchedule } from "@/server/actions/schedules";
 import { WEEKDAY_CODES, type Recurrence, type WeekdayCode } from "@/lib/recurrence";
-import { formatMinutes } from "@/lib/time";
 import { cx } from "@/lib/cx";
+import { DurationChips, SectionChips } from "@/components/planner/task-fields";
 
 const DAY_LABELS: Record<WeekdayCode, string> = { MO: "M", TU: "D", WE: "W", TH: "D", FR: "V", SA: "Z", SU: "Z" };
 const DAY_NAMES: Record<WeekdayCode, string> = { MO: "maandag", TU: "dinsdag", WE: "woensdag", TH: "donderdag", FR: "vrijdag", SA: "zaterdag", SU: "zondag" };
-const DURATIONS = [15, 30, 45, 60, 75, 90, 120, 180];
 
 export type ScheduleDraft = {
   id?: string;
@@ -27,7 +26,7 @@ export function ScheduleForm({
   sections,
 }: {
   draft: ScheduleDraft;
-  sections: { id: string; name: string }[];
+  sections: { id: string; name: string; color: string }[];
 }) {
   const router = useRouter();
   const [title, setTitle] = useState(draft.title);
@@ -87,13 +86,7 @@ export function ScheduleForm({
       />
 
       <Row label="Sectie">
-        <select value={sectionId} onChange={(e) => setSectionId(e.target.value)} className={inputClass} aria-label="Sectie">
-          {sections.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
+        <SectionChips sections={sections} value={sectionId} onChange={setSectionId} />
       </Row>
 
       <Row label="Herhaalt op">
@@ -107,7 +100,7 @@ export function ScheduleForm({
               title={DAY_NAMES[d]}
               onClick={() => toggleDay(d)}
               className={cx(
-                "grid size-9 place-items-center rounded-sm text-sm font-medium transition-colors",
+                "grid size-10 place-items-center rounded-sm text-sm font-medium transition-colors lg:size-9",
                 days.includes(d) ? "bg-cloth text-cloth-ink" : "bg-paper-3 text-ink-2 hover:text-ink",
               )}
             >
@@ -133,18 +126,13 @@ export function ScheduleForm({
         </label>
       </Row>
 
+      <Row label="Duur">
+        <DurationChips value={duration} onChange={(m) => m && setDuration(m)} />
+      </Row>
+
       <div className="grid grid-cols-2 gap-3">
         <Row label="Om">
           <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} required className={cx(inputClass, "figures")} aria-label="Begintijd" />
-        </Row>
-        <Row label="Duur">
-          <select value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={cx(inputClass, "figures")} aria-label="Duur">
-            {[...new Set([...DURATIONS, duration])].sort((a, b) => a - b).map((m) => (
-              <option key={m} value={m}>
-                {formatMinutes(m)}
-              </option>
-            ))}
-          </select>
         </Row>
         <Row label="Vanaf">
           <input type="date" value={start} onChange={(e) => setStart(e.target.value)} required className={cx(inputClass, "figures")} aria-label="Eerste dag" />

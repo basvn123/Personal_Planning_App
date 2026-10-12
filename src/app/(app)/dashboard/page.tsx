@@ -194,7 +194,7 @@ function Empty() {
 
 function NavLink({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
   return (
-    <Link href={href} aria-label={label} className="grid size-8 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink">
+    <Link href={href} aria-label={label} className="grid size-10 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink lg:size-8">
       {children}
     </Link>
   );
