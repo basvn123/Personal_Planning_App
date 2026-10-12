@@ -328,7 +328,7 @@
     bottom: 0;
   }
   .toast-bottom {
-    bottom: calc(4.75rem + max(0px, env(safe-area-inset-bottom) - 1.5rem));
+    bottom: calc(5.25rem + max(0px, env(safe-area-inset-bottom) - 0.75rem));
   }
 
   .figures {
@@ -441,7 +441,7 @@
     bottom: calc(100% - 100lvh);
   }
   .toast-bottom {
-    bottom: calc(4.75rem + max(0px, env(safe-area-inset-bottom) - 1.5rem) + 100% - 100lvh);
+    bottom: calc(5.25rem + max(0px, env(safe-area-inset-bottom) - 0.75rem) + 100% - 100lvh);
   }
 }
 /* Older iOS without display-mode support: the root layout marks the home-screen app. */
@@ -455,6 +455,6 @@
     bottom: calc(100% - 100lvh);
   }
   :root[data-standalone] .toast-bottom {
-    bottom: calc(4.75rem + max(0px, env(safe-area-inset-bottom) - 1.5rem) + 100% - 100lvh);
+    bottom: calc(5.25rem + max(0px, env(safe-area-inset-bottom) - 0.75rem) + 100% - 100lvh);
   }
 }
