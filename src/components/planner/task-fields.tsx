@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "lucide-react";
+import { CalendarRange, X } from "lucide-react";
 import { dyeVars } from "@/lib/dyes";
 import { formatDay, formatMinutes, shiftDay } from "@/lib/time";
 import { cx } from "@/lib/cx";
@@ -99,20 +99,27 @@ export function DayChips({
   onChange,
   today,
   disabled,
+  multi,
+  onMulti,
 }: {
   value: string | null;
   onChange: (day: string | null) => void;
   today: string;
   disabled?: boolean;
+  /** When set, a "Meerdere dagen" chip is offered; `multi` says it is chosen. */
+  multi?: boolean;
+  onMulti?: () => void;
 }) {
   const tomorrow = shiftDay(today, 1);
-  const other = value !== null && value !== today && value !== tomorrow;
+  // While several days are chosen, none of the single-day chips is.
+  const current = multi ? "" : value;
+  const other = current !== null && current !== "" && current !== today && current !== tomorrow;
   return (
     <div className="flex flex-wrap gap-1.5">
-      <Chip on={value === today} disabled={disabled} onClick={() => onChange(today)}>
+      <Chip on={current === today} disabled={disabled} onClick={() => onChange(today)}>
         Vandaag
       </Chip>
-      <Chip on={value === tomorrow} disabled={disabled} onClick={() => onChange(tomorrow)}>
+      <Chip on={current === tomorrow} disabled={disabled} onClick={() => onChange(tomorrow)}>
         Morgen
       </Chip>
       <label
@@ -123,19 +130,25 @@ export function DayChips({
           disabled && "pointer-events-none opacity-40",
         )}
       >
-        <span className="first-letter:uppercase">{other ? formatDay(value!, "EEEEEE d MMM") : "Andere dag"}</span>
+        <span className="first-letter:uppercase">{other ? formatDay(current!, "EEEEEE d MMM") : "Andere dag"}</span>
         <input
           type="date"
-          value={value ?? ""}
+          value={current ?? ""}
           disabled={disabled}
           aria-label="Andere dag"
           onChange={(e) => e.target.value && onChange(e.target.value)}
           className="absolute inset-0 cursor-pointer opacity-0"
         />
       </label>
-      <Chip on={value === null} disabled={disabled} onClick={() => onChange(null)}>
+      <Chip on={current === null} disabled={disabled} onClick={() => onChange(null)}>
         To-do
       </Chip>
+      {onMulti && (
+        <Chip on={Boolean(multi)} disabled={disabled} onClick={onMulti}>
+          <CalendarRange className="mr-1.5 size-4 lg:size-3.5" strokeWidth={1.75} />
+          Meerdere dagen
+        </Chip>
+      )}
     </div>
   );
 }

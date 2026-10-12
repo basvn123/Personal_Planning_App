@@ -18,6 +18,7 @@ import { EmptyAction, EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { pageBody } from "@/components/ui/page-body";
 import { XpLine } from "@/components/progress/xp-meter";
+import { WeekJump } from "@/components/ui/week-jump";
 import type { XpSummary } from "@/server/queries/xp";
 import type { LogEntry } from "@/server/queries/time";
 import type { PlannerTask } from "@/server/queries/tasks";
@@ -110,10 +111,23 @@ export function DayPlan({
           }
           actions={
             <>
-              <IconButton label="Vorige dag" onClick={() => go(-1)} className="rounded-full max-lg:size-10">
+              <WeekJump
+                target="week"
+                current={day}
+                days={days}
+                today={today}
+                weekStart={new Date(`${days[0]}T12:00:00Z`).getUTCDay() === 0 ? 0 : 1}
+                onPick={(d) => {
+                  if (!days.includes(d)) return false;
+                  selectDay(d);
+                  return true;
+                }}
+              />
+              {/* Phone: the strip switches days and the calendar reaches any week, so the arrows are desktop only. */}
+              <IconButton label="Vorige dag" onClick={() => go(-1)} className="rounded-full max-lg:hidden">
                 <ChevronLeft className="size-5 lg:size-4" strokeWidth={1.75} />
               </IconButton>
-              <IconButton label="Volgende dag" onClick={() => go(1)} className="rounded-full max-lg:size-10">
+              <IconButton label="Volgende dag" onClick={() => go(1)} className="rounded-full max-lg:hidden">
                 <ChevronRight className="size-5 lg:size-4" strokeWidth={1.75} />
               </IconButton>
             </>

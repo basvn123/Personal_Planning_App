@@ -62,3 +62,19 @@ export function formatMinutes(minutes: number): string {
   const m = minutes % 60;
   return m ? `${h}h${String(m).padStart(2, "0")}` : `${h}h`;
 }
+
+/** The first day of `day`'s month, moved `months` months (YYYY-MM-01). */
+export function shiftMonth(day: string, months: number): string {
+  const [y, m] = day.split("-").map(Number);
+  const total = y * 12 + (m - 1) + months;
+  const year = Math.floor(total / 12);
+  const month = (total % 12) + 1;
+  return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-01`;
+}
+
+/** Six full weeks covering `day`'s month, as a calendar shows them. */
+export function monthGrid(day: string, weekStart: 0 | 1 = 1): string[] {
+  const first = shiftMonth(day, 0);
+  const start = weekDays(first, weekStart)[0];
+  return Array.from({ length: 42 }, (_, i) => shiftDay(start, i));
+}

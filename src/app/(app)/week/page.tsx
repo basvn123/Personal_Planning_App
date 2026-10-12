@@ -6,6 +6,7 @@ import { Card, CardIcon } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatStrip } from "@/components/ui/stat-strip";
 import { WeekNav } from "@/components/ui/week-nav";
+import { WeekJump } from "@/components/ui/week-jump";
 import { pageBody } from "@/components/ui/page-body";
 import { PlannerProvider } from "@/components/planner/planner-context";
 import { WeekList } from "@/components/planner/week-list";
@@ -66,6 +67,7 @@ export default async function WeekPage({
               prev={`/week?d=${shiftDay(days[0], -7)}`}
               next={`/week?d=${shiftDay(days[0], 7)}`}
               now={isThisWeek ? undefined : "/week"}
+              jump={<WeekJump target="week" current={selected} days={days} today={today} weekStart={settings.weekStart === 0 ? 0 : 1} />}
             />
           }
           className="px-0"

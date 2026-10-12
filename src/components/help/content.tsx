@@ -11,6 +11,8 @@ export const HELP = {
     points: [
       "Elke kaart is een dag. Tik op de datum om die dag te openen; op de telefoon opent de planner meteen op vandaag.",
       "Toevoegen: de plusknop (onderaan, links op de computer, of de toets N) of Toevoegen onder een dag. Je kiest meteen de dag, duur, tijd en sectie.",
+      "Meerdere dagen: kies bij Wanneer voor Meerdere dagen en tik de dagen aan in de kalender, of neem Werkdagen, Hele week of 7 dagen. Elke dag krijgt dezelfde taak.",
+      "Verder vooruit of terug: tik op het kalendericoon naast de pijltjes, blader naar een maand en tik op een dag.",
       <>
         Snel typen kan ook: <K>#italian</K> <K>morgen</K> <K>vr</K> <K>14:00</K> <K>45m</K> in de naam vult de rest in.
       </>,
@@ -30,7 +32,7 @@ export const HELP = {
     title: "Je dag",
     lead: "Alles voor één dag als tijdlijn, plus het logboek van je tijd.",
     points: [
-      "Op de telefoon staat de week bovenaan: elk bolletje is een taak, gevuld als ze klaar is. Tik op een dag om te wisselen.",
+      "Op de telefoon staat de week bovenaan: elk bolletje is een taak, gevuld als ze klaar is. Tik op een dag om te wisselen, of op het kalendericoon voor een dag in een andere week of maand.",
       "Op tijd: een tijdlijn. Hoe langer een taak duurt, hoe langer haar balkje. Vrije tijd ertussen staat erbij, en de gele lijn is nu.",
       "Een rode begintijd betekent dat de taak overlapt met de vorige.",
       "Zonder tijd: taken zonder uur, met hun duur ervoor.",
