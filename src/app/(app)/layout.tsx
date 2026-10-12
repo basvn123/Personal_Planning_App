@@ -3,11 +3,18 @@ import { ForeEdge, TabStrip } from "@/components/shell/fore-edge";
 import { Spine, SpineBar } from "@/components/shell/spine";
 import { getDocIndex, getSections, getSettings } from "@/server/queries/core";
 import { localDate } from "@/lib/time";
+import { getRunningTimer } from "@/server/queries/time";
+import { TimerProvider } from "@/components/timer/timer-context";
 
 export const dynamic = "force-dynamic";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const [all, docs, settings] = await Promise.all([getSections(), getDocIndex(), getSettings()]);
+  const [all, docs, settings, running] = await Promise.all([
+    getSections(),
+    getDocIndex(),
+    getSettings(),
+    getRunningTimer(),
+  ]);
   const byId = new Map(all.map((s) => [s.id, s]));
   // Tabs show top-level sections; a nested section lights up its root tab.
   const activeRoot: Record<string, string> = {};
@@ -25,6 +32,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const sections = all.map(pick);
 
   return (
+    <TimerProvider initial={running}>
     <div className="flex h-dvh flex-col bg-cloth lg:flex-row">
       <Spine />
       <TabStrip sections={tabs} activeRoot={activeRoot} />
@@ -35,5 +43,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <SpineBar />
       <CommandPalette sections={sections} docs={docs} today={localDate(new Date(), settings.timezone)} />
     </div>
+    </TimerProvider>
   );
 }

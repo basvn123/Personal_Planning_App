@@ -7,10 +7,20 @@ import { formatDay, formatDuration, shiftDay } from "@/lib/time";
 import { InlineAdd } from "./inline-add";
 import { sortDay, usePlanner } from "./planner-context";
 import { TaskRow } from "./task-row";
+import { TimeLog } from "@/components/timer/time-log";
+import type { LogEntry } from "@/server/queries/time";
 
-export function DayPlan({ days, logged }: { days: string[]; logged: Record<string, number> }) {
+export function DayPlan({
+  days,
+  logged,
+  entries,
+}: {
+  days: string[];
+  logged: Record<string, number>;
+  entries: LogEntry[];
+}) {
   const router = useRouter();
-  const { tasks, today, selectedDay, selectDay, error } = usePlanner();
+  const { tasks, sections, today, selectedDay, selectDay, error } = usePlanner();
   const day = selectedDay;
   const dayTasks = sortDay(tasks.filter((t) => t.plannedDate === day));
   const timed = dayTasks.filter((t) => t.plannedStart);
@@ -96,6 +106,8 @@ export function DayPlan({ days, logged }: { days: string[]; logged: Record<strin
           <InlineAdd day={day} placeholder="Add a task, e.g. Read ch. 3 #italian 14:00 45m" />
         </div>
       </section>
+
+      <TimeLog day={day} entries={entries.filter((e) => e.day === day)} tasks={dayTasks} sections={sections} />
     </div>
   );
 }

@@ -1,0 +1,216 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button, inputClass } from "@/components/ui/button";
+import { addManualEntry, deleteEntry, updateEntry } from "@/server/actions/time";
+import type { LogEntry } from "@/server/queries/time";
+import type { PlannerTask } from "@/server/queries/tasks";
+import type { PlannerSection } from "@/components/planner/planner-context";
+import { formatClock, formatDuration } from "@/lib/time";
+import { dyeVars } from "@/lib/dyes";
+import { cx } from "@/lib/cx";
+import { useElapsed } from "./timer-context";
+
+export function TimeLog({
+  day,
+  entries,
+  tasks,
+  sections,
+}: {
+  day: string;
+  entries: LogEntry[];
+  tasks: PlannerTask[];
+  sections: PlannerSection[];
+}) {
+  const [adding, setAdding] = useState(false);
+  return (
+    <section aria-label="Time log" className="mt-7">
+      <div className="flex h-8 items-center justify-between border-b border-rule-strong">
+        <h3 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Log</h3>
+        <button
+          type="button"
+          onClick={() => setAdding((a) => !a)}
+          aria-expanded={adding}
+          className="inline-flex h-7 items-center gap-1 rounded-xs px-1.5 text-xs text-ink-2 hover:bg-paper-3 hover:text-ink"
+        >
+          <Plus className="size-3.5" strokeWidth={1.75} />
+          Log time
+        </button>
+      </div>
+      {adding && <AddEntry day={day} tasks={tasks} sections={sections} onDone={() => setAdding(false)} />}
+      <ul>
+        {entries.map((e) => (
+          <EntryRow key={e.id} entry={e} />
+        ))}
+      </ul>
+      {entries.length === 0 && !adding && <p className="py-3 text-sm text-ink-3">Nothing logged.</p>}
+    </section>
+  );
+}
+
+function EntryRow({ entry }: { entry: LogEntry }) {
+  const running = !entry.endedAt;
+  const live = useElapsed(running ? entry.startedAt : null);
+  const seconds = running ? live : entry.seconds;
+  const [start, setStart] = useState(entry.startClock);
+  const [end, setEnd] = useState(entry.endClock ?? "");
+  const [error, setError] = useState<string | null>(null);
+  const [pending, run] = useTransition();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <li style={dyeVars(entry.section.color)} className="border-b border-rule">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger className="flex h-10 w-full items-center gap-3 text-left text-sm transition-colors hover:bg-paper-3/60">
+          <span className="figures w-[6.5rem] shrink-0 text-ink-2">
+            {entry.startClock}
+            <span className="text-ink-3">{" to "}</span>
+            {entry.endClock ?? "now"}
+          </span>
+          <span className="size-2 shrink-0 rounded-[2px] bg-[var(--dye)]" />
+          <span className="min-w-0 flex-1 truncate">{entry.task?.title ?? entry.section.name}</span>
+          <span className={cx("figures shrink-0", running ? "text-ribbon-ink" : "text-ink-2")}>
+            {running ? formatClock(seconds) : formatDuration(seconds)}
+          </span>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-64">
+          <form
+            className="flex flex-col gap-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setError(null);
+              run(async () => {
+                try {
+                  await updateEntry(entry.id, { day: entry.day, start, end: end || null });
+                  setOpen(false);
+                } catch {
+                  setError("Check the times.");
+                }
+              });
+            }}
+          >
+            <div className="grid grid-cols-2 gap-2">
+              <TimeField label="From" value={start} onChange={setStart} />
+              <TimeField label="To" value={end} onChange={setEnd} required={!running} />
+            </div>
+            {error && <p className="text-sm text-danger">{error}</p>}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                className="text-danger hover:text-danger"
+                disabled={pending}
+                onClick={() => run(async () => deleteEntry(entry.id))}
+              >
+                <Trash2 className="size-3.5" strokeWidth={1.75} />
+                Delete
+              </Button>
+              <Button type="submit" variant="primary" className="ml-auto" disabled={pending}>
+                Save
+              </Button>
+            </div>
+          </form>
+        </PopoverContent>
+      </Popover>
+    </li>
+  );
+}
+
+function AddEntry({
+  day,
+  tasks,
+  sections,
+  onDone,
+}: {
+  day: string;
+  tasks: PlannerTask[];
+  sections: PlannerSection[];
+  onDone: () => void;
+}) {
+  const [target, setTarget] = useState(() => (tasks[0] ? `t:${tasks[0].id}` : sections[0] ? `s:${sections[0].id}` : ""));
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [pending, run] = useTransition();
+
+  return (
+    <form
+      className="grid grid-cols-2 gap-2 border-b border-rule py-3 sm:grid-cols-[1fr_6rem_6rem_auto] sm:items-end"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!target || !start || !end) return;
+        setError(null);
+        const [kind, id] = target.split(":");
+        run(async () => {
+          try {
+            await addManualEntry({
+              day,
+              start,
+              end,
+              ...(kind === "t" ? { taskId: id } : { sectionId: id }),
+            });
+            setStart("");
+            setEnd("");
+            onDone();
+          } catch {
+            setError("Could not log that entry.");
+          }
+        });
+      }}
+    >
+      <label className="col-span-2 flex flex-col gap-1 sm:col-span-1">
+        <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">For</span>
+        <select value={target} onChange={(e) => setTarget(e.target.value)} className={inputClass}>
+          {tasks.length > 0 && (
+            <optgroup label="Tasks this day">
+              {tasks.map((t) => (
+                <option key={t.id} value={`t:${t.id}`}>
+                  {t.title}
+                </option>
+              ))}
+            </optgroup>
+          )}
+          <optgroup label="Section only">
+            {sections.map((s) => (
+              <option key={s.id} value={`s:${s.id}`}>
+                {s.name}
+              </option>
+            ))}
+          </optgroup>
+        </select>
+      </label>
+      <TimeField label="From" value={start} onChange={setStart} required />
+      <TimeField label="To" value={end} onChange={setEnd} required />
+      <Button type="submit" variant="primary" disabled={pending} className="col-span-2 h-9 sm:col-span-1">
+        Log
+      </Button>
+      {error && <p className="col-span-full text-sm text-danger">{error}</p>}
+    </form>
+  );
+}
+
+function TimeField({
+  label,
+  value,
+  onChange,
+  required,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+}) {
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">{label}</span>
+      <input
+        type="time"
+        value={value}
+        required={required}
+        onChange={(e) => onChange(e.target.value)}
+        className={cx(inputClass, "figures")}
+      />
+    </label>
+  );
+}

@@ -8,6 +8,7 @@ import { WeekList } from "@/components/planner/week-list";
 import { DayPlan } from "@/components/planner/day-plan";
 import { getDailyTotals, getSections, getSettings } from "@/server/queries/core";
 import { getTasksInRange } from "@/server/queries/tasks";
+import { getEntriesInRange } from "@/server/queries/time";
 import { formatDay, formatDuration, isoWeekNumber, localDate, shiftDay, weekDays } from "@/lib/time";
 
 export const metadata: Metadata = { title: "Week" };
@@ -23,7 +24,11 @@ export default async function WeekPage({
   const today = localDate(new Date(), settings.timezone);
   const anchor = d && DAY_RE.test(d) ? d : day && DAY_RE.test(day) ? day : today;
   const days = weekDays(anchor, settings.weekStart === 0 ? 0 : 1);
-  const [logged, tasks] = await Promise.all([getDailyTotals(days[0], days[6]), getTasksInRange(days[0], days[6])]);
+  const [logged, tasks, entries] = await Promise.all([
+    getDailyTotals(days[0], days[6]),
+    getTasksInRange(days[0], days[6]),
+    getEntriesInRange(days[0], days[6]),
+  ]);
   const weekLogged = days.reduce((sum, x) => sum + (logged[x] ?? 0), 0);
   const weekPlanned = tasks.reduce((sum, t) => sum + (t.plannedMinutes ?? 0) * 60, 0);
   const isThisWeek = days.includes(today);
@@ -83,7 +88,7 @@ export default async function WeekPage({
     >
       <Spread
         left={left}
-        right={<DayPlan days={days} logged={logged} />}
+        right={<DayPlan days={days} logged={logged} entries={entries} />}
         leftLabel={`Week ${isoWeekNumber(days[0])}`}
         rightLabel="Day"
       />

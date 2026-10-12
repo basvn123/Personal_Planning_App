@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CalendarRange, Command } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
+import { TimerChip } from "@/components/timer/timer-chip";
 import { useUi } from "@/lib/ui-store";
 import { cx } from "@/lib/cx";
 
@@ -52,7 +53,8 @@ export function Spine() {
       >
         <Command className="size-[18px]" strokeWidth={1.75} />
       </button>
-      <div className="mt-auto flex flex-col items-center gap-1">
+      <div className="mt-auto flex flex-col items-center gap-3">
+        <TimerChip orientation="vertical" />
         <ThemeToggle />
       </div>
     </nav>
@@ -79,6 +81,7 @@ export function SpineBar() {
       >
         <Command className="size-[18px]" strokeWidth={1.75} />
       </button>
+      <TimerChip orientation="horizontal" />
       <ThemeToggle />
     </nav>
   );

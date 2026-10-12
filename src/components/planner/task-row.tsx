@@ -4,12 +4,14 @@ import { useState } from "react";
 import { FileText } from "lucide-react";
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import type { PlannerTask } from "@/server/queries/tasks";
-import { formatDuration, formatMinutes } from "@/lib/time";
+import { formatClock, formatDuration, formatMinutes } from "@/lib/time";
 import { dyeVars } from "@/lib/dyes";
 import { cx } from "@/lib/cx";
 import { usePlanner } from "./planner-context";
 import { TaskCheck } from "./task-check";
 import { TaskEditor } from "./task-editor";
+import { PlayButton } from "@/components/timer/play-button";
+import { useElapsed, useTimer } from "@/components/timer/timer-context";
 
 /** One task line. Compact in the week list, roomier in the day plan. */
 export function TaskRow({
@@ -25,6 +27,9 @@ export function TaskRow({
   const [open, setOpen] = useState(false);
   const done = task.status === "done";
   const temp = task.id.startsWith("temp-");
+  const { running } = useTimer();
+  const isRunning = running?.task?.id === task.id;
+  const live = useElapsed(isRunning ? running!.startedAt : null);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -35,6 +40,7 @@ export function TaskRow({
             "group relative flex items-start gap-2.5",
             variant === "week" ? "py-[3px]" : "border-b border-rule py-2.5",
             temp && "opacity-60",
+            isRunning && variant === "day" && "bg-ribbon-wash/70 -mx-2 px-2",
           )}
         >
           {lead}
@@ -69,10 +75,25 @@ export function TaskRow({
                     {task.docs.length}
                   </span>
                 )}
-                {task.loggedSeconds > 0 && <span className="figures">{formatDuration(task.loggedSeconds)} logged</span>}
+                {isRunning ? (
+                  <span className="figures text-ribbon-ink">{formatClock(live)} running</span>
+                ) : (
+                  task.loggedSeconds > 0 && <span className="figures">{formatDuration(task.loggedSeconds)} logged</span>
+                )}
               </span>
             )}
           </button>
+          {!temp && !done && (
+            <PlayButton
+              task={{ id: task.id, title: task.title }}
+              section={task.section}
+              className={cx(
+                variant === "week" ? "-my-1 size-6" : "-mt-0.5",
+                !isRunning && "lg:opacity-0 lg:group-hover:opacity-100 lg:focus-visible:opacity-100",
+                variant === "week" && !isRunning && "max-lg:hidden",
+              )}
+            />
+          )}
           {variant === "week" && (task.plannedStart || task.plannedMinutes) && (
             <span className="figures shrink-0 pt-px text-xs leading-5 text-ink-3">
               {task.plannedStart ?? formatMinutes(task.plannedMinutes!)}
