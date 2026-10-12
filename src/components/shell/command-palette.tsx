@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import { createTask } from "@/server/actions/tasks";
 import { parseQuickAdd } from "@/lib/quick-add";
 import { formatDay, formatMinutes } from "@/lib/time";
-import { CalendarRange, CornerDownLeft, FileText, Plus } from "lucide-react";
+import { CalendarRange, ChartColumn, CornerDownLeft, FileText, FileUp, Plus, Repeat, Settings } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { dyeVars } from "@/lib/dyes";
 import type { TabSection } from "./fore-edge";
@@ -109,6 +109,17 @@ export function CommandPalette({
                   <CalendarRange className="size-4 text-ink-3" strokeWidth={1.75} />
                   This week
                 </Item>
+                {[
+                  { href: "/dashboard", label: "Dashboard", icon: ChartColumn },
+                  { href: "/schedules", label: "Schedules", icon: Repeat },
+                  { href: "/import", label: "Import a schedule file", icon: FileUp },
+                  { href: "/settings", label: "Settings and calendar sync", icon: Settings },
+                ].map(({ href, label, icon: Icon }) => (
+                  <Item key={href} onSelect={() => go(href)}>
+                    <Icon className="size-4 text-ink-3" strokeWidth={1.75} />
+                    {label}
+                  </Item>
+                ))}
                 {sections.map((s) => (
                   <Item key={s.id} value={`section ${s.name}`} onSelect={() => go(`/s/${s.slug}`)}>
                     <span

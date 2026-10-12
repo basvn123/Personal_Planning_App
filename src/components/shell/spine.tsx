@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarRange, ChartColumn, Command, Repeat } from "lucide-react";
+import { CalendarRange, ChartColumn, Command, FileUp, Repeat, Settings } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { TimerChip } from "@/components/timer/timer-chip";
 import { useUi } from "@/lib/ui-store";
@@ -12,7 +12,10 @@ const NAV = [
   { href: "/week", label: "Week", icon: CalendarRange },
   { href: "/dashboard", label: "Dashboard", icon: ChartColumn },
   { href: "/schedules", label: "Schedules", icon: Repeat },
+  { href: "/import", label: "Import", icon: FileUp },
 ] as const;
+
+const SETTINGS = { href: "/settings", label: "Settings", icon: Settings };
 
 function NavItem({ href, label, icon: Icon }: { href: string; label: string; icon: typeof CalendarRange }) {
   const pathname = usePathname();
@@ -60,6 +63,7 @@ export function Spine() {
       <div className="mt-auto flex flex-col items-center gap-3">
         <TimerChip orientation="vertical" />
         <ThemeToggle />
+        <NavItem {...SETTINGS} />
       </div>
     </nav>
   );
@@ -74,7 +78,7 @@ export function SpineBar() {
       className="flex h-14 shrink-0 items-center justify-around border-t border-cloth-3/50 bg-cloth px-2 pb-[env(safe-area-inset-bottom)] lg:hidden"
       style={{ boxSizing: "content-box" }}
     >
-      {NAV.map((item) => (
+      {NAV.filter((item) => item.href === "/week" || item.href === "/dashboard").map((item) => (
         <NavItem key={item.href} {...item} />
       ))}
       <button
@@ -86,7 +90,7 @@ export function SpineBar() {
         <Command className="size-[18px]" strokeWidth={1.75} />
       </button>
       <TimerChip orientation="horizontal" />
-      <ThemeToggle />
+      <NavItem {...SETTINGS} />
     </nav>
   );
 }
