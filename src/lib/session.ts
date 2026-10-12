@@ -11,20 +11,23 @@ function key() {
   return new TextEncoder().encode(secret);
 }
 
-export async function createSessionToken() {
-  return new SignJWT({ sub: "owner" })
+export async function createSessionToken(userId: string) {
+  return new SignJWT({ sub: userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${SESSION_MAX_AGE}s`)
     .sign(key());
 }
 
-export async function verifySessionToken(token: string | undefined) {
-  if (!token) return false;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** The signed-in user's id, or null when the cookie is missing, forged or from before accounts existed. */
+export async function readSession(token: string | undefined): Promise<string | null> {
+  if (!token) return null;
   try {
-    await jwtVerify(token, key(), { algorithms: ["HS256"] });
-    return true;
+    const { payload } = await jwtVerify(token, key(), { algorithms: ["HS256"] });
+    return typeof payload.sub === "string" && UUID_RE.test(payload.sub) ? payload.sub : null;
   } catch {
-    return false;
+    return null;
   }
 }

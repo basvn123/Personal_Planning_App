@@ -32,7 +32,7 @@ export default async function WeekPage({
   const days = weekDays(anchor, settings.weekStart === 0 ? 0 : 1);
   // Strict schedules: make sure every viewed week (and the next eight) is generated.
   const horizon = shiftDay(today, HORIZON_DAYS);
-  await materializeSchedules(today, days[6] > horizon ? days[6] : horizon);
+  await materializeSchedules(settings.userId, today, days[6] > horizon ? days[6] : horizon);
   const [logged, weekTasks, entries, backlog] = await Promise.all([
     getDailyTotals(days[0], days[6]),
     getTasksInRange(days[0], days[6]),

@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db/client";
@@ -9,6 +9,8 @@ import { buildRule, WEEKDAY_CODES } from "@/lib/recurrence";
 import { localDate, shiftDay } from "@/lib/time";
 import { clearFutureOccurrences, HORIZON_DAYS, materializeSchedules } from "@/server/materialize";
 import { getSettings } from "@/server/queries/core";
+import { requireUserId } from "@/server/auth";
+import { ownProjects, ownSchedules, ownSections } from "@/server/own";
 
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 
@@ -32,19 +34,30 @@ async function today() {
   return localDate(new Date(), timezone);
 }
 
-async function regenerate(id: string) {
+async function regenerate(userId: string, id: string) {
   const t = await today();
   await clearFutureOccurrences(id, t);
-  await db.update(schedules).set({ materializedUntil: shiftDay(t, -1) }).where(eq(schedules.id, id));
-  await materializeSchedules(t, shiftDay(t, HORIZON_DAYS));
+  await db
+    .update(schedules)
+    .set({ materializedUntil: shiftDay(t, -1) })
+    .where(and(eq(schedules.id, id), eq(schedules.userId, userId)));
+  await materializeSchedules(userId, t, shiftDay(t, HORIZON_DAYS));
   revalidatePath("/", "layout");
 }
 
+async function checkRefs(userId: string, v: z.infer<typeof scheduleSchema>) {
+  await ownSections(userId, v.sectionId);
+  if (v.projectId) await ownProjects(userId, v.projectId);
+}
+
 export async function createSchedule(input: ScheduleInput) {
+  const userId = await requireUserId();
   const v = scheduleSchema.parse(input);
+  await checkRefs(userId, v);
   const [row] = await db
     .insert(schedules)
     .values({
+      userId,
       title: v.title,
       sectionId: v.sectionId,
       projectId: v.projectId ?? null,
@@ -54,12 +67,15 @@ export async function createSchedule(input: ScheduleInput) {
       units: v.units ?? null,
     })
     .returning({ id: schedules.id });
-  await regenerate(row.id);
+  await regenerate(userId, row.id);
 }
 
 export async function updateSchedule(id: string, input: ScheduleInput) {
+  const userId = await requireUserId();
   z.uuid().parse(id);
+  await ownSchedules(userId, id);
   const v = scheduleSchema.parse(input);
+  await checkRefs(userId, v);
   await db
     .update(schedules)
     .set({
@@ -71,14 +87,16 @@ export async function updateSchedule(id: string, input: ScheduleInput) {
       durationMinutes: v.durationMinutes,
       units: v.units ?? null,
     })
-    .where(eq(schedules.id, id));
-  await regenerate(id);
+    .where(and(eq(schedules.id, id), eq(schedules.userId, userId)));
+  await regenerate(userId, id);
 }
 
 export async function setScheduleActive(id: string, active: boolean) {
+  const userId = await requireUserId();
   z.uuid().parse(id);
+  await ownSchedules(userId, id);
   await db.update(schedules).set({ active }).where(eq(schedules.id, id));
-  if (active) await regenerate(id);
+  if (active) await regenerate(userId, id);
   else {
     await clearFutureOccurrences(id, await today());
     revalidatePath("/", "layout");
@@ -86,7 +104,9 @@ export async function setScheduleActive(id: string, active: boolean) {
 }
 
 export async function deleteSchedule(id: string) {
+  const userId = await requireUserId();
   z.uuid().parse(id);
+  await ownSchedules(userId, id);
   await clearFutureOccurrences(id, await today());
   await db.delete(schedules).where(eq(schedules.id, id));
   revalidatePath("/", "layout");

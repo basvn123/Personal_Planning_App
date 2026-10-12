@@ -13,11 +13,17 @@ export const HORIZON_DAYS = 56;
  * watermark (materialized_until), so dates already generated are never
  * generated again: a deleted occurrence stays deleted.
  */
-export async function materializeSchedules(today: string, until: string) {
+export async function materializeSchedules(userId: string, today: string, until: string) {
   const due = await db
     .select()
     .from(schedules)
-    .where(and(eq(schedules.active, true), or(isNull(schedules.materializedUntil), lt(schedules.materializedUntil, until))));
+    .where(
+      and(
+        eq(schedules.userId, userId),
+        eq(schedules.active, true),
+        or(isNull(schedules.materializedUntil), lt(schedules.materializedUntil, until)),
+      ),
+    );
 
   for (const s of due) {
     const from = s.materializedUntil ? shiftDay(s.materializedUntil, 1) : today;
@@ -28,6 +34,7 @@ export async function materializeSchedules(today: string, until: string) {
         .insert(tasks)
         .values(
           dates.map((date, i) => ({
+            userId: s.userId,
             title: s.title,
             sectionId: s.sectionId,
             projectId: s.projectId,

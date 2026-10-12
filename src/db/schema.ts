@@ -25,11 +25,32 @@ const updatedAt = () =>
     .defaultNow()
     .$onUpdate(() => new Date());
 
+/* People with their own private planner. The owner invites the others. */
+export const users = pgTable(
+  "users",
+  {
+    id: id(),
+    name: text("name").notNull(),
+    email: text("email"),
+    passwordHash: text("password_hash"),
+    role: text("role", { enum: ["owner", "member"] }).notNull().default("member"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [uniqueIndex("users_email_uq").on(sql`lower(${t.email})`)],
+);
+
+const owner = () =>
+  uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" });
+
 /* Sections: unlimited, nestable workspaces. Everything hangs off these. */
 export const sections = pgTable(
   "sections",
   {
     id: id(),
+    userId: owner(),
     parentId: uuid("parent_id").references((): AnyPgColumn => sections.id, {
       onDelete: "set null",
     }),
@@ -43,7 +64,7 @@ export const sections = pgTable(
     updatedAt: updatedAt(),
   },
   (t) => [
-    uniqueIndex("sections_slug_uq").on(t.slug),
+    uniqueIndex("sections_user_slug_uq").on(t.userId, t.slug),
     index("sections_parent_idx").on(t.parentId, t.rank),
   ],
 );
@@ -52,11 +73,12 @@ export const tags = pgTable(
   "tags",
   {
     id: id(),
+    userId: owner(),
     name: text("name").notNull(),
     color: text("color"),
     createdAt: createdAt(),
   },
-  (t) => [uniqueIndex("tags_name_uq").on(sql`lower(${t.name})`)],
+  (t) => [uniqueIndex("tags_user_name_uq").on(t.userId, sql`lower(${t.name})`)],
 );
 
 /* Projects: progress trackers with a target in user-defined units. */
@@ -64,6 +86,7 @@ export const projects = pgTable(
   "projects",
   {
     id: id(),
+    userId: owner(),
     sectionId: uuid("section_id")
       .notNull()
       .references(() => sections.id, { onDelete: "cascade" }),
@@ -87,6 +110,7 @@ export const schedules = pgTable(
   "schedules",
   {
     id: id(),
+    userId: owner(),
     sectionId: uuid("section_id")
       .notNull()
       .references(() => sections.id, { onDelete: "cascade" }),
@@ -108,6 +132,7 @@ export const schedules = pgTable(
 
 export const imports = pgTable("imports", {
   id: id(),
+  userId: owner(),
   filename: text("filename").notNull(),
   kind: text("kind").notNull(),
   taskCount: integer("task_count").notNull().default(0),
@@ -122,6 +147,7 @@ export const tasks = pgTable(
   "tasks",
   {
     id: id(),
+    userId: owner(),
     sectionId: uuid("section_id")
       .notNull()
       .references(() => sections.id, { onDelete: "cascade" }),
@@ -152,7 +178,7 @@ export const tasks = pgTable(
   },
   (t) => [
     index("tasks_section_idx").on(t.sectionId, t.rank),
-    index("tasks_planned_idx").on(t.plannedDate, t.plannedStart),
+    index("tasks_planned_idx").on(t.userId, t.plannedDate, t.plannedStart),
     index("tasks_project_idx").on(t.projectId),
     uniqueIndex("tasks_schedule_occurrence_uq").on(
       t.scheduleId,
@@ -170,6 +196,7 @@ export const timeEntries = pgTable(
   "time_entries",
   {
     id: id(),
+    userId: owner(),
     taskId: uuid("task_id").references(() => tasks.id, {
       onDelete: "set null",
     }),
@@ -186,11 +213,11 @@ export const timeEntries = pgTable(
     updatedAt: updatedAt(),
   },
   (t) => [
-    index("time_entries_started_idx").on(t.startedAt),
+    index("time_entries_started_idx").on(t.userId, t.startedAt),
     index("time_entries_section_started_idx").on(t.sectionId, t.startedAt),
     index("time_entries_task_idx").on(t.taskId),
     uniqueIndex("time_entries_one_running_uq")
-      .on(sql`(true)`)
+      .on(t.userId)
       .where(sql`${t.endedAt} is null`),
     check(
       "time_entries_range_check",
@@ -203,6 +230,7 @@ export const progressLogs = pgTable(
   "progress_logs",
   {
     id: id(),
+    userId: owner(),
     projectId: uuid("project_id")
       .notNull()
       .references(() => projects.id, { onDelete: "cascade" }),
@@ -225,13 +253,33 @@ export const documents = pgTable(
   "documents",
   {
     id: id(),
+    userId: owner(),
     title: text("title").notNull().default(""),
     contentMd: text("content_md").notNull().default(""),
     pinned: boolean("pinned").notNull().default(false),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [index("documents_updated_idx").on(t.updatedAt)],
+  (t) => [index("documents_updated_idx").on(t.userId, t.updatedAt)],
+);
+
+/* Uploaded files (PDFs, images, slides...) stored in blob storage, filed under a section. */
+export const files = pgTable(
+  "files",
+  {
+    id: id(),
+    userId: owner(),
+    sectionId: uuid("section_id")
+      .notNull()
+      .references(() => sections.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    contentType: text("content_type").notNull(),
+    size: integer("size").notNull(),
+    storageKey: text("storage_key").notNull(),
+    url: text("url").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("files_section_idx").on(t.sectionId, t.createdAt)],
 );
 
 export const documentSections = pgTable(
@@ -298,13 +346,16 @@ export const documentTags = pgTable(
   ],
 );
 
-/* Single-row settings. */
+/* Per-person settings. */
 export const settings = pgTable("settings", {
-  id: integer("id").primaryKey().default(1),
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
   timezone: text("timezone").notNull().default("Europe/Brussels"),
   weekStart: integer("week_start").notNull().default(1),
   icsToken: text("ics_token")
     .notNull()
+    .unique()
     .default(sql`replace(gen_random_uuid()::text, '-', '')`),
   updatedAt: updatedAt(),
 });
@@ -420,3 +471,5 @@ export type Project = typeof projects.$inferSelect;
 export type Document = typeof documents.$inferSelect;
 export type Tag = typeof tags.$inferSelect;
 export type Schedule = typeof schedules.$inferSelect;
+export type User = typeof users.$inferSelect;
+export type StoredFile = typeof files.$inferSelect;

@@ -3,7 +3,8 @@ import { sql } from "drizzle-orm";
 import { db } from "@/db/client";
 import { buildCalendar } from "@/lib/ics";
 import { localDate, shiftDay } from "@/lib/time";
-import { getSettings } from "@/server/queries/core";
+import { eq } from "drizzle-orm";
+import { settings as settingsTable } from "@/db/schema";
 
 const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -13,11 +14,12 @@ const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
  */
 export async function GET(request: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const settings = await getSettings();
+  // The secret token in the URL identifies the account; no session is needed.
   const clean = token.replace(/\.ics$/, "");
-  if (!settings.icsToken || clean !== settings.icsToken) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
+  const [settings] = /^[0-9a-f]{32}$/.test(clean)
+    ? await db.select().from(settingsTable).where(eq(settingsTable.icsToken, clean))
+    : [];
+  if (!settings) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const url = new URL(request.url);
   const today = localDate(new Date(), settings.timezone);
@@ -38,7 +40,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ toke
     select t.id, t.title, t.notes_md, t.status, t.planned_date::text, t.planned_start::text,
       t.planned_minutes, t.updated_at, s.name as section_name
     from tasks t join sections s on s.id = t.section_id
-    where t.planned_date between ${from}::date and ${to}::date
+    where t.user_id = ${settings.userId} and t.planned_date between ${from}::date and ${to}::date
     order by t.planned_date, t.planned_start nulls last
   `);
 

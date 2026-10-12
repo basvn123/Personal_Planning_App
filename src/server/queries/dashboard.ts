@@ -1,16 +1,18 @@
 import "server-only";
 import { sql } from "drizzle-orm";
 import { db } from "@/db/client";
+import { requireUserId } from "@/server/auth";
 import { shiftDay } from "@/lib/time";
 
 export type SectionTotal = { id: string; name: string; slug: string; color: string; seconds: number };
 export type TaskTotal = { id: string; title: string; color: string; sectionName: string; seconds: number };
 
 export async function getSectionTotals(from: string, to: string): Promise<SectionTotal[]> {
+  const userId = await requireUserId();
   const rows = await db.execute<{ id: string; name: string; slug: string; color: string; seconds: string }>(sql`
     select s.id, s.name, s.slug, s.color, sum(v.seconds)::bigint as seconds
     from v_daily_section_seconds v join sections s on s.id = v.section_id
-    where v.day between ${from}::date and ${to}::date
+    where v.user_id = ${userId} and v.day between ${from}::date and ${to}::date
     group by s.id
     having sum(v.seconds) > 0
     order by seconds desc
@@ -19,12 +21,13 @@ export async function getSectionTotals(from: string, to: string): Promise<Sectio
 }
 
 export async function getTaskTotals(from: string, to: string, limit = 8): Promise<TaskTotal[]> {
+  const userId = await requireUserId();
   const rows = await db.execute<{ id: string; title: string; color: string; section_name: string; seconds: string }>(sql`
     select t.id, t.title, s.color, s.name as section_name, sum(v.seconds)::bigint as seconds
     from v_daily_task_seconds v
     join tasks t on t.id = v.task_id
     join sections s on s.id = v.section_id
-    where v.day between ${from}::date and ${to}::date
+    where v.user_id = ${userId} and v.day between ${from}::date and ${to}::date
     group by t.id, s.color, s.name
     having sum(v.seconds) > 0
     order by seconds desc
@@ -35,20 +38,22 @@ export async function getTaskTotals(from: string, to: string, limit = 8): Promis
 
 /** Logged seconds per day for a range, every day present (zeros included). */
 export async function getDailySeries(from: string, to: string) {
+  const userId = await requireUserId();
   const rows = await db.execute<{ day: string; seconds: string }>(sql`
     select d::date::text as day, coalesce(sum(v.seconds), 0)::bigint as seconds
     from generate_series(${from}::date, ${to}::date, interval '1 day') d
-    left join v_daily_section_seconds v on v.day = d::date
+    left join v_daily_section_seconds v on v.day = d::date and v.user_id = ${userId}
     group by d order by d
   `);
   return rows.map((r) => ({ day: r.day, seconds: Number(r.seconds) }));
 }
 
 export async function getPlannedByDay(from: string, to: string) {
+  const userId = await requireUserId();
   const rows = await db.execute<{ day: string; minutes: string; total: string; done: string }>(sql`
     select planned_date::text as day, coalesce(sum(planned_minutes), 0)::int as minutes,
       count(*)::int as total, count(*) filter (where status = 'done')::int as done
-    from tasks where planned_date between ${from}::date and ${to}::date
+    from tasks where user_id = ${userId} and planned_date between ${from}::date and ${to}::date
     group by planned_date
   `);
   const out: Record<string, { minutes: number; total: number; done: number }> = {};
@@ -90,6 +95,7 @@ export type ProjectProgress = {
 };
 
 export async function getProjects(sectionId?: string): Promise<ProjectProgress[]> {
+  const userId = await requireUserId();
   const rows = await db.execute<{
     id: string;
     name: string;
@@ -115,7 +121,7 @@ export async function getProjects(sectionId?: string): Promise<ProjectProgress[]
     from projects p
     join sections s on s.id = p.section_id
     left join progress_logs l on l.project_id = p.id
-    where p.archived_at is null ${sectionId ? sql`and p.section_id = ${sectionId}` : sql``}
+    where p.user_id = ${userId} and p.archived_at is null ${sectionId ? sql`and p.section_id = ${sectionId}` : sql``}
     group by p.id, s.id
     order by s.rank, p.created_at
   `);
@@ -136,10 +142,11 @@ export async function getProjects(sectionId?: string): Promise<ProjectProgress[]
 
 /** Daily logged seconds for one section, every day present. */
 export async function getSectionDailySeries(sectionId: string, from: string, to: string) {
+  const userId = await requireUserId();
   const rows = await db.execute<{ day: string; seconds: string }>(sql`
     select d::date::text as day, coalesce(sum(v.seconds), 0)::bigint as seconds
     from generate_series(${from}::date, ${to}::date, interval '1 day') d
-    left join v_daily_section_seconds v on v.day = d::date and v.section_id = ${sectionId}
+    left join v_daily_section_seconds v on v.day = d::date and v.user_id = ${userId} and v.section_id = ${sectionId}
     group by d order by d
   `);
   return rows.map((r) => ({ day: r.day, seconds: Number(r.seconds) }));

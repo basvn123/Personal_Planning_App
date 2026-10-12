@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { Plus } from "lucide-react";
 import { Spread } from "@/components/shell/spread";
 import { ScheduleForm } from "@/components/schedules/schedule-form";
@@ -9,6 +9,7 @@ import { schedules, sections } from "@/db/schema";
 import { describeRule, parseRule, WEEKDAY_CODES } from "@/lib/recurrence";
 import { formatMinutes, localDate } from "@/lib/time";
 import { getSections, getSettings } from "@/server/queries/core";
+import { requireUserId } from "@/server/auth";
 import { dyeVars } from "@/lib/dyes";
 import { cx } from "@/lib/cx";
 
@@ -19,6 +20,7 @@ const LETTERS = { MO: "M", TU: "T", WE: "W", TH: "T", FR: "F", SA: "S", SU: "S" 
 
 export default async function SchedulesPage({ searchParams }: { searchParams: Promise<{ id?: string; new?: string }> }) {
   const [{ id, new: isNew }, allSections, settings] = await Promise.all([searchParams, getSections(), getSettings()]);
+  const userId = await requireUserId();
   const rows = await db
     .select({
       id: schedules.id,
@@ -33,6 +35,7 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
     })
     .from(schedules)
     .innerJoin(sections, eq(sections.id, schedules.sectionId))
+    .where(and(eq(schedules.userId, userId)))
     .orderBy(asc(schedules.startTime), asc(schedules.title));
 
   const selected = rows.find((r) => r.id === id);
