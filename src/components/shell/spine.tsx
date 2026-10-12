@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarRange, Command, Repeat } from "lucide-react";
+import { CalendarRange, ChartColumn, Command, Repeat } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { TimerChip } from "@/components/timer/timer-chip";
 import { useUi } from "@/lib/ui-store";
@@ -10,6 +10,7 @@ import { cx } from "@/lib/cx";
 
 const NAV = [
   { href: "/week", label: "Week", icon: CalendarRange },
+  { href: "/dashboard", label: "Dashboard", icon: ChartColumn },
   { href: "/schedules", label: "Schedules", icon: Repeat },
 ] as const;
 

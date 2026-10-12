@@ -16,7 +16,10 @@ const DURATIONS = [15, 30, 45, 60, 90, 120, 180];
 
 /** Edit form for one task. Every field saves on change or blur. */
 export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () => void }) {
-  const { sections, patch, remove } = usePlanner();
+  const { sections, projects, patch, remove } = usePlanner();
+  const sectionProjects = projects.filter((pr) => pr.sectionId === task.section.id);
+  const project = projects.find((pr) => pr.id === task.projectId);
+  const [units, setUnits] = useState(task.units === null ? "" : String(task.units));
   const [title, setTitle] = useState(task.title);
   const [notes, setNotes] = useState(task.notesMd);
   const [docs, setDocs] = useState(task.docs);
@@ -24,6 +27,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
   const temp = task.id.startsWith("temp-");
 
   useEffect(() => setDocs(task.docs), [task.docs]);
+  useEffect(() => setUnits(task.units === null ? "" : String(task.units)), [task.units]);
 
   function saveTitle() {
     const v = title.trim();
@@ -122,6 +126,43 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
           </div>
         </Field>
       </div>
+
+      {(sectionProjects.length > 0 || task.projectId) && (
+        <div className="grid grid-cols-[1fr_5.5rem] gap-2">
+          <Field label="Counts toward">
+            <select
+              value={task.projectId ?? ""}
+              disabled={temp}
+              aria-label="Project"
+              onChange={(e) => patch(task.id, { projectId: e.target.value || null, ...(e.target.value && !task.units ? { units: 1 } : {}) })}
+              className={inputClass}
+            >
+              <option value="">No project</option>
+              {sectionProjects.map((pr) => (
+                <option key={pr.id} value={pr.id}>
+                  {pr.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label={project?.unitLabel ?? "Units"}>
+            <input
+              type="number"
+              min={0}
+              step="any"
+              value={units}
+              disabled={temp || !task.projectId}
+              aria-label="Units"
+              onChange={(e) => setUnits(e.target.value)}
+              onBlur={() => {
+                const n = Number(units);
+                if (units === "" ? task.units !== null : n > 0 && n !== task.units) patch(task.id, { units: units === "" ? null : n });
+              }}
+              className={cx(inputClass, "figures")}
+            />
+          </Field>
+        </div>
+      )}
 
       <Field label="Notes">
         <textarea

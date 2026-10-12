@@ -47,3 +47,10 @@ export const getDocIndex = cache(async () => {
   `);
   return [...rows];
 });
+
+export const getProjectOptions = cache(async () => {
+  const rows = await db.execute<{ id: string; name: string; section_id: string; unit_label: string }>(sql`
+    select id, name, section_id, unit_label from projects where archived_at is null order by name
+  `);
+  return rows.map((r) => ({ id: r.id, name: r.name, sectionId: r.section_id, unitLabel: r.unit_label }));
+});

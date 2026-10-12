@@ -8,7 +8,10 @@ import { NewSectionPopover } from "@/components/sections/new-subsection";
 import { NewDocButton } from "@/components/docs/new-doc-button";
 import { DocList } from "@/components/docs/doc-list";
 import { getChildSections, getSectionBySlug, getSectionDocuments } from "@/server/queries/sections";
-import { getSections, getSettings } from "@/server/queries/core";
+import { getProjectOptions, getSections, getSettings } from "@/server/queries/core";
+import { getProjects } from "@/server/queries/dashboard";
+import { ProjectCard } from "@/components/projects/project-card";
+import { NewProject } from "@/components/projects/new-project";
 import { getBacklog, getSectionUpcoming } from "@/server/queries/tasks";
 import { PlannerProvider } from "@/components/planner/planner-context";
 import { SectionTasks } from "@/components/sections/section-tasks";
@@ -29,13 +32,15 @@ export default async function SectionLayout({
 
   const settings = await getSettings();
   const today = localDate(new Date(), settings.timezone);
-  const [children_, docs, options, all, backlog, upcoming] = await Promise.all([
+  const [children_, docs, options, all, backlog, upcoming, projectOptions, projects] = await Promise.all([
     getChildSections(section.id),
     getSectionDocuments(section.id),
     listSectionOptions(),
     getSections(),
     getBacklog(section.id),
     getSectionUpcoming(section.id, today),
+    getProjectOptions(),
+    getProjects(section.id),
   ]);
 
   // Breadcrumb of ancestors.
@@ -78,6 +83,12 @@ export default async function SectionLayout({
           options={options}
         />
       </header>
+
+      <Block title="Projects" action={<NewProject sections={[]} defaultSectionId={section.id} />}>
+        {projects.map((p) => (
+          <ProjectCard key={p.id} project={p} today={today} />
+        ))}
+      </Block>
 
       <SectionTasks sectionId={section.id} />
 
@@ -127,6 +138,7 @@ export default async function SectionLayout({
     <PlannerProvider
       initialTasks={[...backlog, ...upcoming]}
       sections={all.map(({ id, name, slug, color }) => ({ id, name, slug, color }))}
+      projects={projectOptions}
       today={today}
       initialDay={today}
     >

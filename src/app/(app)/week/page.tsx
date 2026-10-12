@@ -6,7 +6,7 @@ import { Ribbon } from "@/components/planner/ribbon";
 import { PlannerProvider } from "@/components/planner/planner-context";
 import { WeekList } from "@/components/planner/week-list";
 import { DayPlan } from "@/components/planner/day-plan";
-import { getDailyTotals, getSections, getSettings } from "@/server/queries/core";
+import { getDailyTotals, getProjectOptions, getSections, getSettings } from "@/server/queries/core";
 import { getOpenBacklog, getTasksInRange } from "@/server/queries/tasks";
 import { getEntriesInRange } from "@/server/queries/time";
 import { HORIZON_DAYS, materializeSchedules } from "@/server/materialize";
@@ -21,7 +21,12 @@ export default async function WeekPage({
 }: {
   searchParams: Promise<{ d?: string; day?: string }>;
 }) {
-  const [{ d, day }, settings, sections] = await Promise.all([searchParams, getSettings(), getSections()]);
+  const [{ d, day }, settings, sections, projectOptions] = await Promise.all([
+    searchParams,
+    getSettings(),
+    getSections(),
+    getProjectOptions(),
+  ]);
   const today = localDate(new Date(), settings.timezone);
   const anchor = d && DAY_RE.test(d) ? d : day && DAY_RE.test(day) ? day : today;
   const days = weekDays(anchor, settings.weekStart === 0 ? 0 : 1);
@@ -89,6 +94,7 @@ export default async function WeekPage({
     <PlannerProvider
       initialTasks={tasks}
       sections={sections.map(({ id, name, slug, color }) => ({ id, name, slug, color }))}
+      projects={projectOptions}
       today={today}
       initialDay={selected}
     >

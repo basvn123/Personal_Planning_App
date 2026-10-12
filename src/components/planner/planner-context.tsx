@@ -16,10 +16,12 @@ import { dyeVars } from "@/lib/dyes";
 import { createTask, deleteTask, setTaskStatus, updateTask, type TaskPatch } from "@/server/actions/tasks";
 
 export type PlannerSection = { id: string; name: string; slug: string; color: string };
+export type PlannerProject = { id: string; name: string; sectionId: string; unitLabel: string };
 
 type Ctx = {
   tasks: PlannerTask[];
   sections: PlannerSection[];
+  projects: PlannerProject[];
   today: string;
   selectedDay: string;
   selectDay: (day: string) => void;
@@ -48,12 +50,14 @@ export function usePlanner() {
 export function PlannerProvider({
   initialTasks,
   sections,
+  projects = [],
   today,
   initialDay,
   children,
 }: {
   initialTasks: PlannerTask[];
   sections: PlannerSection[];
+  projects?: PlannerProject[];
   today: string;
   initialDay: string;
   children: React.ReactNode;
@@ -96,6 +100,7 @@ export function PlannerProvider({
     () => ({
       tasks,
       sections,
+      projects,
       today,
       selectedDay,
       selectDay,
@@ -154,7 +159,7 @@ export function PlannerProvider({
         run((ts) => ts.filter((t) => t.id !== id), () => deleteTask(id));
       },
     }),
-    [tasks, sections, today, selectedDay, selectDay, pending, error, run],
+    [tasks, sections, projects, today, selectedDay, selectDay, pending, error, run],
   );
 
   return (
