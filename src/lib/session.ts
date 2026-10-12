@@ -11,8 +11,8 @@ function key() {
   return new TextEncoder().encode(secret);
 }
 
-export async function createSessionToken(userId: string) {
-  return new SignJWT({ sub: userId })
+export async function createSessionToken(userId: string, version: number) {
+  return new SignJWT({ sub: userId, v: version })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${SESSION_MAX_AGE}s`)
@@ -21,13 +21,19 @@ export async function createSessionToken(userId: string) {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** The signed-in user's id, or null when the cookie is missing, forged or from before accounts existed. */
-export async function readSession(token: string | undefined): Promise<string | null> {
+/** Verified session claims, or null when the cookie is missing, forged or from before accounts existed. */
+export async function readSessionClaims(token: string | undefined): Promise<{ userId: string; version: number } | null> {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, key(), { algorithms: ["HS256"] });
-    return typeof payload.sub === "string" && UUID_RE.test(payload.sub) ? payload.sub : null;
+    if (typeof payload.sub !== "string" || !UUID_RE.test(payload.sub)) return null;
+    return { userId: payload.sub, version: typeof payload.v === "number" ? payload.v : 0 };
   } catch {
     return null;
   }
+}
+
+/** Signature check only (middleware). Route handlers use sessionUserId(), which also checks revocation. */
+export async function readSession(token: string | undefined): Promise<string | null> {
+  return (await readSessionClaims(token))?.userId ?? null;
 }

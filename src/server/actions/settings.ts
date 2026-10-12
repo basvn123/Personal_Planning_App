@@ -9,7 +9,7 @@ import { db } from "@/db/client";
 import { settings, users } from "@/db/schema";
 import { hashPassword, verifyPassword } from "@/lib/password";
 import { SESSION_COOKIE } from "@/lib/session";
-import { requireOwner, requireUserId } from "@/server/auth";
+import { requireOwner, requireUserId, setSessionCookie } from "@/server/auth";
 
 const email = z.email().max(200);
 const password = z.string().min(8, "Minstens 8 tekens.").max(200);
@@ -84,7 +84,13 @@ export async function changePassword(input: { current: string; next: string }): 
   }
   const p = password.safeParse(input.next);
   if (!p.success) return { ok: false, error: "Een wachtwoord heeft minstens 8 tekens." };
-  await db.update(users).set({ passwordHash: await hashPassword(p.data) }).where(eq(users.id, userId));
+  // Other devices are signed out; this one gets a fresh session.
+  const [row] = await db
+    .update(users)
+    .set({ passwordHash: await hashPassword(p.data), sessionVersion: sql`${users.sessionVersion} + 1` })
+    .where(eq(users.id, userId))
+    .returning({ v: users.sessionVersion });
+  await setSessionCookie(userId, row.v);
   revalidatePath("/settings");
   return { ok: true };
 }
@@ -125,7 +131,10 @@ export async function resetPassword(userId: string, next: string): Promise<Resul
   if (userId === owner.id) return { ok: false, error: "Wijzig je eigen wachtwoord bij Account." };
   const p = password.safeParse(next);
   if (!p.success) return { ok: false, error: "Een wachtwoord heeft minstens 8 tekens." };
-  await db.update(users).set({ passwordHash: await hashPassword(p.data) }).where(eq(users.id, userId));
+  await db
+    .update(users)
+    .set({ passwordHash: await hashPassword(p.data), sessionVersion: sql`${users.sessionVersion} + 1` })
+    .where(eq(users.id, userId));
   return { ok: true };
 }
 

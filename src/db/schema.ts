@@ -34,10 +34,24 @@ export const users = pgTable(
     email: text("email"),
     passwordHash: text("password_hash"),
     role: text("role", { enum: ["owner", "member"] }).notNull().default("member"),
+    /* Bumped on password changes; sessions carrying an older number stop working. */
+    sessionVersion: integer("session_version").notNull().default(1),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [uniqueIndex("users_email_uq").on(sql`lower(${t.email})`)],
+);
+
+/* Failed sign-ins, for throttling by address and by email. */
+export const loginAttempts = pgTable(
+  "login_attempts",
+  {
+    id: id(),
+    ip: text("ip").notNull(),
+    email: text("email").notNull(),
+    attemptedAt: timestamp("attempted_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("login_attempts_ip_idx").on(t.ip, t.attemptedAt), index("login_attempts_email_idx").on(t.email, t.attemptedAt)],
 );
 
 const owner = () =>

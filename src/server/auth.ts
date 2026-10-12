@@ -5,18 +5,42 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 import { db } from "@/db/client";
 import { users } from "@/db/schema";
-import { readSession, SESSION_COOKIE } from "@/lib/session";
+import { createSessionToken, readSessionClaims, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/session";
 
 /** The signed-in person for this request. Cached so every query in a render shares one lookup. */
 export const currentUser = cache(async () => {
-  const id = await readSession((await cookies()).get(SESSION_COOKIE)?.value);
-  if (!id) return null;
+  const claims = await readSessionClaims((await cookies()).get(SESSION_COOKIE)?.value);
+  if (!claims) return null;
   const [user] = await db
-    .select({ id: users.id, name: users.name, email: users.email, role: users.role, hasPassword: users.passwordHash })
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      role: users.role,
+      hasPassword: users.passwordHash,
+      sessionVersion: users.sessionVersion,
+    })
     .from(users)
-    .where(eq(users.id, id));
-  return user ? { ...user, hasPassword: Boolean(user.hasPassword) } : null;
+    .where(eq(users.id, claims.userId));
+  // A password change bumps the version, which signs out every older session.
+  if (!user || user.sessionVersion !== claims.version) return null;
+  return { ...user, hasPassword: Boolean(user.hasPassword) };
 });
+
+/** For route handlers: the user id when the session is valid and not revoked. */
+export async function sessionUserId(): Promise<string | null> {
+  return (await currentUser())?.id ?? null;
+}
+
+export async function setSessionCookie(userId: string, version: number) {
+  (await cookies()).set(SESSION_COOKIE, await createSessionToken(userId, version), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: SESSION_MAX_AGE,
+  });
+}
 
 /**
  * Every query and action scopes its data to this id. A missing or deleted

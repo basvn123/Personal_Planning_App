@@ -1,11 +1,10 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { readSession, SESSION_COOKIE } from "@/lib/session";
+import { sessionUserId } from "@/server/auth";
 import { saveDocumentContent } from "@/server/documents";
 
 /** Receives the final save from navigator.sendBeacon when a page is closed. */
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const userId = await readSession((await cookies()).get(SESSION_COOKIE)?.value);
+  const userId = await sessionUserId();
   if (!userId) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
   const { id } = await params;
   try {
