@@ -182,8 +182,18 @@ export function PlannerProvider({
         const next = t.status === "done" ? "todo" : "done";
         const ui = useUi.getState();
         ui.gainXp(next === "done" ? XP_PER_TASK : -XP_PER_TASK);
-        if (next === "done") ui.showToast(`+${XP_PER_TASK} XP`);
         run((ts) => ts.map((x) => (x.id === id ? { ...x, status: next } : x)), () => setTaskStatus(id, next));
+        // A mis-tap is one tap away from undone; the task never just vanishes.
+        if (next === "done") {
+          const before = t.status;
+          ui.showToast(`Klaar, +${XP_PER_TASK} XP`, {
+            label: "Ongedaan maken",
+            run: () => {
+              useUi.getState().gainXp(-XP_PER_TASK);
+              run((ts) => ts.map((x) => (x.id === id ? { ...x, status: before } : x)), () => setTaskStatus(id, before));
+            },
+          });
+        }
       },
       remove: (id) => {
         run((ts) => ts.filter((t) => t.id !== id), () => deleteTask(id));

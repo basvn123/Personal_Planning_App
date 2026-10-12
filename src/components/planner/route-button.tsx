@@ -6,6 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { inputClass } from "@/components/ui/button";
 import { formatDay, shiftDay } from "@/lib/time";
 import { cx } from "@/lib/cx";
+import { useUi } from "@/lib/ui-store";
 import { usePlanner } from "./planner-context";
 
 /** Sends a backlog task to a day. */
@@ -17,6 +18,9 @@ export function RouteButton({ taskId, title, className }: { taskId: string; titl
   function send(day: string) {
     patch(taskId, { plannedDate: day });
     setOpen(false);
+    // It leaves the to-do list, so say where it went and offer the way back.
+    const where = day === today ? "vandaag" : day === shiftDay(today, 1) ? "morgen" : formatDay(day, "EEEE d MMM");
+    useUi.getState().showToast(`Ingepland op ${where}`, { label: "Ongedaan maken", run: () => patch(taskId, { plannedDate: null }) });
   }
 
   return (

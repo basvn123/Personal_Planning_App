@@ -36,7 +36,7 @@ export function CommandPalette({
         setOpen(!useUi.getState().paletteOpen);
         return;
       }
-      // "N" adds an activity, unless you are typing somewhere.
+      // "N" adds an activity and "T" starts time, unless you are typing somewhere.
       const el = e.target as HTMLElement | null;
       const typing = el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable);
       if (e.key.toLowerCase() === "n" && !e.metaKey && !e.ctrlKey && !e.altKey && !typing) {
@@ -44,6 +44,13 @@ export function CommandPalette({
         if (!ui.paletteOpen && !ui.addOpen) {
           e.preventDefault();
           ui.openAdd();
+        }
+      }
+      if (e.key.toLowerCase() === "t" && !e.metaKey && !e.ctrlKey && !e.altKey && !typing) {
+        const ui = useUi.getState();
+        if (!ui.paletteOpen && !ui.addOpen && !ui.startOpen) {
+          e.preventDefault();
+          ui.setStartOpen(true);
         }
       }
     }

@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, isNotNull, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, isNotNull, isNull, sql } from "drizzle-orm";
 import { db } from "@/db/client";
 import { documents, documentSections, documentTags, files, sections, tags } from "@/db/schema";
 import { requireUserId } from "@/server/auth";
@@ -82,4 +82,42 @@ export async function getAllTagNames() {
   const userId = await requireUserId();
   const rows = await db.select({ name: tags.name }).from(tags).where(eq(tags.userId, userId)).orderBy(asc(tags.name));
   return rows.map((r) => r.name);
+}
+
+export type NoteItem = {
+  id: string;
+  title: string;
+  snippet: string;
+  pinned: boolean;
+  updatedAt: string;
+  sections: { id: string; name: string; slug: string; color: string }[];
+};
+
+/** Every document as a note: pinned first, then most recently edited. `snippet` is the start of the text, enough to search and preview. */
+export async function getNotes(): Promise<NoteItem[]> {
+  const userId = await requireUserId();
+  const rows = await db.execute<{
+    id: string;
+    title: string;
+    snippet: string;
+    pinned: boolean;
+    updated_at: Date;
+    sections: NoteItem["sections"] | null;
+  }>(sql`
+    select d.id, d.title, left(d.content_md, 4000) as snippet, d.pinned, d.updated_at,
+      (select json_agg(json_build_object('id', s.id, 'name', s.name, 'slug', s.slug, 'color', s.color) order by s.name)
+         from document_sections ds join sections s on s.id = ds.section_id
+         where ds.document_id = d.id) as sections
+    from documents d
+    where d.user_id = ${userId}
+    order by d.pinned desc, d.updated_at desc
+  `);
+  return rows.map((r) => ({
+    id: r.id,
+    title: r.title,
+    snippet: r.snippet,
+    pinned: r.pinned,
+    updatedAt: new Date(r.updated_at).toISOString(),
+    sections: r.sections ?? [],
+  }));
 }

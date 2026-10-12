@@ -33,9 +33,13 @@ export function DocEditor({
   allSections,
   allTags,
   isNew,
+  backHref,
 }: {
   doc: { id: string; title: string; contentMd: string; pinned: boolean; sections: SectionRef[]; tags: string[] };
+  /** The section the editor is opened from; empty on the Notities page. */
   currentSlug: string;
+  /** Where to go after deleting; the section page by default. */
+  backHref?: string;
   allSections: SectionRef[];
   allTags: string[];
   isNew: boolean;
@@ -84,7 +88,6 @@ export function DocEditor({
 
   function toggleSection(id: string) {
     const on = !linked.has(id);
-    if (!on && linked.size <= 1) return;
     const next = new Set(linked);
     if (on) next.add(id);
     else next.delete(id);
@@ -102,6 +105,9 @@ export function DocEditor({
     <article className="m-3 flex min-h-[calc(100%-1.5rem)] flex-col rounded-xl border border-rule bg-card px-4 pt-4 shadow-[0_1px_2px_oklch(0.2_0.02_258/0.04)] sm:mx-4 lg:m-6 lg:min-h-[calc(100%-3rem)] lg:px-8 lg:pt-6">
       <div className="flex flex-wrap items-center gap-1 pb-4">
         <div className="mr-auto flex flex-wrap items-center gap-1">
+          {linked.size === 0 && (
+            <span className="inline-flex h-6 items-center rounded-xs bg-paper-3 px-2 text-xs text-ink-2">Algemene notitie</span>
+          )}
           {allSections
             .filter((s) => linked.has(s.id))
             .map((s) => (
@@ -124,6 +130,7 @@ export function DocEditor({
               </IconButton>
             </PopoverTrigger>
             <PopoverContent align="start" className="w-60 p-1.5">
+              <p className="px-2 pb-1.5 pt-1 text-xs text-ink-3">Zonder sectie is het een algemene notitie.</p>
               <ul className="max-h-72 overflow-y-auto">
                 {allSections.map((s) => {
                   const on = linked.has(s.id);
@@ -134,7 +141,6 @@ export function DocEditor({
                         role="menuitemcheckbox"
                         aria-checked={on}
                         onClick={() => toggleSection(s.id)}
-                        disabled={on && linked.size <= 1}
                         style={dyeVars(s.color)}
                         className="flex h-8 w-full items-center gap-2.5 rounded-xs px-2 text-left text-sm text-ink hover:bg-paper-3 disabled:opacity-50"
                       >
@@ -189,7 +195,7 @@ export function DocEditor({
                 onClick={() =>
                   start(async () => {
                     await deleteDocument(doc.id);
-                    router.push(`/s/${currentSlug}`);
+                    router.push(backHref ?? `/s/${currentSlug}`);
                   })
                 }
               >

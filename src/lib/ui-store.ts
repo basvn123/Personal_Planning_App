@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
-type Toast = { id: number; text: string };
+/** A short message; with an action (e.g. "Ongedaan maken") it stays a little longer and can be tapped. */
+type Toast = { id: number; text: string; action?: { label: string; run: () => void } };
 
 export type NewTask = {
   title: string;
@@ -31,10 +32,13 @@ type UiState = {
   addPreset: AddPreset | null;
   openAdd: (preset?: AddPreset) => void;
   setAddOpen: (open: boolean) => void;
+  /** The start-a-timer sheet, reachable from every page. */
+  startOpen: boolean;
+  setStartOpen: (open: boolean) => void;
   planner: PlannerHook | null;
   setPlanner: (p: PlannerHook | null) => void;
   toast: Toast | null;
-  showToast: (text: string) => void;
+  showToast: (text: string, action?: Toast["action"]) => void;
   /** Points earned in this tab since the server last counted them. */
   xpPending: number;
   gainXp: (n: number) => void;
@@ -52,10 +56,12 @@ export const useUi = create<UiState>((set) => ({
   addPreset: null,
   openAdd: (preset) => set({ addOpen: true, addPreset: preset ?? null }),
   setAddOpen: (addOpen) => set(addOpen ? { addOpen } : { addOpen, addPreset: null }),
+  startOpen: false,
+  setStartOpen: (startOpen) => set({ startOpen }),
   planner: null,
   setPlanner: (planner) => set({ planner }),
   toast: null,
-  showToast: (text) => set({ toast: { id: ++toastId, text } }),
+  showToast: (text, action) => set({ toast: { id: ++toastId, text, action } }),
   xpPending: 0,
   gainXp: (n) => set((s) => ({ xpPending: s.xpPending + n })),
   resetXp: () => set({ xpPending: 0 }),

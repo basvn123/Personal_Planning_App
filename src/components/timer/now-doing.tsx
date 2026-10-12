@@ -310,7 +310,6 @@ function Picker({
             </button>
           ))}
         </div>
-        <p className="text-xs text-ink-3">Iets nieuws komt op vandaag in de gekozen sectie en de timer start meteen.</p>
       </form>
     </div>
   );
