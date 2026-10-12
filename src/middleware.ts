@@ -15,6 +15,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   // Everything except the unlock screen, the calendar feed, cron, and static assets.
   matcher: [
-    "/((?!unlock|api/cal|api/cron|_next/static|_next/image|favicon.ico|icon.svg|apple-icon.png|manifest.webmanifest).*)",
+    "/((?!unlock|api/cal|api/cron|_next/static|_next/image|favicon.ico|icon.svg|apple-icon|icons/|manifest.webmanifest).*)",
   ],
 };
