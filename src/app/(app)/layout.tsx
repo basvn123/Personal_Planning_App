@@ -36,8 +36,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <TimerProvider initial={running}>
-    {/* Pinned to the screen edges, and past the viewport by --screen-gap where iOS stops it short. */}
-    <div className="fixed inset-x-0 top-0 bottom-[calc(-1*var(--screen-gap,0px))] flex flex-col bg-cloth lg:static lg:h-dvh lg:flex-row">
+    {/* Pinned to the screen edges; app-shell is the full screen even where iOS reports it short. */}
+    <div className="app-shell fixed inset-x-0 top-0 flex flex-col bg-cloth lg:static lg:h-dvh lg:flex-row">
       <Spine />
       <TabStrip sections={tabs} activeRoot={activeRoot} />
       <main className="relative min-h-0 min-w-0 flex-1 overflow-hidden lg:my-3 lg:rounded-r-[6px] lg:rounded-l-[3px] lg:shadow-[0_2px_0_var(--paper-3),0_4px_0_var(--rule),0_10px_30px_-12px_oklch(0_0_0/0.5)]">

@@ -249,15 +249,14 @@
     overscroll-behavior: none;
   }
   /*
-   * No overflow clipping on the root: iOS 26 home-screen apps get a viewport
-   * one status bar short, and the shell paints into that strip (see
-   * --screen-gap in the root layout). Clipping here would cut the bottom bar off.
+   * No overflow clipping on the root: it would cut off the shell where it
+   * reaches past the short iOS viewport (see the standalone block below).
    */
-  html {
-    height: calc(100% + var(--screen-gap, 0px));
-  }
+  html,
   body {
     height: 100%;
+  }
+  body {
     overscroll-behavior: none;
   }
   /* App chrome: no text selection or callout menu on a long press. */
@@ -314,6 +313,22 @@
 }
 
 @layer components {
+  /*
+   * Screen-edge anchoring. iOS 26 home-screen apps report 100%, vh and dvh one
+   * status bar short, which leaves an empty strip under the bottom bar; only
+   * lvh is the full screen. So there, the root and the shell are lvh tall and
+   * bottom-anchored layers drop by the difference. In a browser tab nothing changes.
+   */
+  .app-shell {
+    height: 100%;
+  }
+  .edge-bottom {
+    bottom: 0;
+  }
+  .toast-bottom {
+    bottom: calc(4.75rem + max(0px, env(safe-area-inset-bottom) - 1.5rem));
+  }
+
   /* A printed dot grid, as on planner paper. */
   .paper {
     background-color: var(--paper);
@@ -424,3 +439,31 @@
 .prose-doc th, .prose-doc td { border-bottom: 1px solid var(--rule); padding: 0.4em 0.6em 0.4em 0; text-align: left; }
 .prose-doc th { font-weight: 600; border-bottom-color: var(--rule-strong); }
 .prose-doc img { max-width: 100%; border-radius: 6px; }
+
+@media (display-mode: standalone) and (max-width: 1023px) {
+  html,
+  body,
+  .app-shell {
+    height: 100lvh;
+  }
+  .edge-bottom {
+    bottom: calc(100% - 100lvh);
+  }
+  .toast-bottom {
+    bottom: calc(4.75rem + max(0px, env(safe-area-inset-bottom) - 1.5rem) + 100% - 100lvh);
+  }
+}
+/* Older iOS without display-mode support: the root layout marks the home-screen app. */
+@media (max-width: 1023px) {
+  :root[data-standalone],
+  :root[data-standalone] body,
+  :root[data-standalone] .app-shell {
+    height: 100lvh;
+  }
+  :root[data-standalone] .edge-bottom {
+    bottom: calc(100% - 100lvh);
+  }
+  :root[data-standalone] .toast-bottom {
+    bottom: calc(4.75rem + max(0px, env(safe-area-inset-bottom) - 1.5rem) + 100% - 100lvh);
+  }
+}
