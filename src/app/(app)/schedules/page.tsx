@@ -14,6 +14,9 @@ import { cx } from "@/lib/cx";
 
 export const metadata: Metadata = { title: "Schedules" };
 
+const DAY_SHORT = { MO: "Mon", TU: "Tue", WE: "Wed", TH: "Thu", FR: "Fri", SA: "Sat", SU: "Sun" } as const;
+const LETTERS = { MO: "M", TU: "T", WE: "W", TH: "T", FR: "F", SA: "S", SU: "S" } as const;
+
 export default async function SchedulesPage({ searchParams }: { searchParams: Promise<{ id?: string; new?: string }> }) {
   const [{ id, new: isNew }, allSections, settings] = await Promise.all([searchParams, getSections(), getSettings()]);
   const rows = await db
@@ -75,16 +78,18 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
                     {!r.active && <span>· paused</span>}
                   </span>
                 </span>
-                <span className="flex gap-0.5 pt-1" aria-label={describeRule(rule)}>
+                <span className="flex gap-0.5 pt-0.5" aria-label={describeRule(rule)}>
                   {WEEKDAY_CODES.map((d) => (
                     <span
                       key={d}
+                      aria-hidden
                       className={cx(
-                        "h-3.5 w-1.5 rounded-[1px]",
-                        rule.days.includes(d) ? "bg-[var(--dye-deep)]" : "bg-rule",
-                        d === todayCode && "outline outline-1 outline-offset-1 outline-ribbon-2",
+                        "grid size-[1.125rem] place-items-center rounded-[3px] text-[0.625rem] font-medium leading-none",
+                        rule.days.includes(d) ? "bg-[var(--dye)] text-ink" : "text-ink-3",
                       )}
-                    />
+                    >
+                      {LETTERS[d]}
+                    </span>
                   ))}
                 </span>
               </Link>
@@ -127,10 +132,39 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
       />
     </div>
   ) : (
-    <div className="grid min-h-full place-items-center p-8">
-      <Link href="/schedules?new=1" className="text-sm text-ink-3 hover:text-ink">
-        Pick a schedule, or create one.
-      </Link>
+    <div className="px-5 pb-12 pt-6 lg:px-8">
+      <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">
+        A regular week
+      </h2>
+      <div className="mt-3 grid grid-cols-7 gap-1.5">
+        {WEEKDAY_CODES.map((d) => (
+          <div key={d} className="flex min-w-0 flex-col gap-1">
+            <span
+              className={cx(
+                "pb-1 text-center text-2xs font-medium uppercase tracking-[0.06em]",
+                d === todayCode ? "text-ribbon-ink" : "text-ink-3",
+              )}
+            >
+              {DAY_SHORT[d]}
+            </span>
+            {rows
+              .filter((r) => r.active && parseRule(r.rrule).days.includes(d))
+              .map((r) => (
+                <Link
+                  key={r.id}
+                  href={`/schedules?id=${r.id}`}
+                  style={dyeVars(r.sectionColor)}
+                  title={`${r.title}, ${r.startTime.slice(0, 5)}`}
+                  className="flex min-w-0 flex-col rounded-[3px] bg-[color-mix(in_oklch,var(--dye)_55%,var(--paper))] px-1.5 py-1 transition-colors hover:bg-[var(--dye)]"
+                  aria-label={`${DAY_SHORT[d]}: ${r.title} at ${r.startTime.slice(0, 5)}`}
+                >
+                  <span className="figures text-[0.625rem] leading-3 text-ink-2">{r.startTime.slice(0, 5)}</span>
+                  <span className="truncate text-xs leading-4 text-ink">{r.title}</span>
+                </Link>
+              ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 

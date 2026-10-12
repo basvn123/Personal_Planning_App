@@ -133,3 +133,14 @@ export async function getProjects(sectionId?: string): Promise<ProjectProgress[]
     firstLog: r.first_log,
   }));
 }
+
+/** Daily logged seconds for one section, every day present. */
+export async function getSectionDailySeries(sectionId: string, from: string, to: string) {
+  const rows = await db.execute<{ day: string; seconds: string }>(sql`
+    select d::date::text as day, coalesce(sum(v.seconds), 0)::bigint as seconds
+    from generate_series(${from}::date, ${to}::date, interval '1 day') d
+    left join v_daily_section_seconds v on v.day = d::date and v.section_id = ${sectionId}
+    group by d order by d
+  `);
+  return rows.map((r) => ({ day: r.day, seconds: Number(r.seconds) }));
+}

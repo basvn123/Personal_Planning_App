@@ -66,6 +66,7 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
                 className={cx(
                   "transition-opacity duration-150 lg:opacity-0 lg:group-hover/day:opacity-100 lg:focus-within:opacity-100",
                   dayTasks.length === 0 && "lg:opacity-60",
+                  dayTasks.length > 0 && !isToday && "max-lg:hidden",
                 )}
               >
                 <InlineAdd day={day} compact placeholder="Add" />

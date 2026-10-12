@@ -5,7 +5,7 @@ import { Check, Copy, Download, LogOut, RefreshCw } from "lucide-react";
 import { Button, inputClass } from "@/components/ui/button";
 import { rotateCalendarToken, signOut, updateSettings } from "@/server/actions/settings";
 import { cx } from "@/lib/cx";
-import { ThemeToggle } from "@/components/shell/theme-toggle";
+
 
 export function SettingsForm({
   timezone,
@@ -93,9 +93,6 @@ export function SettingsForm({
               {copied ? <Check className="size-3.5" strokeWidth={2} /> : <Copy className="size-3.5" strokeWidth={1.75} />}
             </Button>
           </div>
-          <p className="mt-1.5 text-xs text-ink-3">
-            iPhone: Settings, Calendar, Accounts, Add Subscribed Calendar, paste the link. Updates hourly.
-          </p>
         </Row>
         <div className="flex flex-wrap gap-2">
           <a
@@ -133,23 +130,6 @@ export function SettingsForm({
         </div>
       </Group>
 
-      <Group title="Pages">
-        <div className="flex items-center gap-3 text-sm text-ink-2">
-          <span className="rounded-md bg-cloth">
-            <ThemeToggle />
-          </span>
-          Light or dark
-        </div>
-      </Group>
-
-      <Group title="Session">
-        <form action={signOut}>
-          <Button type="submit" variant="ghost">
-            <LogOut className="size-3.5" strokeWidth={1.75} />
-            Lock
-          </Button>
-        </form>
-      </Group>
     </div>
   );
 }
@@ -168,6 +148,71 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
     <div className="flex flex-col gap-1.5">
       <span className="text-sm text-ink-2">{label}</span>
       {children}
+    </div>
+  );
+}
+
+type Theme = "system" | "light" | "dark";
+
+/** Pages and session controls for the facing page. */
+export function SettingsAside() {
+  const [theme, setTheme] = useState<Theme>("system");
+  useEffect(() => {
+    const t = document.documentElement.dataset.theme;
+    setTheme(t === "light" || t === "dark" ? t : "system");
+  }, []);
+
+  function choose(next: Theme) {
+    setTheme(next);
+    try {
+      if (next === "system") {
+        delete document.documentElement.dataset.theme;
+        localStorage.removeItem("theme");
+      } else {
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem("theme", next);
+      }
+    } catch {}
+  }
+
+  return (
+    <div className="flex max-w-lg flex-col gap-9">
+      <Group title="Pages">
+        <Row label="Appearance">
+          <div role="radiogroup" aria-label="Appearance" className="flex rounded-sm bg-paper-3 p-0.5">
+            {(["system", "light", "dark"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                role="radio"
+                aria-checked={theme === t}
+                onClick={() => choose(t)}
+                className={cx(
+                  "h-8 flex-1 rounded-xs text-sm transition-colors",
+                  theme === t ? "bg-paper font-medium text-ink shadow-[0_1px_2px_oklch(0.2_0.02_258/0.12)]" : "text-ink-2",
+                )}
+              >
+                {{ system: "Match device", light: "Light", dark: "Dark" }[t]}
+              </button>
+            ))}
+          </div>
+        </Row>
+      </Group>
+
+      <Group title="Data">
+        <a href="/import" className="inline-flex h-8 items-center gap-1.5 self-start rounded-sm border border-rule-strong bg-paper px-3 text-sm font-medium text-ink transition-colors hover:bg-paper-3">
+          Import a schedule file
+        </a>
+      </Group>
+
+      <Group title="Session">
+        <form action={signOut}>
+          <Button type="submit" variant="ghost">
+            <LogOut className="size-3.5" strokeWidth={1.75} />
+            Lock
+          </Button>
+        </form>
+      </Group>
     </div>
   );
 }

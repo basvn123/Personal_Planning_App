@@ -136,14 +136,16 @@ function Tab({
           ? "-ml-1 flex min-h-16 items-center justify-center rounded-r-sm py-3.5 pl-1 text-xs tracking-[0.01em] [writing-mode:vertical-rl]"
           : "rounded-t-sm px-3 py-1.5 text-xs",
         active
-          ? "bg-[var(--dye)] font-semibold"
+          ? orientation === "vertical"
+            ? "translate-x-0 bg-[var(--dye)] font-semibold shadow-[2px_1px_4px_oklch(0.15_0.04_163/0.35)]"
+            : "bg-[var(--dye)] font-semibold"
           : orientation === "vertical"
-            ? "-translate-x-0.5 bg-[color-mix(in_oklch,var(--dye)_86%,var(--cloth))] hover:translate-x-0"
+            ? "-translate-x-1.5 bg-[color-mix(in_oklch,var(--dye)_82%,var(--cloth))] hover:-translate-x-0.5"
             : "translate-y-0.5 bg-[color-mix(in_oklch,var(--dye)_86%,var(--cloth))]",
         isDragging && "z-10 shadow-lift",
       )}
     >
-      <span className={orientation === "vertical" ? "max-h-40 truncate" : "whitespace-nowrap"}>{s.name}</span>
+      <span title={s.name} className={orientation === "vertical" ? "max-h-44 overflow-hidden text-ellipsis whitespace-nowrap [inline-size:max-content]" : "whitespace-nowrap"}>{s.name}</span>
     </Link>
   );
 }

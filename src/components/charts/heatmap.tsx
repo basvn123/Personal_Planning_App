@@ -18,7 +18,7 @@ export function Heatmap({ days, today }: { days: { day: string; seconds: number 
   for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
   return (
     <TipArea>
-      <div className="flex gap-[3px] overflow-x-auto pb-1">
+      <div className="grid gap-[3px] pb-1" style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}>
         {weeks.map((w, i) => (
           <div key={i} className="flex flex-col gap-[3px]">
             {w.map((d) => (
@@ -48,7 +48,7 @@ function Cell({ d, isToday, future }: { d: { day: string; seconds: number }; isT
     <span
       {...(future ? {} : tip)}
       aria-label={`${formatDay(d.day, "d MMM")}: ${formatDuration(d.seconds)}`}
-      className={cx("size-3.5 rounded-[3px] outline-none", isToday && "ring-1 ring-ribbon-2 ring-offset-1 ring-offset-paper", future && "opacity-0")}
+      className={cx("aspect-square w-full max-w-7 rounded-[3px] outline-none", isToday && "ring-1 ring-ribbon-2 ring-offset-1 ring-offset-paper", future && "opacity-0")}
       style={{ background: `var(--heat-${level(d.seconds)})` }}
     />
   );

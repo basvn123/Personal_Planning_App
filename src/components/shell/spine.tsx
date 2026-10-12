@@ -78,7 +78,7 @@ export function SpineBar() {
       className="flex h-14 shrink-0 items-center justify-around border-t border-cloth-3/50 bg-cloth px-2 pb-[env(safe-area-inset-bottom)] lg:hidden"
       style={{ boxSizing: "content-box" }}
     >
-      {NAV.filter((item) => item.href === "/week" || item.href === "/dashboard").map((item) => (
+      {NAV.filter((item) => item.href !== "/import").map((item) => (
         <NavItem key={item.href} {...item} />
       ))}
       <button

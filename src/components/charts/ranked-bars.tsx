@@ -46,7 +46,7 @@ function Row({ d, max, total }: { d: RankedDatum; max: number; total: number }) 
       </span>
       <span {...tip} className="h-3 outline-none" aria-label={`${d.label} ${formatDuration(d.seconds)}`}>
         <span
-          className="block h-full rounded-r-[4px] bg-[var(--dye-deep)] transition-[width] duration-500 ease-out"
+          className="block h-full rounded-r-[4px] bg-[color-mix(in_oklch,var(--dye)_55%,var(--dye-deep))] transition-[width] duration-500 ease-out"
           style={{ width: `${Math.max(1.5, (d.seconds / max) * 100)}%` }}
         />
       </span>
