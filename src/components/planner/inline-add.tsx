@@ -25,7 +25,7 @@ export function InlineAdd({
   day,
   sectionId: fixedSection,
   compact,
-  placeholder = "Add a task",
+  placeholder = "Taak toevoegen",
   autoFocus,
   onDone,
 }: {
@@ -112,7 +112,7 @@ export function InlineAdd({
               {section.name}
             </span>
           )}
-          {date !== day && <span className="figures">{date ? formatDay(date, "EEE d") : "Backlog"}</span>}
+          {date !== day && <span className="figures">{date ? formatDay(date, "EEEEEE d") : "To-do"}</span>}
           {parsed.plannedStart && <span className="figures">{parsed.plannedStart}</span>}
           {parsed.plannedMinutes && <span className="figures">{formatMinutes(parsed.plannedMinutes)}</span>}
         </span>

@@ -56,7 +56,7 @@ export function Spread({
 
   return (
     <div className="flex h-full flex-col">
-      <div role="tablist" aria-label="Pages" className="flex shrink-0 gap-1 border-b border-rule bg-paper-2 p-1 lg:hidden">
+      <div role="tablist" aria-label="Pagina's" className="flex shrink-0 gap-1 border-b border-rule bg-paper-2 p-1 lg:hidden">
         {(["left", "right"] as const).map((side) => (
           <button
             key={side}

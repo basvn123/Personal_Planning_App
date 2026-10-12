@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Spread } from "@/components/shell/spread";
 import { SettingsAside, SettingsForm } from "@/components/settings/settings-form";
 import { AccountForm, PeopleManager } from "@/components/settings/account-forms";
+import { InfoButton } from "@/components/help/info-button";
 import { getSettings } from "@/server/queries/core";
 import { currentUser } from "@/server/auth";
 import { listPeople } from "@/server/actions/settings";
@@ -26,7 +27,10 @@ export default async function SettingsPage() {
       initial={!me.email || !me.hasPassword ? "left" : undefined}
       left={
         <div className="flex flex-col gap-9 px-5 pb-16 pt-6 lg:px-8">
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">Instellingen</h1>
+          <h1 className="flex items-center gap-1.5 text-xl font-semibold tracking-[-0.02em]">
+            Instellingen
+            <InfoButton topic="settings" />
+          </h1>
           <section aria-label="Account" className="flex max-w-lg flex-col gap-4">
             <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Account</h2>
             <AccountForm name={me.name} email={me.email} hasPassword={me.hasPassword} />

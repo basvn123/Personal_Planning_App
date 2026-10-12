@@ -26,9 +26,9 @@ export function TimeLog({
 }) {
   const [adding, setAdding] = useState(false);
   return (
-    <section aria-label="Time log" className="mt-7">
+    <section aria-label="Logboek" className="mt-7">
       <div className="flex h-8 items-center justify-between border-b border-rule-strong">
-        <h3 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Log</h3>
+        <h3 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Logboek</h3>
         <button
           type="button"
           onClick={() => setAdding((a) => !a)}
@@ -36,7 +36,7 @@ export function TimeLog({
           className="inline-flex h-7 items-center gap-1 rounded-xs px-1.5 text-xs text-ink-2 hover:bg-paper-3 hover:text-ink"
         >
           <Plus className="size-3.5" strokeWidth={1.75} />
-          Log time
+          Tijd loggen
         </button>
       </div>
       {adding && <AddEntry day={day} tasks={tasks} sections={sections} onDone={() => setAdding(false)} />}
@@ -45,7 +45,7 @@ export function TimeLog({
           <EntryRow key={e.id} entry={e} />
         ))}
       </ul>
-      {entries.length === 0 && !adding && <p className="py-3 text-sm text-ink-3">Nothing logged.</p>}
+      {entries.length === 0 && !adding && <p className="py-3 text-sm text-ink-3">Nog niets gelogd.</p>}
     </section>
   );
 }
@@ -66,8 +66,8 @@ function EntryRow({ entry }: { entry: LogEntry }) {
         <PopoverTrigger className="flex h-10 w-full items-center gap-3 text-left text-sm transition-colors hover:bg-paper-3/60">
           <span className="figures w-[6.5rem] shrink-0 text-ink-2">
             {entry.startClock}
-            <span className="text-ink-3">{" to "}</span>
-            {entry.endClock ?? "now"}
+            <span className="text-ink-3">{" tot "}</span>
+            {entry.endClock ?? "nu"}
           </span>
           <span className="size-2 shrink-0 rounded-[2px] bg-[var(--dye)]" />
           <span className="min-w-0 flex-1 truncate">{entry.task?.title ?? entry.section.name}</span>
@@ -86,14 +86,14 @@ function EntryRow({ entry }: { entry: LogEntry }) {
                   await updateEntry(entry.id, { day: entry.day, start, end: end || null });
                   setOpen(false);
                 } catch {
-                  setError("Check the times.");
+                  setError("Kijk de tijden na.");
                 }
               });
             }}
           >
             <div className="grid grid-cols-2 gap-2">
-              <TimeField label="From" value={start} onChange={setStart} />
-              <TimeField label="To" value={end} onChange={setEnd} required={!running} />
+              <TimeField label="Van" value={start} onChange={setStart} />
+              <TimeField label="Tot" value={end} onChange={setEnd} required={!running} />
             </div>
             {error && <p className="text-sm text-danger">{error}</p>}
             <div className="flex items-center gap-2">
@@ -104,10 +104,10 @@ function EntryRow({ entry }: { entry: LogEntry }) {
                 onClick={() => run(async () => deleteEntry(entry.id))}
               >
                 <Trash2 className="size-3.5" strokeWidth={1.75} />
-                Delete
+                Verwijderen
               </Button>
               <Button type="submit" variant="primary" className="ml-auto" disabled={pending}>
-                Save
+                Opslaan
               </Button>
             </div>
           </form>
@@ -154,16 +154,16 @@ function AddEntry({
             setEnd("");
             onDone();
           } catch {
-            setError("Could not log that entry.");
+            setError("Loggen mislukt.");
           }
         });
       }}
     >
       <label className="col-span-2 flex flex-col gap-1 sm:col-span-1">
-        <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">For</span>
+        <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Voor</span>
         <select value={target} onChange={(e) => setTarget(e.target.value)} className={inputClass}>
           {tasks.length > 0 && (
-            <optgroup label="Tasks this day">
+            <optgroup label="Taken van deze dag">
               {tasks.map((t) => (
                 <option key={t.id} value={`t:${t.id}`}>
                   {t.title}
@@ -171,7 +171,7 @@ function AddEntry({
               ))}
             </optgroup>
           )}
-          <optgroup label="Section only">
+          <optgroup label="Alleen sectie">
             {sections.map((s) => (
               <option key={s.id} value={`s:${s.id}`}>
                 {s.name}
@@ -180,10 +180,10 @@ function AddEntry({
           </optgroup>
         </select>
       </label>
-      <TimeField label="From" value={start} onChange={setStart} required />
-      <TimeField label="To" value={end} onChange={setEnd} required />
+      <TimeField label="Van" value={start} onChange={setStart} required />
+      <TimeField label="Tot" value={end} onChange={setEnd} required />
       <Button type="submit" variant="primary" disabled={pending} className="col-span-2 h-9 sm:col-span-1">
-        Log
+        Loggen
       </Button>
       {error && <p className="col-span-full text-sm text-danger">{error}</p>}
     </form>

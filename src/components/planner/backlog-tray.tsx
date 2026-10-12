@@ -17,7 +17,7 @@ export function BacklogTray() {
     .filter((g) => g.items.length > 0);
 
   return (
-    <section aria-label="Backlog" className="mt-7">
+    <section aria-label="To-do" className="mt-7">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -25,12 +25,12 @@ export function BacklogTray() {
         className="flex h-8 w-full items-center gap-1.5 border-b border-rule-strong text-left"
       >
         <ChevronRight className={cx("size-3.5 text-ink-3 transition-transform duration-200", open && "rotate-90")} strokeWidth={2} />
-        <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Backlog</span>
+        <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">To-do</span>
         <span className="figures ml-auto text-xs text-ink-3">{backlog.length}</span>
       </button>
       {open && (
         <div className="pt-1">
-          {groups.length === 0 && <p className="py-3 text-sm text-ink-3">Every backlog is empty.</p>}
+          {groups.length === 0 && <p className="py-3 text-sm text-ink-3">{"Geen open to-do's."}</p>}
           {groups.map(({ section, items }) => (
             <div key={section.id} className="py-2" style={dyeVars(section.color)}>
               <h4 className="mb-1 flex items-center gap-1.5 text-xs font-medium text-ink-2">

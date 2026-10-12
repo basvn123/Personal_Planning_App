@@ -6,7 +6,7 @@ import { cx } from "@/lib/cx";
 
 export function DyePicker({ value, onChange }: { value: string; onChange: (dye: string) => void }) {
   return (
-    <div role="radiogroup" aria-label="Color" className="grid grid-cols-6 gap-1.5">
+    <div role="radiogroup" aria-label="Kleur" className="grid grid-cols-6 gap-1.5">
       {DYES.map((dye) => (
         <button
           key={dye}

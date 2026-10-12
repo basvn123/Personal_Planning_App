@@ -57,7 +57,7 @@ export function MarkdownEditor({
       syntaxHighlighting(highlight),
       theme,
       EditorView.lineWrapping,
-      EditorView.contentAttributes.of({ "aria-label": "Document body", spellcheck: "true" }),
+      EditorView.contentAttributes.of({ "aria-label": "Inhoud", spellcheck: "true" }),
       keymap.of([
         {
           key: "Mod-s",
@@ -78,7 +78,7 @@ export function MarkdownEditor({
       onChange={onChange}
       extensions={extensions}
       autoFocus={autoFocus}
-      placeholder="Write in markdown"
+      placeholder="Schrijf in markdown"
       basicSetup={{
         lineNumbers: false,
         foldGutter: false,

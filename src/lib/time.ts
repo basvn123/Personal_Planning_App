@@ -1,5 +1,6 @@
 import { TZDate } from "@date-fns/tz";
 import { addDays, format, startOfWeek } from "date-fns";
+import { nl } from "date-fns/locale";
 
 export const DEFAULT_TZ = "Europe/Brussels";
 
@@ -16,7 +17,7 @@ export function parseDay(day: string): Date {
 
 export function formatDay(day: string, pattern: string): string {
   const date = parseDay(day);
-  return format(new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()), pattern);
+  return format(new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()), pattern, { locale: nl });
 }
 
 export function shiftDay(day: string, days: number): string {

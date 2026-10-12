@@ -23,17 +23,17 @@ export function DailyBars({ data, today }: { data: DayDatum[]; today: string }) 
             key={d.day}
             className={cx("text-center text-2xs uppercase tracking-[0.06em]", d.day === today ? "text-ribbon-ink" : "text-ink-3")}
           >
-            {formatDay(d.day, "EEE")}
+            {formatDay(d.day, "EEEEEE")}
           </span>
         ))}
       </div>
       <table className="sr-only">
-        <caption>Logged and planned hours per day</caption>
+        <caption>Gelogde en geplande uren per dag</caption>
         <thead>
           <tr>
-            <th>Day</th>
-            <th>Logged</th>
-            <th>Planned</th>
+            <th>Dag</th>
+            <th>Gelogd</th>
+            <th>Gepland</th>
           </tr>
         </thead>
         <tbody>
@@ -54,11 +54,11 @@ function Bar({ d, max, isToday, label }: { d: DayDatum; max: number; isToday: bo
   const tip = useTip(
     <span className="flex flex-col gap-0.5">
       <span className="font-medium">{formatDay(d.day, "EEEE d MMM")}</span>
-      <span className="figures">Logged {formatDuration(d.seconds)}</span>
-      {d.plannedSeconds > 0 && <span className="figures">Planned {formatDuration(d.plannedSeconds)}</span>}
+      <span className="figures">Gelogd {formatDuration(d.seconds)}</span>
+      {d.plannedSeconds > 0 && <span className="figures">Gepland {formatDuration(d.plannedSeconds)}</span>}
       {d.total > 0 && (
         <span className="figures">
-          {d.done}/{d.total} tasks done
+          {d.done}/{d.total} taken klaar
         </span>
       )}
     </span>,
@@ -66,7 +66,7 @@ function Bar({ d, max, isToday, label }: { d: DayDatum; max: number; isToday: bo
   const h = (d.seconds / max) * 100;
   const p = (d.plannedSeconds / max) * 100;
   return (
-    <div {...tip} aria-label={`${formatDay(d.day, "EEEE")}: ${formatDuration(d.seconds)} logged`} className="relative flex h-full items-end justify-center outline-none">
+    <div {...tip} aria-label={`${formatDay(d.day, "EEEE")}: ${formatDuration(d.seconds)} gelogd`} className="relative flex h-full items-end justify-center outline-none">
       {d.plannedSeconds > 0 && (
         <span
           aria-hidden

@@ -44,7 +44,7 @@ export function SectionSettings({
       try {
         await fn();
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Something went wrong.");
+        setError(e instanceof Error ? e.message : "Er ging iets mis.");
       }
     });
   }
@@ -66,7 +66,7 @@ export function SectionSettings({
       }}
     >
       <PopoverTrigger
-        aria-label="Section settings"
+        aria-label="Sectie-instellingen"
         className="grid size-8 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink"
       >
         <Settings2 className="size-4" strokeWidth={1.75} />
@@ -79,7 +79,7 @@ export function SectionSettings({
               rename();
             }}
           >
-            <Label>Name</Label>
+            <Label>Naam</Label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -89,17 +89,17 @@ export function SectionSettings({
             />
           </form>
           <div>
-            <Label>Color</Label>
+            <Label>Kleur</Label>
             <DyePicker value={section.color} onChange={(color) => run(() => updateSection(section.id, { color }))} />
           </div>
           <div>
-            <Label>Inside</Label>
+            <Label>Valt onder</Label>
             <select
               value={section.parentId ?? ""}
               onChange={(e) => run(() => updateSection(section.id, { parentId: e.target.value || null }))}
               className={inputClass}
             >
-              <option value="">Top level</option>
+              <option value="">Bovenste niveau</option>
               {parents.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -120,7 +120,7 @@ export function SectionSettings({
                 })
               }
             >
-              {section.archived ? "Restore" : "Archive"}
+              {section.archived ? "Terugzetten" : "Archiveren"}
             </Button>
             {confirmDelete ? (
               <Button
@@ -134,17 +134,17 @@ export function SectionSettings({
                   })
                 }
               >
-                Delete for good
+                Definitief verwijderen
               </Button>
             ) : (
               <Button variant="ghost" className="ml-auto text-danger hover:text-danger" onClick={() => setConfirmDelete(true)}>
-                Delete
+                Verwijderen
               </Button>
             )}
           </div>
           {confirmDelete && (
             <p className="-mt-2 text-xs text-ink-2">
-              Removes its tasks, time entries and any documents that live only here.
+              Verwijdert ook de taken, gelogde tijd en documenten die alleen hier staan.
             </p>
           )}
         </div>

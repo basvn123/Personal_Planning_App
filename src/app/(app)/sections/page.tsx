@@ -5,6 +5,7 @@ import { nl } from "date-fns/locale";
 import { FileText, ListTodo, Paperclip } from "lucide-react";
 import { Spread } from "@/components/shell/spread";
 import { NewSectionInline } from "@/components/sections/new-section-inline";
+import { InfoButton } from "@/components/help/info-button";
 import { FileIcon } from "@/components/files/file-icon";
 import { getSettings } from "@/server/queries/core";
 import { getRecentLibrary, getSectionSummaries, type SectionSummary } from "@/server/queries/overview";
@@ -33,7 +34,10 @@ export default async function SectionsPage() {
 
   const left = (
     <div className="flex min-h-full flex-col px-5 pb-12 pt-6 lg:px-8">
-      <h1 className="text-xl font-semibold tracking-[-0.02em]">Secties</h1>
+      <h1 className="flex items-center gap-1.5 text-xl font-semibold tracking-[-0.02em]">
+        Secties
+        <InfoButton topic="sections" />
+      </h1>
       <div className="mt-6 grid grid-cols-[1fr_repeat(3,3rem)_3.5rem] items-end gap-x-2 border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">
         <span>Naam</span>
         <span className="text-right" title="Open to-do's">To-do</span>

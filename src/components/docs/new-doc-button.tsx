@@ -24,7 +24,7 @@ export function NewDocButton({ sectionId, slug, variant = "icon" }: { sectionId:
         className="inline-flex h-8 items-center gap-1.5 rounded-sm bg-cloth px-3 text-sm font-medium text-cloth-ink transition-colors hover:bg-cloth-3 disabled:opacity-50"
       >
         <Plus className="size-4" strokeWidth={2} />
-        New document
+        Nieuw document
       </button>
     );
   return (
@@ -32,8 +32,8 @@ export function NewDocButton({ sectionId, slug, variant = "icon" }: { sectionId:
       type="button"
       onClick={create}
       disabled={pending}
-      aria-label="New document"
-      title="New document"
+      aria-label="Nieuw document"
+      title="Nieuw document"
       className={cx(
         "grid size-7 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink disabled:opacity-40",
       )}

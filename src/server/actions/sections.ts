@@ -96,7 +96,7 @@ export async function updateSection(
           select s.id from sections s join tree t on s.parent_id = t.id
         ) select id from tree
       `);
-      if (descendants.some((d) => d.id === parentId)) throw new Error("A section cannot sit inside itself.");
+      if (descendants.some((d) => d.id === parentId)) throw new Error("Een sectie kan niet in zichzelf zitten.");
       values.parentId = parentId;
     }
   }

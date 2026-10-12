@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { docId } = await params;
   if (!z.uuid().safeParse(docId).success) return {};
   const doc = await getDocument(docId);
-  return { title: doc?.title || "Untitled" };
+  return { title: doc?.title || "Zonder titel" };
 }
 
 export default async function DocPage({

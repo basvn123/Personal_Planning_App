@@ -20,8 +20,8 @@ export function NewProject({ sections, defaultSectionId }: { sections: { id: str
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
-        aria-label="New project"
-        title="New project"
+        aria-label="Nieuw project"
+        title="Nieuw project"
         className="grid size-7 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink"
       >
         <Plus className="size-4" strokeWidth={1.75} />
@@ -32,7 +32,7 @@ export function NewProject({ sections, defaultSectionId }: { sections: { id: str
           onSubmit={(e) => {
             e.preventDefault();
             const t = Number(target);
-            if (!name.trim() || !(t > 0) || !unit.trim()) return setError("Name, target and unit are needed.");
+            if (!name.trim() || !(t > 0) || !unit.trim()) return setError("Naam, doel en eenheid zijn nodig.");
             setError(null);
             run(async () => {
               try {
@@ -43,14 +43,14 @@ export function NewProject({ sections, defaultSectionId }: { sections: { id: str
                 setDue("");
                 setOpen(false);
               } catch {
-                setError("Could not create the project.");
+                setError("Project maken mislukt.");
               }
             });
           }}
         >
-          <input autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="Goal, e.g. Italian course" aria-label="Name" className={inputClass} />
+          <input autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="Doel, bv. cursus Italiaans" aria-label="Naam" className={inputClass} />
           {!defaultSectionId && (
-            <select value={sectionId} onChange={(e) => setSectionId(e.target.value)} aria-label="Section" className={inputClass}>
+            <select value={sectionId} onChange={(e) => setSectionId(e.target.value)} aria-label="Sectie" className={inputClass}>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -59,16 +59,16 @@ export function NewProject({ sections, defaultSectionId }: { sections: { id: str
             </select>
           )}
           <div className="grid grid-cols-2 gap-2">
-            <input type="number" min={1} step="any" value={target} onChange={(e) => setTarget(e.target.value)} placeholder="200" aria-label="Target" className={cx(inputClass, "figures")} />
-            <input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="lessons" aria-label="Unit" className={inputClass} />
+            <input type="number" min={1} step="any" value={target} onChange={(e) => setTarget(e.target.value)} placeholder="200" aria-label="Doel" className={cx(inputClass, "figures")} />
+            <input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="lessen" aria-label="Eenheid" className={inputClass} />
           </div>
           <label className="flex flex-col gap-1">
-            <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Due (optional)</span>
+            <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Deadline (optioneel)</span>
             <input type="date" value={due} onChange={(e) => setDue(e.target.value)} className={cx(inputClass, "figures")} />
           </label>
           {error && <p className="text-sm text-danger">{error}</p>}
           <Button type="submit" variant="primary" disabled={pending}>
-            Create
+            Maken
           </Button>
         </form>
       </PopoverContent>

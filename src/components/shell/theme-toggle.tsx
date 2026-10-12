@@ -29,7 +29,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      aria-label={theme === "dark" ? "Light pages" : "Dark pages"}
+      aria-label={theme === "dark" ? "Lichte pagina's" : "Donkere pagina's"}
       className="grid size-10 place-items-center rounded-md text-cloth-ink-2 transition-colors duration-150 hover:bg-cloth-3/60 hover:text-cloth-ink"
     >
       <Icon className="size-[18px]" strokeWidth={1.75} />

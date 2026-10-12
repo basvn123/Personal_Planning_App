@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import { createTask } from "@/server/actions/tasks";
 import { parseQuickAdd } from "@/lib/quick-add";
 import { formatDay, formatMinutes } from "@/lib/time";
-import { CalendarRange, ChartColumn, CornerDownLeft, FileText, FileUp, Plus, Repeat, Settings } from "lucide-react";
+import { CalendarRange, ChartColumn, CornerDownLeft, FileText, FileUp, LibraryBig, Plus, Repeat, Settings } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { dyeVars } from "@/lib/dyes";
 import type { TabSection } from "./fore-edge";
@@ -73,21 +73,21 @@ export function CommandPalette({
           aria-describedby={undefined}
           className="fixed left-1/2 top-[12vh] z-50 w-[min(36rem,calc(100vw-1.5rem))] -translate-x-1/2 overflow-hidden rounded-lg border border-rule bg-paper shadow-lift data-[state=open]:animate-[rise_180ms_var(--ease-out)]"
         >
-          <Dialog.Title className="sr-only">Commands</Dialog.Title>
+          <Dialog.Title className="sr-only">Opdrachten</Dialog.Title>
           <Command loop className="flex flex-col">
             <Command.Input
               autoFocus
               value={search}
               onValueChange={setSearch}
-              placeholder="Jump somewhere, or add a task with #section"
+              placeholder="Ga naar een pagina, of voeg een taak toe met #sectie"
               className="h-12 border-b border-rule bg-transparent px-4 text-md outline-none"
             />
             <Command.List className="max-h-[min(24rem,60vh)] overflow-y-auto p-1.5">
               <Command.Empty className="px-3 py-6 text-center text-sm text-ink-3">
-                No match.
+                Niets gevonden.
               </Command.Empty>
               {parsed.title && quickSection && (
-                <Command.Group heading="Add task" className={groupClass} forceMount>
+                <Command.Group heading="Taak toevoegen" className={groupClass} forceMount>
                   <Item value={`__add ${search}`} onSelect={addTask} forceMount>
                     <Plus className="size-4 text-ink-3" strokeWidth={1.75} />
                     <span className="min-w-0 flex-1 truncate text-ink">{parsed.title}</span>
@@ -96,7 +96,7 @@ export function CommandPalette({
                         {quickSection.name}
                       </span>
                       <span className="figures">
-                        {parsed.plannedDate === null ? "Backlog" : formatDay(parsed.plannedDate ?? today, "EEE d")}
+                        {parsed.plannedDate === null ? "To-do" : formatDay(parsed.plannedDate ?? today, "EEEEEE d")}
                       </span>
                       {parsed.plannedStart && <span className="figures">{parsed.plannedStart}</span>}
                       {parsed.plannedMinutes && <span className="figures">{formatMinutes(parsed.plannedMinutes)}</span>}
@@ -104,16 +104,17 @@ export function CommandPalette({
                   </Item>
                 </Command.Group>
               )}
-              <Command.Group heading="Go to" className={groupClass}>
+              <Command.Group heading="Ga naar" className={groupClass}>
                 <Item onSelect={() => go("/week")}>
                   <CalendarRange className="size-4 text-ink-3" strokeWidth={1.75} />
-                  This week
+                  Deze week
                 </Item>
                 {[
+                  { href: "/sections", label: "Alle secties", icon: LibraryBig },
                   { href: "/dashboard", label: "Dashboard", icon: ChartColumn },
-                  { href: "/schedules", label: "Schedules", icon: Repeat },
-                  { href: "/import", label: "Import a schedule file", icon: FileUp },
-                  { href: "/settings", label: "Settings and calendar sync", icon: Settings },
+                  { href: "/schedules", label: "Vaste planning", icon: Repeat },
+                  { href: "/import", label: "Schema importeren", icon: FileUp },
+                  { href: "/settings", label: "Instellingen en agenda", icon: Settings },
                 ].map(({ href, label, icon: Icon }) => (
                   <Item key={href} onSelect={() => go(href)}>
                     <Icon className="size-4 text-ink-3" strokeWidth={1.75} />
@@ -131,11 +132,11 @@ export function CommandPalette({
                 ))}
               </Command.Group>
               {docs.length > 0 && (
-                <Command.Group heading="Documents" className={groupClass}>
+                <Command.Group heading="Documenten" className={groupClass}>
                   {docs.map((d) => (
-                    <Item key={d.id} value={`doc ${d.title || "Untitled"} ${d.id}`} onSelect={() => go(`/s/${d.slug}/d/${d.id}`)}>
+                    <Item key={d.id} value={`doc ${d.title || "Zonder titel"} ${d.id}`} onSelect={() => go(`/s/${d.slug}/d/${d.id}`)}>
                       <FileText className="size-4 text-ink-3" strokeWidth={1.75} />
-                      <span className="truncate">{d.title || "Untitled"}</span>
+                      <span className="truncate">{d.title || "Zonder titel"}</span>
                     </Item>
                   ))}
                 </Command.Group>

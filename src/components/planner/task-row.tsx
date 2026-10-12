@@ -55,7 +55,7 @@ export function TaskRow({
               done={done}
               color={task.section.color}
               onToggle={() => toggle(task.id)}
-              label={done ? `Reopen ${task.title}` : `Complete ${task.title}`}
+              label={done ? `${task.title} heropenen` : `${task.title} afvinken`}
               size={variant === "week" ? "sm" : "md"}
             />
           </span>
@@ -75,7 +75,7 @@ export function TaskRow({
                   <span className="size-2 rounded-[2px] bg-[var(--dye)] ring-1 ring-[color-mix(in_oklch,var(--dye-deep)_35%,transparent)]" />
                   {task.section.name}
                 </span>
-                {task.scheduleId && <Repeat className="size-3" strokeWidth={1.75} aria-label="From a schedule" />}
+                {task.scheduleId && <Repeat className="size-3" strokeWidth={1.75} aria-label="Uit vaste planning" />}
                 {task.docs.length > 0 && (
                   <span className="inline-flex items-center gap-1">
                     <FileText className="size-3" strokeWidth={1.75} />
@@ -83,9 +83,9 @@ export function TaskRow({
                   </span>
                 )}
                 {isRunning ? (
-                  <span className="figures text-ribbon-ink">{formatClock(live)} running</span>
+                  <span className="figures text-ribbon-ink">{formatClock(live)} loopt</span>
                 ) : (
-                  task.loggedSeconds > 0 && <span className="figures">{formatDuration(task.loggedSeconds)} logged</span>
+                  task.loggedSeconds > 0 && <span className="figures">{formatDuration(task.loggedSeconds)} gelogd</span>
                 )}
               </span>
             )}

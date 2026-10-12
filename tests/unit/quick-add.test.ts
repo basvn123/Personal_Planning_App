@@ -47,3 +47,23 @@ describe("parseQuickAdd", () => {
     expect(parseQuickAdd("Idea", today, sections).plannedDate).toBeUndefined();
   });
 });
+
+describe("parseQuickAdd in Dutch", () => {
+  it("understands Dutch day words", () => {
+    expect(parseQuickAdd("Hoofdstuk 3 lezen #italian morgen 14:00 45m", today, sections)).toEqual({
+      title: "Hoofdstuk 3 lezen",
+      sectionId: "it",
+      plannedDate: "2026-10-13",
+      plannedStart: "14:00",
+      plannedMinutes: 45,
+    });
+    expect(parseQuickAdd("Zwemmen vr", today, sections).plannedDate).toBe("2026-10-16");
+    expect(parseQuickAdd("Zwemmen donderdag", today, sections).plannedDate).toBe("2026-10-15");
+    expect(parseQuickAdd("Boek overmorgen", today, sections).plannedDate).toBe("2026-10-14");
+    expect(parseQuickAdd("Idee later", today, sections).plannedDate).toBeNull();
+    expect(parseQuickAdd("Dit vandaag", today, sections).plannedDate).toBe(today);
+  });
+  it("reads two-letter day words as days", () => {
+    expect(parseQuickAdd("Mail naar Do sturen", today, sections).title).toBe("Mail naar sturen");
+  });
+});

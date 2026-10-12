@@ -24,8 +24,8 @@ export function PlayButton({
         if (active) stop();
         else start({ task, section });
       }}
-      aria-label={active ? `Stop timer on ${task.title}` : `Start timer on ${task.title}`}
-      title={active ? "Stop" : "Start timer"}
+      aria-label={active ? `Timer stoppen voor ${task.title}` : `Timer starten voor ${task.title}`}
+      title={active ? "Stoppen" : "Timer starten"}
       className={cx(
         "grid size-7 shrink-0 place-items-center rounded-xs transition-[background-color,color,opacity] duration-150",
         active

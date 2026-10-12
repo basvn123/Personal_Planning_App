@@ -41,13 +41,13 @@ export function SettingsForm({
 
   return (
     <div className="flex max-w-lg flex-col gap-9">
-      <Group title="Time">
-        <Row label="Timezone">
+      <Group title="Tijd">
+        <Row label="Tijdzone">
           <select
             value={timezone}
             onChange={(e) => run(() => updateSettings({ timezone: e.target.value }))}
             className={inputClass}
-            aria-label="Timezone"
+            aria-label="Tijdzone"
           >
             {zones.map((z) => (
               <option key={z} value={z}>
@@ -56,11 +56,11 @@ export function SettingsForm({
             ))}
           </select>
         </Row>
-        <Row label="Week starts on">
-          <div role="radiogroup" aria-label="Week starts on" className="flex rounded-sm bg-paper-3 p-0.5">
+        <Row label="Week begint op">
+          <div role="radiogroup" aria-label="Week begint op" className="flex rounded-sm bg-paper-3 p-0.5">
             {[
-              [1, "Monday"],
-              [0, "Sunday"],
+              [1, "maandag"],
+              [0, "zondag"],
             ].map(([v, label]) => (
               <button
                 key={v}
@@ -80,12 +80,12 @@ export function SettingsForm({
         </Row>
       </Group>
 
-      <Group title="Calendar">
-        <Row label="Subscription link">
+      <Group title="Agenda">
+        <Row label="Abonnementslink">
           <div className="flex gap-1.5">
-            <input readOnly value={feed} onFocus={(e) => e.target.select()} aria-label="Subscription link" className={cx(inputClass, "figures truncate text-xs")} />
+            <input readOnly value={feed} onFocus={(e) => e.target.select()} aria-label="Abonnementslink" className={cx(inputClass, "figures truncate text-xs")} />
             <Button
-              aria-label="Copy link"
+              aria-label="Link kopiëren"
               onClick={async () => {
                 await navigator.clipboard.writeText(feed);
                 setCopied(true);
@@ -101,14 +101,14 @@ export function SettingsForm({
             href={webcal || undefined}
             className="inline-flex h-8 items-center gap-1.5 rounded-sm bg-cloth px-3 text-sm font-medium text-cloth-ink transition-colors hover:bg-cloth-3"
           >
-            Subscribe on this device
+            Abonneren op dit toestel
           </a>
           <a
             href={feed ? `${feed}?from=${weekFrom}&to=${weekTo}&download=1` : undefined}
             className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-rule-strong bg-paper px-3 text-sm font-medium text-ink transition-colors hover:bg-paper-3"
           >
             <Download className="size-3.5" strokeWidth={1.75} />
-            This week as .ics
+            Deze week als .ics
           </a>
           {confirmRotate ? (
             <Button
@@ -121,12 +121,12 @@ export function SettingsForm({
                 })
               }
             >
-              Replace link, old one stops working
+              Nieuwe link, de oude stopt
             </Button>
           ) : (
             <Button variant="ghost" onClick={() => setConfirmRotate(true)}>
               <RefreshCw className="size-3.5" strokeWidth={1.75} />
-              New link
+              Nieuwe link
             </Button>
           )}
         </div>
@@ -179,9 +179,9 @@ export function SettingsAside() {
 
   return (
     <div className="flex max-w-lg flex-col gap-9">
-      <Group title="Pages">
-        <Row label="Appearance">
-          <div role="radiogroup" aria-label="Appearance" className="flex rounded-sm bg-paper-3 p-0.5">
+      <Group title="Weergave">
+        <Row label="Uiterlijk">
+          <div role="radiogroup" aria-label="Uiterlijk" className="flex rounded-sm bg-paper-3 p-0.5">
             {(["system", "light", "dark"] as const).map((t) => (
               <button
                 key={t}
@@ -194,24 +194,24 @@ export function SettingsAside() {
                   theme === t ? "bg-paper font-medium text-ink shadow-[0_1px_2px_oklch(0.2_0.02_258/0.12)]" : "text-ink-2",
                 )}
               >
-                {{ system: "Match device", light: "Light", dark: "Dark" }[t]}
+                {{ system: "Zoals toestel", light: "Licht", dark: "Donker" }[t]}
               </button>
             ))}
           </div>
         </Row>
       </Group>
 
-      <Group title="Data">
+      <Group title="Gegevens">
         <a href="/import" className="inline-flex h-8 items-center gap-1.5 self-start rounded-sm border border-rule-strong bg-paper px-3 text-sm font-medium text-ink transition-colors hover:bg-paper-3">
-          Import a schedule file
+          Schema importeren
         </a>
       </Group>
 
-      <Group title="Session">
+      <Group title="Sessie">
         <form action={signOut}>
           <Button type="submit" variant="ghost">
             <LogOut className="size-3.5" strokeWidth={1.75} />
-            Lock
+            Afmelden
           </Button>
         </form>
       </Group>

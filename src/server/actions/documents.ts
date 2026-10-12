@@ -64,7 +64,7 @@ export async function linkDocumentSection(documentId: string, sectionId: string,
       .select({ count: sql<number>`count(*)::int` })
       .from(documentSections)
       .where(eq(documentSections.documentId, documentId));
-    if (count <= 1) throw new Error("A document needs at least one section.");
+    if (count <= 1) throw new Error("Een document hoort bij minstens één sectie.");
     await db
       .delete(documentSections)
       .where(and(eq(documentSections.documentId, documentId), eq(documentSections.sectionId, sectionId)));

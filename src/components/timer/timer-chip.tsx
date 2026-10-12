@@ -48,8 +48,8 @@ function StopButton({ onStop }: { onStop: () => void }) {
     <button
       type="button"
       onClick={onStop}
-      aria-label="Stop timer"
-      title="Stop timer"
+      aria-label="Timer stoppen"
+      title="Timer stoppen"
       className={cx(
         "grid size-8 shrink-0 place-items-center rounded-xs transition-colors hover:bg-[oklch(0.22_0.04_70/0.12)]",
       )}

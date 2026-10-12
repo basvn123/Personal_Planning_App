@@ -66,7 +66,7 @@ export function ForeEdge({ sections, activeRoot }: { sections: TabSection[]; act
   const activeTab = activeSlug ? (activeRoot?.[activeSlug] ?? activeSlug) : null;
   return (
     <nav
-      aria-label="Sections"
+      aria-label="Secties"
       className="hidden h-dvh w-12 shrink-0 flex-col gap-1 overflow-y-auto py-6 pr-1 [scrollbar-width:none] lg:flex"
     >
       <DndContext id="fore-edge" sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
@@ -88,7 +88,7 @@ export function TabStrip({ sections, activeRoot }: { sections: TabSection[]; act
   const activeTab = activeSlug ? (activeRoot?.[activeSlug] ?? activeSlug) : null;
   return (
     <nav
-      aria-label="Sections"
+      aria-label="Secties"
       className="flex shrink-0 items-end gap-1 overflow-x-auto bg-cloth px-3 pt-[max(0.5rem,env(safe-area-inset-top))] [scrollbar-width:none] lg:hidden"
     >
       <DndContext id="tab-strip" sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>

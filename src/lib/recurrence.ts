@@ -42,9 +42,9 @@ export function occurrences(rule: string, from: string, to: string): string[] {
 }
 
 export function describeRule(r: Recurrence): string {
-  const names: Record<WeekdayCode, string> = { MO: "Mon", TU: "Tue", WE: "Wed", TH: "Thu", FR: "Fri", SA: "Sat", SU: "Sun" };
+  const names: Record<WeekdayCode, string> = { MO: "ma", TU: "di", WE: "wo", TH: "do", FR: "vr", SA: "za", SU: "zo" };
   const ordered = WEEKDAY_CODES.filter((d) => r.days.includes(d));
   const days =
-    ordered.length === 7 ? "Every day" : ordered.length === 5 && !ordered.includes("SA") && !ordered.includes("SU") ? "Weekdays" : ordered.map((d) => names[d]).join(", ");
-  return r.interval > 1 ? `${days}, every ${r.interval} weeks` : days;
+    ordered.length === 7 ? "Elke dag" : ordered.length === 5 && !ordered.includes("SA") && !ordered.includes("SU") ? "Weekdagen" : ordered.map((d) => names[d]).join(", ");
+  return r.interval > 1 ? `${days}, om de ${r.interval} weken` : days;
 }

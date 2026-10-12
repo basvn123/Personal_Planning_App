@@ -22,8 +22,8 @@ export function RouteButton({ taskId, title, className }: { taskId: string; titl
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
-        aria-label={`Plan ${title}`}
-        title="Plan on a day"
+        aria-label={`${title} inplannen`}
+        title="Op een dag inplannen"
         onClick={(e) => e.stopPropagation()}
         className={cx(
           "grid size-7 shrink-0 place-items-center rounded-xs text-ink-3 transition-colors hover:bg-paper-3 hover:text-ink",
@@ -34,8 +34,8 @@ export function RouteButton({ taskId, title, className }: { taskId: string; titl
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[17rem]">
         <div className="mb-2 flex gap-1">
-          <Quick onClick={() => send(today)}>Today</Quick>
-          <Quick onClick={() => send(shiftDay(today, 1))}>Tomorrow</Quick>
+          <Quick onClick={() => send(today)}>Vandaag</Quick>
+          <Quick onClick={() => send(shiftDay(today, 1))}>Morgen</Quick>
         </div>
         <div className="grid grid-cols-7 gap-1">
           {days.map((d) => (
@@ -56,7 +56,7 @@ export function RouteButton({ taskId, title, className }: { taskId: string; titl
         </div>
         <input
           type="date"
-          aria-label="Pick a date"
+          aria-label="Kies een datum"
           min={today}
           onChange={(e) => e.target.value && send(e.target.value)}
           className={cx(inputClass, "figures mt-2")}

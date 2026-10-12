@@ -32,7 +32,7 @@ export function TagInput({
           #{tag}
           <button
             type="button"
-            aria-label={`Remove ${tag}`}
+            aria-label={`${tag} verwijderen`}
             onClick={() => onChange(value.filter((v) => v !== tag))}
             className="grid size-4 place-items-center rounded-[2px] text-ink-3 hover:bg-rule hover:text-ink"
           >
@@ -57,8 +57,8 @@ export function TagInput({
           }
         }}
         onBlur={() => draft && add(draft)}
-        placeholder={value.length ? "" : "Add tag"}
-        aria-label="Add tag"
+        placeholder={value.length ? "" : "Label toevoegen"}
+        aria-label="Label toevoegen"
         className="h-6 w-24 min-w-0 bg-transparent text-xs text-ink outline-none placeholder:text-ink-3"
       />
       <datalist id={listId}>

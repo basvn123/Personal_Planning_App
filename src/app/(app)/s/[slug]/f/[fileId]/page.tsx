@@ -10,6 +10,7 @@ import { requireUserId } from "@/server/auth";
 import { canShowInline, fileKind, formatBytes } from "@/lib/files";
 import { FileActions, FileTitle } from "@/components/files/file-actions";
 import { FileIcon } from "@/components/files/file-icon";
+import { InfoButton } from "@/components/help/info-button";
 
 type Params = Promise<{ slug: string; fileId: string }>;
 
@@ -45,6 +46,7 @@ export default async function FilePage({ params }: { params: Params }) {
             {formatBytes(file.size)} · {format(file.createdAt, "d MMMM yyyy", { locale: nl })}
           </p>
         </div>
+        <InfoButton topic="file" align="end" />
         <FileActions id={file.id} slug={decodeURIComponent(slug)} />
       </header>
 

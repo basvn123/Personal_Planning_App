@@ -66,16 +66,16 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
             (e.target as HTMLTextAreaElement).blur();
           }
         }}
-        aria-label="Task title"
+        aria-label="Taak"
         className="w-full resize-none bg-transparent text-md font-medium leading-snug text-ink outline-none [field-sizing:content]"
       />
 
       <div className="grid grid-cols-2 gap-2">
-        <Field label="Section" className="col-span-2">
+        <Field label="Sectie" className="col-span-2">
           <select
             value={task.section.id}
             disabled={temp}
-            aria-label="Section"
+            aria-label="Sectie"
             onChange={(e) => patch(task.id, { sectionId: e.target.value })}
             className={inputClass}
           >
@@ -86,27 +86,27 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
             ))}
           </select>
         </Field>
-        <Field label="Day">
+        <Field label="Dag">
           <input
             type="date"
             value={task.plannedDate ?? ""}
             disabled={temp}
-            aria-label="Day"
+            aria-label="Dag"
             onChange={(e) => e.target.value && patch(task.id, { plannedDate: e.target.value })}
             className={cx(inputClass, "figures")}
           />
         </Field>
-        <Field label="Start">
+        <Field label="Begin">
           <input
             type="time"
             value={task.plannedStart ?? ""}
             disabled={temp}
-            aria-label="Start time"
+            aria-label="Begintijd"
             onChange={(e) => patch(task.id, { plannedStart: e.target.value || null })}
             className={cx(inputClass, "figures")}
           />
         </Field>
-        <Field label="Duration" className="col-span-2">
+        <Field label="Duur" className="col-span-2">
           <div className="flex flex-wrap gap-1">
             {DURATIONS.map((m) => (
               <button
@@ -129,7 +129,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
 
       {(sectionProjects.length > 0 || task.projectId) && (
         <div className="grid grid-cols-[1fr_5.5rem] gap-2">
-          <Field label="Counts toward">
+          <Field label="Telt mee voor">
             <select
               value={task.projectId ?? ""}
               disabled={temp}
@@ -137,7 +137,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
               onChange={(e) => patch(task.id, { projectId: e.target.value || null, ...(e.target.value && !task.units ? { units: 1 } : {}) })}
               className={inputClass}
             >
-              <option value="">No project</option>
+              <option value="">Geen project</option>
               {sectionProjects.map((pr) => (
                 <option key={pr.id} value={pr.id}>
                   {pr.name}
@@ -145,14 +145,14 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
               ))}
             </select>
           </Field>
-          <Field label={project?.unitLabel ?? "Units"}>
+          <Field label={project?.unitLabel ?? "Eenheden"}>
             <input
               type="number"
               min={0}
               step="any"
               value={units}
               disabled={temp || !task.projectId}
-              aria-label="Units"
+              aria-label="Eenheden"
               onChange={(e) => setUnits(e.target.value)}
               onBlur={() => {
                 const n = Number(units);
@@ -164,7 +164,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
         </div>
       )}
 
-      <Field label="Notes">
+      <Field label="Notities">
         <textarea
           value={notes}
           disabled={temp}
@@ -172,20 +172,20 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
           onBlur={() => notes !== task.notesMd && patch(task.id, { notesMd: notes })}
           rows={3}
           placeholder="Markdown"
-          aria-label="Notes"
+          aria-label="Notities"
           className={cx(inputClass, "h-auto resize-y py-2 leading-snug")}
         />
       </Field>
 
-      <Field label="Documents">
+      <Field label="Documenten">
         <div className="flex flex-col">
           {docs.map((d) => (
             <div key={d.id} className="group flex h-8 items-center gap-2 border-b border-rule text-sm">
               <FileText className="size-3.5 shrink-0 text-ink-3" strokeWidth={1.75} />
               <Link href={`/s/${d.slug}/d/${d.id}`} className="min-w-0 flex-1 truncate hover:underline" onClick={onClose}>
-                {d.title || "Untitled"}
+                {d.title || "Zonder titel"}
               </Link>
-              <IconButton label="Unlink document" className="size-6 opacity-60 group-hover:opacity-100" onClick={() => toggleDoc(d)}>
+              <IconButton label="Document loskoppelen" className="size-6 opacity-60 group-hover:opacity-100" onClick={() => toggleDoc(d)}>
                 <X className="size-3" strokeWidth={2} />
               </IconButton>
             </div>
@@ -196,13 +196,13 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
               className="mt-1 inline-flex h-7 items-center gap-1.5 self-start rounded-xs px-1.5 text-xs text-ink-2 hover:bg-paper-3 hover:text-ink"
             >
               <Link2 className="size-3.5" strokeWidth={1.75} />
-              Link document
+              Document koppelen
             </PopoverTrigger>
             <PopoverContent align="start" className="w-64 p-1.5">
               {!docOptions ? (
-                <p className="px-2 py-3 text-sm text-ink-3">Loading</p>
+                <p className="px-2 py-3 text-sm text-ink-3">Laden</p>
               ) : docOptions.length === 0 ? (
-                <p className="px-2 py-3 text-sm text-ink-3">No documents in {task.section.name}.</p>
+                <p className="px-2 py-3 text-sm text-ink-3">Geen documenten in {task.section.name}.</p>
               ) : (
                 <ul className="max-h-60 overflow-y-auto">
                   {docOptions.map((d) => (
@@ -214,7 +214,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
                         onClick={() => toggleDoc(d)}
                         className="flex h-8 w-full items-center gap-2 rounded-xs px-2 text-left text-sm hover:bg-paper-3"
                       >
-                        <span className="min-w-0 flex-1 truncate">{d.title || "Untitled"}</span>
+                        <span className="min-w-0 flex-1 truncate">{d.title || "Zonder titel"}</span>
                         {docs.some((x) => x.id === d.id) && <span className="size-1.5 rounded-full bg-cloth" />}
                       </button>
                     </li>
@@ -236,7 +236,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
           }}
         >
           <Archive className="size-3.5" strokeWidth={1.75} />
-          To backlog
+          Naar to-do
         </Button>
         <Button
           variant="ghost"
@@ -248,7 +248,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
           }}
         >
           <Trash2 className="size-3.5" strokeWidth={1.75} />
-          Delete
+          Verwijderen
         </Button>
       </div>
     </div>

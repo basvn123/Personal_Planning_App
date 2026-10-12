@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { format } from "date-fns";
+import { nl } from "date-fns/locale";
 import { Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { undoImport } from "@/server/actions/imports";
@@ -13,7 +14,7 @@ export function ImportHistory({
 }) {
   const [confirm, setConfirm] = useState<string | null>(null);
   const [pending, run] = useTransition();
-  if (items.length === 0) return <p className="py-4 text-sm text-ink-3">No imports yet.</p>;
+  if (items.length === 0) return <p className="py-4 text-sm text-ink-3">Nog niets geïmporteerd.</p>;
   return (
     <ul>
       {items.map((it) => (
@@ -21,17 +22,17 @@ export function ImportHistory({
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm text-ink">{it.filename}</p>
             <p className="figures text-xs text-ink-3">
-              {format(it.createdAt, "d MMM yyyy, HH:mm")} · {it.remaining} of {it.taskCount} tasks left
+              {format(it.createdAt, "d MMM yyyy, HH:mm", { locale: nl })} · nog {it.remaining} van {it.taskCount} taken
             </p>
           </div>
           {confirm === it.id ? (
             <Button variant="danger" disabled={pending} onClick={() => run(async () => { await undoImport(it.id); setConfirm(null); })}>
-              Remove {it.remaining} tasks
+              {it.remaining} taken weghalen
             </Button>
           ) : (
             <Button variant="ghost" onClick={() => setConfirm(it.id)} disabled={it.remaining === 0}>
               <Undo2 className="size-3.5" strokeWidth={1.75} />
-              Undo
+              Ongedaan maken
             </Button>
           )}
         </li>
