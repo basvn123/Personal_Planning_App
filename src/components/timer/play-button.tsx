@@ -29,7 +29,7 @@ export function PlayButton({
       className={cx(
         "grid size-7 shrink-0 place-items-center rounded-xs transition-[background-color,color,opacity] duration-150",
         active
-          ? "bg-ribbon text-[oklch(0.22_0.04_70)] hover:bg-ribbon-2"
+          ? "bg-ribbon text-on-ribbon hover:bg-ribbon-2"
           : "text-ink-3 hover:bg-paper-3 hover:text-ink",
         className,
       )}

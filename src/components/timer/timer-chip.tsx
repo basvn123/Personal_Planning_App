@@ -18,7 +18,7 @@ export function TimerChip({ orientation }: { orientation: "vertical" | "horizont
 
   if (orientation === "vertical") {
     return (
-      <div className="flex w-12 flex-col items-center gap-1.5 rounded-sm bg-ribbon px-1 pb-1.5 pt-2.5 text-[oklch(0.22_0.04_70)] shadow-[0_2px_6px_oklch(0.15_0.05_70/0.35)]">
+      <div className="flex w-12 flex-col items-center gap-1.5 rounded-sm bg-ribbon px-1 pb-1.5 pt-2.5 text-on-ribbon shadow-[0_2px_6px_oklch(0.15_0.05_70/0.35)]">
         <Link
           href={`/s/${running.section.slug}`}
           title={label}
@@ -35,7 +35,7 @@ export function TimerChip({ orientation }: { orientation: "vertical" | "horizont
   }
 
   return (
-    <div className="flex h-10 min-w-0 max-w-[55%] items-center gap-2 rounded-sm bg-ribbon pl-3 pr-1 text-[oklch(0.22_0.04_70)]">
+    <div className="flex h-10 min-w-0 max-w-[55%] items-center gap-2 rounded-sm bg-ribbon pl-3 pr-1 text-on-ribbon">
       <span className="min-w-0 truncate text-xs font-medium">{label}</span>
       <span className="figures shrink-0 text-xs">{formatClock(elapsed)}</span>
       <StopButton onStop={stop} />

@@ -1,0 +1,1076 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-12T10:57:04+00:00",
+  "title": "Design System: Planner",
+  "extensions": {
+    "colorMeta": {
+      "cloth": {
+        "role": "primary",
+        "displayName": "Bottle-Green Book Cloth",
+        "canonical": "oklch(0.355 0.062 163)",
+        "dark": "oklch(0.33 0.055 163)",
+        "tonalRamp": [
+          "oklch(0.15 0.062 163)",
+          "oklch(0.26 0.062 163)",
+          "oklch(0.37 0.062 163)",
+          "oklch(0.48 0.062 163)",
+          "oklch(0.60 0.062 163)",
+          "oklch(0.72 0.062 163)",
+          "oklch(0.84 0.062 163)",
+          "oklch(0.95 0.062 163)"
+        ]
+      },
+      "cloth-2": {
+        "role": "primary",
+        "displayName": "Cloth Press",
+        "canonical": "oklch(0.3 0.055 163)",
+        "dark": "oklch(0.265 0.045 163)",
+        "tonalRamp": [
+          "oklch(0.15 0.055 163)",
+          "oklch(0.26 0.055 163)",
+          "oklch(0.37 0.055 163)",
+          "oklch(0.48 0.055 163)",
+          "oklch(0.60 0.055 163)",
+          "oklch(0.72 0.055 163)",
+          "oklch(0.84 0.055 163)",
+          "oklch(0.95 0.055 163)"
+        ]
+      },
+      "cloth-3": {
+        "role": "primary",
+        "displayName": "Cloth Weave",
+        "canonical": "oklch(0.42 0.06 163)",
+        "dark": "oklch(0.4 0.06 163)",
+        "tonalRamp": [
+          "oklch(0.15 0.06 163)",
+          "oklch(0.26 0.06 163)",
+          "oklch(0.37 0.06 163)",
+          "oklch(0.48 0.06 163)",
+          "oklch(0.60 0.06 163)",
+          "oklch(0.72 0.06 163)",
+          "oklch(0.84 0.06 163)",
+          "oklch(0.95 0.06 163)"
+        ]
+      },
+      "cloth-ink": {
+        "role": "primary",
+        "displayName": "Cloth Ink",
+        "canonical": "oklch(0.95 0.018 150)",
+        "dark": "oklch(0.93 0.02 150)",
+        "tonalRamp": [
+          "oklch(0.15 0.018 150)",
+          "oklch(0.26 0.018 150)",
+          "oklch(0.37 0.018 150)",
+          "oklch(0.48 0.018 150)",
+          "oklch(0.60 0.018 150)",
+          "oklch(0.72 0.018 150)",
+          "oklch(0.84 0.018 150)",
+          "oklch(0.95 0.018 150)"
+        ]
+      },
+      "cloth-ink-2": {
+        "role": "primary",
+        "displayName": "Cloth Ink Soft",
+        "canonical": "oklch(0.8 0.03 155)",
+        "dark": "oklch(0.76 0.035 155)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 155)",
+          "oklch(0.26 0.03 155)",
+          "oklch(0.37 0.03 155)",
+          "oklch(0.48 0.03 155)",
+          "oklch(0.60 0.03 155)",
+          "oklch(0.72 0.03 155)",
+          "oklch(0.84 0.03 155)",
+          "oklch(0.95 0.03 155)"
+        ]
+      },
+      "ribbon": {
+        "role": "secondary",
+        "displayName": "Marigold Satin Ribbon",
+        "canonical": "oklch(0.81 0.155 78)",
+        "dark": "oklch(0.8 0.15 78)",
+        "tonalRamp": [
+          "oklch(0.15 0.155 78)",
+          "oklch(0.26 0.155 78)",
+          "oklch(0.37 0.155 78)",
+          "oklch(0.48 0.155 78)",
+          "oklch(0.60 0.155 78)",
+          "oklch(0.72 0.155 78)",
+          "oklch(0.84 0.155 78)",
+          "oklch(0.95 0.155 78)"
+        ]
+      },
+      "ribbon-2": {
+        "role": "secondary",
+        "displayName": "Ribbon Fold",
+        "canonical": "oklch(0.74 0.16 70)",
+        "dark": "oklch(0.72 0.15 70)",
+        "tonalRamp": [
+          "oklch(0.15 0.16 70)",
+          "oklch(0.26 0.16 70)",
+          "oklch(0.37 0.16 70)",
+          "oklch(0.48 0.16 70)",
+          "oklch(0.60 0.16 70)",
+          "oklch(0.72 0.16 70)",
+          "oklch(0.84 0.16 70)",
+          "oklch(0.95 0.16 70)"
+        ]
+      },
+      "ribbon-ink": {
+        "role": "secondary",
+        "displayName": "Ribbon Ink",
+        "canonical": "oklch(0.52 0.13 62)",
+        "dark": "oklch(0.84 0.14 80)",
+        "tonalRamp": [
+          "oklch(0.15 0.13 62)",
+          "oklch(0.26 0.13 62)",
+          "oklch(0.37 0.13 62)",
+          "oklch(0.48 0.13 62)",
+          "oklch(0.60 0.13 62)",
+          "oklch(0.72 0.13 62)",
+          "oklch(0.84 0.13 62)",
+          "oklch(0.95 0.13 62)"
+        ]
+      },
+      "ribbon-wash": {
+        "role": "secondary",
+        "displayName": "Ribbon Wash",
+        "canonical": "oklch(0.955 0.045 85)",
+        "dark": "oklch(0.255 0.022 80)",
+        "tonalRamp": [
+          "oklch(0.15 0.045 85)",
+          "oklch(0.26 0.045 85)",
+          "oklch(0.37 0.045 85)",
+          "oklch(0.48 0.045 85)",
+          "oklch(0.60 0.045 85)",
+          "oklch(0.72 0.045 85)",
+          "oklch(0.84 0.045 85)",
+          "oklch(0.95 0.045 85)"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Danger Red",
+        "canonical": "oklch(0.54 0.17 27)",
+        "dark": "oklch(0.7 0.15 27)",
+        "tonalRamp": [
+          "oklch(0.15 0.17 27)",
+          "oklch(0.26 0.17 27)",
+          "oklch(0.37 0.17 27)",
+          "oklch(0.48 0.17 27)",
+          "oklch(0.60 0.17 27)",
+          "oklch(0.72 0.17 27)",
+          "oklch(0.84 0.17 27)",
+          "oklch(0.95 0.17 27)"
+        ]
+      },
+      "danger-wash": {
+        "role": "tertiary",
+        "displayName": "Danger Wash",
+        "canonical": "oklch(0.96 0.025 27)",
+        "dark": "oklch(0.29 0.05 27)",
+        "tonalRamp": [
+          "oklch(0.15 0.025 27)",
+          "oklch(0.26 0.025 27)",
+          "oklch(0.37 0.025 27)",
+          "oklch(0.48 0.025 27)",
+          "oklch(0.60 0.025 27)",
+          "oklch(0.72 0.025 27)",
+          "oklch(0.84 0.025 27)",
+          "oklch(0.95 0.025 27)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Cool Paper",
+        "canonical": "oklch(0.986 0.003 250)",
+        "dark": "oklch(0.205 0.009 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.003 250)",
+          "oklch(0.26 0.003 250)",
+          "oklch(0.37 0.003 250)",
+          "oklch(0.48 0.003 250)",
+          "oklch(0.60 0.003 250)",
+          "oklch(0.72 0.003 250)",
+          "oklch(0.84 0.003 250)",
+          "oklch(0.95 0.003 250)"
+        ]
+      },
+      "paper-2": {
+        "role": "neutral",
+        "displayName": "Facing Page",
+        "canonical": "oklch(0.968 0.004 250)",
+        "dark": "oklch(0.228 0.01 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.004 250)",
+          "oklch(0.26 0.004 250)",
+          "oklch(0.37 0.004 250)",
+          "oklch(0.48 0.004 250)",
+          "oklch(0.60 0.004 250)",
+          "oklch(0.72 0.004 250)",
+          "oklch(0.84 0.004 250)",
+          "oklch(0.95 0.004 250)"
+        ]
+      },
+      "paper-3": {
+        "role": "neutral",
+        "displayName": "Paper Well",
+        "canonical": "oklch(0.945 0.005 250)",
+        "dark": "oklch(0.26 0.011 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.005 250)",
+          "oklch(0.26 0.005 250)",
+          "oklch(0.37 0.005 250)",
+          "oklch(0.48 0.005 250)",
+          "oklch(0.60 0.005 250)",
+          "oklch(0.72 0.005 250)",
+          "oklch(0.84 0.005 250)",
+          "oklch(0.95 0.005 250)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Printed Rule",
+        "canonical": "oklch(0.905 0.006 250)",
+        "dark": "oklch(0.3 0.011 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.006 250)",
+          "oklch(0.26 0.006 250)",
+          "oklch(0.37 0.006 250)",
+          "oklch(0.48 0.006 250)",
+          "oklch(0.60 0.006 250)",
+          "oklch(0.72 0.006 250)",
+          "oklch(0.84 0.006 250)",
+          "oklch(0.95 0.006 250)"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Rule",
+        "canonical": "oklch(0.84 0.008 250)",
+        "dark": "oklch(0.37 0.012 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.008 250)",
+          "oklch(0.26 0.008 250)",
+          "oklch(0.37 0.008 250)",
+          "oklch(0.48 0.008 250)",
+          "oklch(0.60 0.008 250)",
+          "oklch(0.72 0.008 250)",
+          "oklch(0.84 0.008 250)",
+          "oklch(0.95 0.008 250)"
+        ]
+      },
+      "dot": {
+        "role": "neutral",
+        "displayName": "Grid Dot",
+        "canonical": "oklch(0.86 0.008 250)",
+        "dark": "oklch(0.33 0.012 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.008 250)",
+          "oklch(0.26 0.008 250)",
+          "oklch(0.37 0.008 250)",
+          "oklch(0.48 0.008 250)",
+          "oklch(0.60 0.008 250)",
+          "oklch(0.72 0.008 250)",
+          "oklch(0.84 0.008 250)",
+          "oklch(0.95 0.008 250)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Graphite Ink",
+        "canonical": "oklch(0.235 0.014 258)",
+        "dark": "oklch(0.935 0.006 250)",
+        "tonalRamp": [
+          "oklch(0.15 0.014 258)",
+          "oklch(0.26 0.014 258)",
+          "oklch(0.37 0.014 258)",
+          "oklch(0.48 0.014 258)",
+          "oklch(0.60 0.014 258)",
+          "oklch(0.72 0.014 258)",
+          "oklch(0.84 0.014 258)",
+          "oklch(0.95 0.014 258)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Graphite Ink Soft",
+        "canonical": "oklch(0.43 0.013 258)",
+        "dark": "oklch(0.76 0.01 250)",
+        "tonalRamp": [
+          "oklch(0.15 0.013 258)",
+          "oklch(0.26 0.013 258)",
+          "oklch(0.37 0.013 258)",
+          "oklch(0.48 0.013 258)",
+          "oklch(0.60 0.013 258)",
+          "oklch(0.72 0.013 258)",
+          "oklch(0.84 0.013 258)",
+          "oklch(0.95 0.013 258)"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Graphite Ink Faint",
+        "canonical": "oklch(0.56 0.011 258)",
+        "dark": "oklch(0.63 0.012 250)",
+        "tonalRamp": [
+          "oklch(0.15 0.011 258)",
+          "oklch(0.26 0.011 258)",
+          "oklch(0.37 0.011 258)",
+          "oklch(0.48 0.011 258)",
+          "oklch(0.60 0.011 258)",
+          "oklch(0.72 0.011 258)",
+          "oklch(0.84 0.011 258)",
+          "oklch(0.95 0.011 258)"
+        ]
+      },
+      "heat-0": {
+        "role": "neutral",
+        "displayName": "Heat Empty",
+        "canonical": "oklch(0.93 0.008 250)",
+        "dark": "oklch(0.27 0.01 258)",
+        "tonalRamp": [
+          "oklch(0.42 0.07 163)",
+          "oklch(0.58 0.085 163)",
+          "oklch(0.74 0.08 162)",
+          "oklch(0.87 0.05 160)",
+          "oklch(0.93 0.008 250)",
+          "oklch(0.945 0.005 250)",
+          "oklch(0.968 0.004 250)",
+          "oklch(0.986 0.003 250)"
+        ]
+      },
+      "heat-1": {
+        "role": "neutral",
+        "displayName": "Heat 1",
+        "canonical": "oklch(0.87 0.05 160)",
+        "dark": "oklch(0.36 0.04 163)",
+        "tonalRamp": [
+          "oklch(0.42 0.07 163)",
+          "oklch(0.58 0.085 163)",
+          "oklch(0.74 0.08 162)",
+          "oklch(0.87 0.05 160)",
+          "oklch(0.93 0.008 250)",
+          "oklch(0.945 0.005 250)",
+          "oklch(0.968 0.004 250)",
+          "oklch(0.986 0.003 250)"
+        ]
+      },
+      "heat-2": {
+        "role": "neutral",
+        "displayName": "Heat 2",
+        "canonical": "oklch(0.74 0.08 162)",
+        "dark": "oklch(0.48 0.06 163)",
+        "tonalRamp": [
+          "oklch(0.42 0.07 163)",
+          "oklch(0.58 0.085 163)",
+          "oklch(0.74 0.08 162)",
+          "oklch(0.87 0.05 160)",
+          "oklch(0.93 0.008 250)",
+          "oklch(0.945 0.005 250)",
+          "oklch(0.968 0.004 250)",
+          "oklch(0.986 0.003 250)"
+        ]
+      },
+      "heat-3": {
+        "role": "neutral",
+        "displayName": "Heat 3",
+        "canonical": "oklch(0.58 0.085 163)",
+        "dark": "oklch(0.62 0.08 162)",
+        "tonalRamp": [
+          "oklch(0.42 0.07 163)",
+          "oklch(0.58 0.085 163)",
+          "oklch(0.74 0.08 162)",
+          "oklch(0.87 0.05 160)",
+          "oklch(0.93 0.008 250)",
+          "oklch(0.945 0.005 250)",
+          "oklch(0.968 0.004 250)",
+          "oklch(0.986 0.003 250)"
+        ]
+      },
+      "heat-4": {
+        "role": "neutral",
+        "displayName": "Heat 4",
+        "canonical": "oklch(0.42 0.07 163)",
+        "dark": "oklch(0.78 0.09 160)",
+        "tonalRamp": [
+          "oklch(0.42 0.07 163)",
+          "oklch(0.58 0.085 163)",
+          "oklch(0.74 0.08 162)",
+          "oklch(0.87 0.05 160)",
+          "oklch(0.93 0.008 250)",
+          "oklch(0.945 0.005 250)",
+          "oklch(0.968 0.004 250)",
+          "oklch(0.986 0.003 250)"
+        ]
+      },
+      "bar": {
+        "role": "neutral",
+        "displayName": "Chart Bar",
+        "canonical": "oklch(0.45 0.07 163)",
+        "dark": "oklch(0.68 0.08 162)",
+        "tonalRamp": [
+          "oklch(0.15 0.07 163)",
+          "oklch(0.26 0.07 163)",
+          "oklch(0.37 0.07 163)",
+          "oklch(0.48 0.07 163)",
+          "oklch(0.60 0.07 163)",
+          "oklch(0.72 0.07 163)",
+          "oklch(0.84 0.07 163)",
+          "oklch(0.95 0.07 163)"
+        ]
+      },
+      "dye-moss": {
+        "role": "tertiary",
+        "displayName": "Dye Moss",
+        "canonical": "oklch(0.82 0.085 145)",
+        "dark": "oklch(0.6 0.09 145)",
+        "tonalRamp": [
+          "oklch(0.15 0.085 145)",
+          "oklch(0.26 0.085 145)",
+          "oklch(0.37 0.085 145)",
+          "oklch(0.48 0.085 145)",
+          "oklch(0.60 0.085 145)",
+          "oklch(0.72 0.085 145)",
+          "oklch(0.84 0.085 145)",
+          "oklch(0.95 0.085 145)"
+        ]
+      },
+      "dye-moss-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Moss Deep",
+        "canonical": "oklch(0.48 0.1 145)",
+        "dark": "oklch(0.8 0.1 145)",
+        "tonalRamp": [
+          "oklch(0.15 0.1 145)",
+          "oklch(0.26 0.1 145)",
+          "oklch(0.37 0.1 145)",
+          "oklch(0.48 0.1 145)",
+          "oklch(0.60 0.1 145)",
+          "oklch(0.72 0.1 145)",
+          "oklch(0.84 0.1 145)",
+          "oklch(0.95 0.1 145)"
+        ]
+      },
+      "dye-lagoon": {
+        "role": "tertiary",
+        "displayName": "Dye Lagoon",
+        "canonical": "oklch(0.82 0.075 200)",
+        "dark": "oklch(0.6 0.08 205)",
+        "tonalRamp": [
+          "oklch(0.15 0.075 200)",
+          "oklch(0.26 0.075 200)",
+          "oklch(0.37 0.075 200)",
+          "oklch(0.48 0.075 200)",
+          "oklch(0.60 0.075 200)",
+          "oklch(0.72 0.075 200)",
+          "oklch(0.84 0.075 200)",
+          "oklch(0.95 0.075 200)"
+        ]
+      },
+      "dye-lagoon-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Lagoon Deep",
+        "canonical": "oklch(0.48 0.09 205)",
+        "dark": "oklch(0.8 0.08 205)",
+        "tonalRamp": [
+          "oklch(0.15 0.09 205)",
+          "oklch(0.26 0.09 205)",
+          "oklch(0.37 0.09 205)",
+          "oklch(0.48 0.09 205)",
+          "oklch(0.60 0.09 205)",
+          "oklch(0.72 0.09 205)",
+          "oklch(0.84 0.09 205)",
+          "oklch(0.95 0.09 205)"
+        ]
+      },
+      "dye-cobalt": {
+        "role": "tertiary",
+        "displayName": "Dye Cobalt",
+        "canonical": "oklch(0.8 0.075 255)",
+        "dark": "oklch(0.58 0.11 260)",
+        "tonalRamp": [
+          "oklch(0.15 0.075 255)",
+          "oklch(0.26 0.075 255)",
+          "oklch(0.37 0.075 255)",
+          "oklch(0.48 0.075 255)",
+          "oklch(0.60 0.075 255)",
+          "oklch(0.72 0.075 255)",
+          "oklch(0.84 0.075 255)",
+          "oklch(0.95 0.075 255)"
+        ]
+      },
+      "dye-cobalt-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Cobalt Deep",
+        "canonical": "oklch(0.47 0.14 260)",
+        "dark": "oklch(0.8 0.09 260)",
+        "tonalRamp": [
+          "oklch(0.15 0.14 260)",
+          "oklch(0.26 0.14 260)",
+          "oklch(0.37 0.14 260)",
+          "oklch(0.48 0.14 260)",
+          "oklch(0.60 0.14 260)",
+          "oklch(0.72 0.14 260)",
+          "oklch(0.84 0.14 260)",
+          "oklch(0.95 0.14 260)"
+        ]
+      },
+      "dye-iris": {
+        "role": "tertiary",
+        "displayName": "Dye Iris",
+        "canonical": "oklch(0.8 0.08 290)",
+        "dark": "oklch(0.58 0.11 290)",
+        "tonalRamp": [
+          "oklch(0.15 0.08 290)",
+          "oklch(0.26 0.08 290)",
+          "oklch(0.37 0.08 290)",
+          "oklch(0.48 0.08 290)",
+          "oklch(0.60 0.08 290)",
+          "oklch(0.72 0.08 290)",
+          "oklch(0.84 0.08 290)",
+          "oklch(0.95 0.08 290)"
+        ]
+      },
+      "dye-iris-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Iris Deep",
+        "canonical": "oklch(0.48 0.14 290)",
+        "dark": "oklch(0.8 0.09 290)",
+        "tonalRamp": [
+          "oklch(0.15 0.14 290)",
+          "oklch(0.26 0.14 290)",
+          "oklch(0.37 0.14 290)",
+          "oklch(0.48 0.14 290)",
+          "oklch(0.60 0.14 290)",
+          "oklch(0.72 0.14 290)",
+          "oklch(0.84 0.14 290)",
+          "oklch(0.95 0.14 290)"
+        ]
+      },
+      "dye-plum": {
+        "role": "tertiary",
+        "displayName": "Dye Plum",
+        "canonical": "oklch(0.8 0.08 330)",
+        "dark": "oklch(0.58 0.11 335)",
+        "tonalRamp": [
+          "oklch(0.15 0.08 330)",
+          "oklch(0.26 0.08 330)",
+          "oklch(0.37 0.08 330)",
+          "oklch(0.48 0.08 330)",
+          "oklch(0.60 0.08 330)",
+          "oklch(0.72 0.08 330)",
+          "oklch(0.84 0.08 330)",
+          "oklch(0.95 0.08 330)"
+        ]
+      },
+      "dye-plum-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Plum Deep",
+        "canonical": "oklch(0.48 0.14 335)",
+        "dark": "oklch(0.8 0.09 335)",
+        "tonalRamp": [
+          "oklch(0.15 0.14 335)",
+          "oklch(0.26 0.14 335)",
+          "oklch(0.37 0.14 335)",
+          "oklch(0.48 0.14 335)",
+          "oklch(0.60 0.14 335)",
+          "oklch(0.72 0.14 335)",
+          "oklch(0.84 0.14 335)",
+          "oklch(0.95 0.14 335)"
+        ]
+      },
+      "dye-rose": {
+        "role": "tertiary",
+        "displayName": "Dye Rose",
+        "canonical": "oklch(0.83 0.08 10)",
+        "dark": "oklch(0.6 0.12 12)",
+        "tonalRamp": [
+          "oklch(0.15 0.08 10)",
+          "oklch(0.26 0.08 10)",
+          "oklch(0.37 0.08 10)",
+          "oklch(0.48 0.08 10)",
+          "oklch(0.60 0.08 10)",
+          "oklch(0.72 0.08 10)",
+          "oklch(0.84 0.08 10)",
+          "oklch(0.95 0.08 10)"
+        ]
+      },
+      "dye-rose-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Rose Deep",
+        "canonical": "oklch(0.52 0.15 12)",
+        "dark": "oklch(0.82 0.09 12)",
+        "tonalRamp": [
+          "oklch(0.15 0.15 12)",
+          "oklch(0.26 0.15 12)",
+          "oklch(0.37 0.15 12)",
+          "oklch(0.48 0.15 12)",
+          "oklch(0.60 0.15 12)",
+          "oklch(0.72 0.15 12)",
+          "oklch(0.84 0.15 12)",
+          "oklch(0.95 0.15 12)"
+        ]
+      },
+      "dye-coral": {
+        "role": "tertiary",
+        "displayName": "Dye Coral",
+        "canonical": "oklch(0.83 0.09 40)",
+        "dark": "oklch(0.62 0.12 40)",
+        "tonalRamp": [
+          "oklch(0.15 0.09 40)",
+          "oklch(0.26 0.09 40)",
+          "oklch(0.37 0.09 40)",
+          "oklch(0.48 0.09 40)",
+          "oklch(0.60 0.09 40)",
+          "oklch(0.72 0.09 40)",
+          "oklch(0.84 0.09 40)",
+          "oklch(0.95 0.09 40)"
+        ]
+      },
+      "dye-coral-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Coral Deep",
+        "canonical": "oklch(0.55 0.15 38)",
+        "dark": "oklch(0.83 0.09 40)",
+        "tonalRamp": [
+          "oklch(0.15 0.15 38)",
+          "oklch(0.26 0.15 38)",
+          "oklch(0.37 0.15 38)",
+          "oklch(0.48 0.15 38)",
+          "oklch(0.60 0.15 38)",
+          "oklch(0.72 0.15 38)",
+          "oklch(0.84 0.15 38)",
+          "oklch(0.95 0.15 38)"
+        ]
+      },
+      "dye-ochre": {
+        "role": "tertiary",
+        "displayName": "Dye Ochre",
+        "canonical": "oklch(0.86 0.1 85)",
+        "dark": "oklch(0.66 0.11 80)",
+        "tonalRamp": [
+          "oklch(0.15 0.1 85)",
+          "oklch(0.26 0.1 85)",
+          "oklch(0.37 0.1 85)",
+          "oklch(0.48 0.1 85)",
+          "oklch(0.60 0.1 85)",
+          "oklch(0.72 0.1 85)",
+          "oklch(0.84 0.1 85)",
+          "oklch(0.95 0.1 85)"
+        ]
+      },
+      "dye-ochre-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Ochre Deep",
+        "canonical": "oklch(0.56 0.12 75)",
+        "dark": "oklch(0.85 0.1 85)",
+        "tonalRamp": [
+          "oklch(0.15 0.12 75)",
+          "oklch(0.26 0.12 75)",
+          "oklch(0.37 0.12 75)",
+          "oklch(0.48 0.12 75)",
+          "oklch(0.60 0.12 75)",
+          "oklch(0.72 0.12 75)",
+          "oklch(0.84 0.12 75)",
+          "oklch(0.95 0.12 75)"
+        ]
+      },
+      "dye-olive": {
+        "role": "tertiary",
+        "displayName": "Dye Olive",
+        "canonical": "oklch(0.84 0.08 115)",
+        "dark": "oklch(0.6 0.08 115)",
+        "tonalRamp": [
+          "oklch(0.15 0.08 115)",
+          "oklch(0.26 0.08 115)",
+          "oklch(0.37 0.08 115)",
+          "oklch(0.48 0.08 115)",
+          "oklch(0.60 0.08 115)",
+          "oklch(0.72 0.08 115)",
+          "oklch(0.84 0.08 115)",
+          "oklch(0.95 0.08 115)"
+        ]
+      },
+      "dye-olive-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Olive Deep",
+        "canonical": "oklch(0.5 0.1 115)",
+        "dark": "oklch(0.82 0.08 115)",
+        "tonalRamp": [
+          "oklch(0.15 0.1 115)",
+          "oklch(0.26 0.1 115)",
+          "oklch(0.37 0.1 115)",
+          "oklch(0.48 0.1 115)",
+          "oklch(0.60 0.1 115)",
+          "oklch(0.72 0.1 115)",
+          "oklch(0.84 0.1 115)",
+          "oklch(0.95 0.1 115)"
+        ]
+      },
+      "dye-slate": {
+        "role": "tertiary",
+        "displayName": "Dye Slate",
+        "canonical": "oklch(0.82 0.02 250)",
+        "dark": "oklch(0.56 0.025 255)",
+        "tonalRamp": [
+          "oklch(0.15 0.02 250)",
+          "oklch(0.26 0.02 250)",
+          "oklch(0.37 0.02 250)",
+          "oklch(0.48 0.02 250)",
+          "oklch(0.60 0.02 250)",
+          "oklch(0.72 0.02 250)",
+          "oklch(0.84 0.02 250)",
+          "oklch(0.95 0.02 250)"
+        ]
+      },
+      "dye-slate-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Slate Deep",
+        "canonical": "oklch(0.45 0.03 255)",
+        "dark": "oklch(0.8 0.02 255)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 255)",
+          "oklch(0.26 0.03 255)",
+          "oklch(0.37 0.03 255)",
+          "oklch(0.48 0.03 255)",
+          "oklch(0.60 0.03 255)",
+          "oklch(0.72 0.03 255)",
+          "oklch(0.84 0.03 255)",
+          "oklch(0.95 0.03 255)"
+        ]
+      },
+      "dye-clay": {
+        "role": "tertiary",
+        "displayName": "Dye Clay",
+        "canonical": "oklch(0.8 0.05 55)",
+        "dark": "oklch(0.58 0.06 50)",
+        "tonalRamp": [
+          "oklch(0.15 0.05 55)",
+          "oklch(0.26 0.05 55)",
+          "oklch(0.37 0.05 55)",
+          "oklch(0.48 0.05 55)",
+          "oklch(0.60 0.05 55)",
+          "oklch(0.72 0.05 55)",
+          "oklch(0.84 0.05 55)",
+          "oklch(0.95 0.05 55)"
+        ]
+      },
+      "dye-clay-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Clay Deep",
+        "canonical": "oklch(0.5 0.08 50)",
+        "dark": "oklch(0.8 0.05 55)",
+        "tonalRamp": [
+          "oklch(0.15 0.08 50)",
+          "oklch(0.26 0.08 50)",
+          "oklch(0.37 0.08 50)",
+          "oklch(0.48 0.08 50)",
+          "oklch(0.60 0.08 50)",
+          "oklch(0.72 0.08 50)",
+          "oklch(0.84 0.08 50)",
+          "oklch(0.95 0.08 50)"
+        ]
+      },
+      "dye-teal": {
+        "role": "tertiary",
+        "displayName": "Dye Teal",
+        "canonical": "oklch(0.82 0.08 175)",
+        "dark": "oklch(0.6 0.08 178)",
+        "tonalRamp": [
+          "oklch(0.15 0.08 175)",
+          "oklch(0.26 0.08 175)",
+          "oklch(0.37 0.08 175)",
+          "oklch(0.48 0.08 175)",
+          "oklch(0.60 0.08 175)",
+          "oklch(0.72 0.08 175)",
+          "oklch(0.84 0.08 175)",
+          "oklch(0.95 0.08 175)"
+        ]
+      },
+      "dye-teal-deep": {
+        "role": "tertiary",
+        "displayName": "Dye Teal Deep",
+        "canonical": "oklch(0.48 0.09 178)",
+        "dark": "oklch(0.8 0.08 178)",
+        "tonalRamp": [
+          "oklch(0.15 0.09 178)",
+          "oklch(0.26 0.09 178)",
+          "oklch(0.37 0.09 178)",
+          "oklch(0.48 0.09 178)",
+          "oklch(0.60 0.09 178)",
+          "oklch(0.72 0.09 178)",
+          "oklch(0.84 0.09 178)",
+          "oklch(0.95 0.09 178)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles and the selected day's title. 32px variant for schedule and doc title editors."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Project names and prominent single values."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Day-plan task titles, inputs, popover content. Default body size."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "Week-list task titles, buttons, table rows, ranked bar labels."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Task metadata, tooltips, quick-add hints, tab labels."
+      },
+      "label": {
+        "displayName": "Rubric",
+        "purpose": "Uppercase 11px block rubric on a rule-strong hairline; weekday abbreviations; field labels."
+      },
+      "figures": {
+        "displayName": "Figures",
+        "purpose": "Every duration, clock time, count and percentage. Tabular."
+      },
+      "figures-lg": {
+        "displayName": "Figures large",
+        "purpose": "Day numbers in the week margin, project percentage."
+      },
+      "doc-body": {
+        "displayName": "Doc body",
+        "purpose": "Rendered markdown documents, 68ch max."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lift",
+        "value": "0 1px 2px oklch(0.2 0.02 258 / 0.06), 0 4px 14px -4px oklch(0.2 0.02 258 / 0.12)",
+        "dark": "0 1px 2px oklch(0 0 0 / 0.3), 0 6px 18px -6px oklch(0 0 0 / 0.5)",
+        "purpose": "The single floating shadow: popovers, tooltips, command palette, dragged tabs and tasks."
+      },
+      {
+        "name": "gutter-left",
+        "value": "inset -28px 0 28px -24px var(--gutter-shade)",
+        "purpose": "Left page curving into the binding (desktop)."
+      },
+      {
+        "name": "gutter-right",
+        "value": "inset 28px 0 28px -24px var(--gutter-shade)",
+        "purpose": "Right page curving into the binding (desktop)."
+      },
+      {
+        "name": "page-stack",
+        "value": "0 2px 0 var(--paper-3), 0 4px 0 var(--rule), 0 10px 30px -12px oklch(0 0 0 / 0.5)",
+        "purpose": "Stacked sheets under the page block on desktop."
+      },
+      {
+        "name": "tab-cast",
+        "value": "-3px 0 6px -2px oklch(0.15 0.04 163 / 0.45)",
+        "purpose": "Active fore-edge tab pulled out over the page."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Default easing for all state transitions."
+      },
+      {
+        "name": "duration-fast",
+        "value": "150ms",
+        "purpose": "Hover, color and opacity changes, checkbox fill."
+      },
+      {
+        "name": "duration-pop",
+        "value": "160ms",
+        "purpose": "Popover entrance: fade plus 3px drop and 0.98 scale."
+      },
+      {
+        "name": "duration-slide",
+        "value": "200ms",
+        "purpose": "Fore-edge tab sliding out of the book."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "All animation and transition durations under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "lg",
+        "value": "1024px",
+        "purpose": "Spread shows both pages, spine and fore-edge appear; below it, phone layout with tab strip, page switcher and cloth bar."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Cloth button for the one main action on a surface, usually Save in a popover.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Save</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:32px; padding:0 12px; border:0; border-radius:5px; font-family:var(--font-ui, 'Schibsted Grotesk'), ui-sans-serif, system-ui, sans-serif; font-size:0.8125rem; line-height:1.25rem; font-weight:500; cursor:pointer; transition:background-color 150ms, color 150ms; } .ds-btn-primary { background:var(--cloth); color:var(--cloth-ink); } .ds-btn-primary:hover { background:var(--cloth-3); } .ds-btn:focus-visible { outline:2px solid var(--ribbon-2); outline-offset:2px; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Default button: paper with a strong rule border.",
+      "html": "<button class=\"ds-btn-quiet\">Export</button>",
+      "css": ".ds-btn-quiet { display:inline-flex; align-items:center; height:32px; padding:0 12px; border:1px solid var(--rule-strong); border-radius:5px; background:var(--paper); color:var(--ink); font-family:var(--font-ui, 'Schibsted Grotesk'), ui-sans-serif, sans-serif; font-size:0.8125rem; font-weight:500; cursor:pointer; transition:background-color 150ms; } .ds-btn-quiet:hover { background:var(--paper-3); } .ds-btn-quiet:focus-visible { outline:2px solid var(--ribbon-2); outline-offset:2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action inside popovers and toolbars.",
+      "html": "<button class=\"ds-btn-ghost\">Archive</button>",
+      "css": ".ds-btn-ghost { display:inline-flex; align-items:center; height:32px; padding:0 12px; border:0; border-radius:5px; background:transparent; color:var(--ink-2); font-family:var(--font-ui, 'Schibsted Grotesk'), ui-sans-serif, sans-serif; font-size:0.8125rem; font-weight:500; cursor:pointer; transition:background-color 150ms, color 150ms; } .ds-btn-ghost:hover { background:var(--paper-3); color:var(--ink); } .ds-btn-ghost:focus-visible { outline:2px solid var(--ribbon-2); outline-offset:2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Form field used in popovers and settings.",
+      "html": "<input class=\"ds-input\" placeholder=\"Name\" />",
+      "css": ".ds-input { height:36px; width:240px; padding:0 10px; border:1px solid var(--rule-strong); border-radius:5px; background:var(--paper); color:var(--ink); caret-color:var(--ribbon-2); font-family:var(--font-ui, 'Schibsted Grotesk'), ui-sans-serif, sans-serif; font-size:0.875rem; outline:none; transition:border-color 150ms; } .ds-input::placeholder { color:var(--ink-3); } .ds-input:focus { border-color:var(--cloth-3); } .ds-input:focus-visible { outline:2px solid var(--ribbon-2); outline-offset:2px; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "chip",
+      "refersTo": "segmented",
+      "description": "Paper-3 track with a paper selected segment; settings choices and the phone page switcher.",
+      "html": "<div class=\"ds-seg\" role=\"radiogroup\"><button class=\"ds-seg-item\" aria-checked=\"false\">System</button><button class=\"ds-seg-item\" aria-checked=\"true\">Light</button><button class=\"ds-seg-item\" aria-checked=\"false\">Dark</button></div>",
+      "css": ".ds-seg { display:inline-flex; padding:2px; border-radius:5px; background:var(--paper-3); } .ds-seg-item { height:28px; padding:0 12px; border:0; border-radius:3px; background:transparent; color:var(--ink-3); font-family:var(--font-ui, 'Schibsted Grotesk'), ui-sans-serif, sans-serif; font-size:0.8125rem; cursor:pointer; transition:background-color 150ms, color 150ms; } .ds-seg-item:hover { color:var(--ink); } .ds-seg-item[aria-checked=\"true\"] { background:var(--paper); color:var(--ink); font-weight:500; box-shadow:0 1px 2px oklch(0.2 0.02 258 / 0.1); } .ds-seg-item:focus-visible { outline:2px solid var(--ribbon-2); outline-offset:2px; }"
+    },
+    {
+      "name": "Spine Navigation",
+      "kind": "nav",
+      "refersTo": "spine-item",
+      "description": "Desktop cloth spine with glyph nav items; the active item is cloth-3.",
+      "html": "<nav class=\"ds-spine\"><a class=\"ds-spine-item\" aria-current=\"page\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M16 2v4M8 2v4M3 10h18\"/></svg></a><a class=\"ds-spine-item\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\"><path d=\"M3 3v18h18\"/><path d=\"M8 17v-5M13 17V8M18 17v-3\"/></svg></a></nav>",
+      "css": ".ds-spine { display:flex; flex-direction:column; align-items:center; gap:4px; width:56px; padding:12px 0; background:var(--cloth); } .ds-spine-item { display:grid; place-items:center; width:40px; height:40px; border-radius:8px; color:var(--cloth-ink-2); transition:background-color 150ms, color 150ms; } .ds-spine-item:hover { background:color-mix(in oklch, var(--cloth-3) 60%, transparent); color:var(--cloth-ink); } .ds-spine-item[aria-current=\"page\"] { background:var(--cloth-3); color:var(--cloth-ink); } .ds-spine-item:focus-visible { outline:2px solid var(--ribbon-2); outline-offset:2px; }"
+    },
+    {
+      "name": "Fore-edge Index Tabs",
+      "kind": "nav",
+      "refersTo": "fore-edge-tab",
+      "description": "Vertical section tabs on the right edge, dyed per section; the active tab slides out flush.",
+      "html": "<nav class=\"ds-edge\"><a class=\"ds-tab\" style=\"--dye:var(--dye-moss)\" href=\"#\">Work</a><a class=\"ds-tab\" aria-current=\"page\" style=\"--dye:var(--dye-cobalt)\" href=\"#\">Study</a><a class=\"ds-tab\" style=\"--dye:var(--dye-coral)\" href=\"#\">Italian</a></nav>",
+      "css": ".ds-edge { display:flex; flex-direction:column; gap:4px; width:48px; padding:24px 4px 24px 0; background:var(--cloth); } .ds-tab { min-height:64px; display:flex; align-items:center; justify-content:center; margin-left:-4px; padding:12px 8px 12px 10px; border-radius:0 5px 5px 0; writing-mode:vertical-rl; font-family:var(--font-ui, 'Schibsted Grotesk'), ui-sans-serif, sans-serif; font-size:0.75rem; font-weight:500; letter-spacing:0.01em; color:var(--ink); text-decoration:none; background:color-mix(in oklch, var(--dye) 80%, var(--cloth)); translate:-8px 0; transition:background-color 200ms cubic-bezier(0.16,1,0.3,1), translate 200ms cubic-bezier(0.16,1,0.3,1); } .ds-tab:hover { translate:-4px 0; } .ds-tab[aria-current=\"page\"] { translate:0 0; background:var(--dye); font-weight:600; box-shadow:-3px 0 6px -2px oklch(0.15 0.04 163 / 0.45); } .ds-tab:focus-visible { outline:2px solid var(--ribbon-2); outline-offset:2px; }"
+    },
+    {
+      "name": "Task Row with Dye Checkbox",
+      "kind": "custom",
+      "refersTo": "task-check",
+      "description": "Day-plan task line: square checkbox in the section's deep dye, title, meta line with dye swatch and figures.",
+      "html": "<ul class=\"ds-tasks\" style=\"--dye:var(--dye-cobalt);--dye-deep:var(--dye-cobalt-deep)\"><li class=\"ds-task\"><button class=\"ds-check\" role=\"checkbox\" aria-checked=\"false\" aria-label=\"Complete\"></button><span><span class=\"ds-task-title\">Read chapter 4</span><span class=\"ds-task-meta\"><i class=\"ds-swatch\"></i>Study <b class=\"ds-fig\">1h 20m logged</b></span></span></li><li class=\"ds-task\"><button class=\"ds-check\" role=\"checkbox\" aria-checked=\"true\" aria-label=\"Reopen\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6 9 17l-5-5\"/></svg></button><span><span class=\"ds-task-title ds-done\">Lab report</span><span class=\"ds-task-meta\"><i class=\"ds-swatch\"></i>Study</span></span></li></ul>",
+      "css": ".ds-tasks { list-style:none; margin:0; padding:0 20px; background:var(--paper); font-family:var(--font-ui, 'Schibsted Grotesk'), ui-sans-serif, sans-serif; } .ds-task { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--rule); } .ds-check { display:grid; place-items:center; flex-shrink:0; width:16px; height:16px; margin-top:3px; padding:0; border-radius:3px; border:1.5px solid color-mix(in oklch, var(--dye-deep) 70%, var(--paper)); background:color-mix(in oklch, var(--dye) 25%, transparent); color:var(--paper); cursor:pointer; transition:background-color 150ms, border-color 150ms; } .ds-check:hover { background:color-mix(in oklch, var(--dye) 55%, transparent); } .ds-check[aria-checked=\"true\"] { background:var(--dye-deep); border-color:var(--dye-deep); } .ds-check:focus-visible { outline:2px solid var(--ribbon-2); outline-offset:2px; } .ds-task-title { display:block; font-size:0.875rem; line-height:1.375rem; color:var(--ink); } .ds-done { color:var(--ink-3); text-decoration:line-through; } .ds-task-meta { display:flex; align-items:center; gap:6px; margin-top:2px; font-size:0.75rem; color:var(--ink-3); } .ds-swatch { width:8px; height:8px; border-radius:2px; background:var(--dye); } .ds-fig { font-weight:400; margin-left:4px; font-family:var(--font-figures, 'JetBrains Mono'), ui-monospace, monospace; font-variant-numeric:tabular-nums; letter-spacing:-0.01em; }"
+    },
+    {
+      "name": "Ribbon Marker on Today",
+      "kind": "custom",
+      "refersTo": "ribbon",
+      "description": "Marigold satin band in the right margin running through past days and ending in a forked tail on today's row.",
+      "html": "<ol class=\"ds-week\"><li class=\"ds-day\"><span class=\"ds-dow\">Mon</span><span class=\"ds-num\">6</span><i class=\"ds-ribbon\"></i></li><li class=\"ds-day ds-today\"><span class=\"ds-dow\">Tue</span><span class=\"ds-num\">7</span><i class=\"ds-ribbon ds-tail\"></i></li><li class=\"ds-day\"><span class=\"ds-dow\">Wed</span><span class=\"ds-num\">8</span></li></ol>",
+      "css": ".ds-week { list-style:none; margin:0; padding:0; width:300px; border-top:1px solid var(--rule-strong); background-color:var(--paper); background-image:radial-gradient(circle at 1px 1px, var(--dot) 0.9px, transparent 1.1px); background-size:18px 18px; } .ds-day { position:relative; display:flex; flex-direction:column; min-height:60px; padding:10px 20px; border-bottom:1px solid var(--rule); } .ds-today { background:color-mix(in oklch, var(--ribbon-wash) 55%, transparent); } .ds-dow { font-family:var(--font-ui, 'Schibsted Grotesk'), sans-serif; font-size:0.6875rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); } .ds-today .ds-dow { color:var(--ribbon-ink); } .ds-num { margin-top:4px; font-family:var(--font-figures, 'JetBrains Mono'), monospace; font-variant-numeric:tabular-nums; font-size:1.5rem; font-weight:500; line-height:1; color:var(--ink); } .ds-ribbon { position:absolute; top:-1px; bottom:-1px; right:16px; width:14px; background:linear-gradient(90deg, var(--ribbon-2) 0, var(--ribbon) 30%, var(--ribbon) 70%, var(--ribbon-2) 100%); } .ds-tail { bottom:-12px; z-index:1; clip-path:polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 7px), 0 100%); filter:drop-shadow(0 2px 1px oklch(0.2 0.05 70 / 0.25)); }"
+    },
+    {
+      "name": "Ranked Bars",
+      "kind": "custom",
+      "refersTo": "ranked-bars",
+      "description": "One labeled bar per section, sorted, with duration and share always printed.",
+      "html": "<ul class=\"ds-rank\"><li style=\"--dye:var(--dye-cobalt);--dye-deep:var(--dye-cobalt-deep)\"><span class=\"ds-rn\"><i></i>Study</span><span class=\"ds-rb\"><span style=\"width:100%\"></span></span><span class=\"ds-rv\">9h 40m</span><span class=\"ds-rp\">52%</span></li><li style=\"--dye:var(--dye-moss);--dye-deep:var(--dye-moss-deep)\"><span class=\"ds-rn\"><i></i>Work</span><span class=\"ds-rb\"><span style=\"width:62%\"></span></span><span class=\"ds-rv\">6h 0m</span><span class=\"ds-rp\">32%</span></li></ul>",
+      "css": ".ds-rank { list-style:none; margin:0; padding:0; width:420px; font-family:var(--font-ui, 'Schibsted Grotesk'), sans-serif; font-size:0.8125rem; } .ds-rank li { display:grid; grid-template-columns:minmax(0,9rem) 1fr 3.25rem 2.5rem; align-items:center; gap:12px; padding:6px 0; } .ds-rn { display:flex; align-items:center; gap:8px; color:var(--ink); } .ds-rn i { width:8px; height:8px; border-radius:2px; background:var(--dye); } .ds-rb { height:12px; } .ds-rb span { display:block; height:100%; border-radius:0 4px 4px 0; background:color-mix(in oklch, var(--dye) 55%, var(--dye-deep)); } .ds-rv, .ds-rp { text-align:right; font-family:var(--font-figures, 'JetBrains Mono'), monospace; font-variant-numeric:tabular-nums; letter-spacing:-0.01em; color:var(--ink); } .ds-rp { font-size:0.75rem; color:var(--ink-3); }"
+    },
+    {
+      "name": "Project Progress",
+      "kind": "custom",
+      "refersTo": "project-progress",
+      "description": "Rounded progress rod in the section's deep dye with milestone ticks at 25, 50 and 75%.",
+      "html": "<div class=\"ds-proj\" style=\"--dye-deep:var(--dye-coral-deep)\"><div class=\"ds-ph\"><span>Italian lessons</span><b>42<small>%</small></b></div><div class=\"ds-pt\" role=\"progressbar\" aria-valuenow=\"84\" aria-valuemax=\"200\"><span class=\"ds-pf\" style=\"width:42%\"></span><i style=\"left:25%\"></i><i style=\"left:50%\"></i><i style=\"left:75%\"></i></div><div class=\"ds-pm\">84 / 200 lessons</div></div>",
+      "css": ".ds-proj { width:360px; padding:16px 0; border-bottom:1px solid var(--rule); font-family:var(--font-ui, 'Schibsted Grotesk'), sans-serif; } .ds-ph { display:flex; justify-content:space-between; align-items:flex-start; font-size:0.875rem; font-weight:500; color:var(--ink); } .ds-ph b, .ds-pm { font-family:var(--font-figures, 'JetBrains Mono'), monospace; font-variant-numeric:tabular-nums; letter-spacing:-0.01em; } .ds-ph b { font-size:1.5rem; font-weight:500; line-height:1; } .ds-ph small { font-size:0.8125rem; color:var(--ink-3); } .ds-pt { position:relative; height:10px; margin-top:12px; overflow:hidden; border-radius:999px; background:var(--paper-3); } .ds-pf { position:absolute; inset:0 auto 0 0; border-radius:999px; background:var(--dye-deep); } .ds-pt i { position:absolute; top:0; bottom:0; width:2px; background:var(--paper); } .ds-pm { margin-top:8px; font-size:0.75rem; color:var(--ink-2); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Planner Spread",
+    "overview": "The app is a bound weekly planner opened flat on the desk. A deep bottle-green book cloth wraps everything: it is the spine strip on the left, the window background behind the pages, and the bar along the bottom of a phone. Inside the cloth lie two facing pages of bright, cool paper printed with a faint dot grid, split by a gutter that darkens toward the binding. Index tabs dyed in each section's color stand out of the fore-edge on the right. A marigold satin ribbon runs down the left page through the days already past and ends in a forked tail on today's row. Nothing in the frame is a generic app sidebar or a grid of cards; every structural element is a part of a physical book.\n\nDensity is high and the voice is quiet. Rows are printed lines, not boxes. Structure comes from hairline rules, a small uppercase rubric per block, and tabular mono figures for every time and duration. Color is scarce and meaningful: cloth green for structure and primary action, marigold for \"now\" (today, the running timer, the drop target, focus, selection), section dyes for identity, and a single danger red. The dark theme is the same book at night: graphite paper with chalk dots, the same cloth, the same ribbon.\n\nMotion is short and physical: tabs slide out of the fore-edge, popovers pop 3px into place, state changes fade in 150 to 250ms on an ease-out curve. Reduced motion collapses all of it.",
+    "keyCharacteristics": [
+      "Cloth frame, paper pages, a gutter, fore-edge tabs, a ribbon: the book is the layout.",
+      "Cool paper (hue 250) with an 18px printed dot grid; never cream.",
+      "One accent (marigold ribbon) that always means \"now\".",
+      "Section dyes are identity tabs, paired fill plus deep tone, never a data palette.",
+      "Every number is JetBrains Mono with tabular figures.",
+      "Editing happens in anchored popovers, not modals or detail pages."
+    ],
+    "rules": [
+      {
+        "name": "The One Ribbon Rule",
+        "body": "Marigold means \"now\" and nothing else: today, what is running, where a drop will land, where focus is. It is never decoration, never a brand fill, never a second button color.",
+        "section": "colors"
+      },
+      {
+        "name": "The Dye Is Identity Rule",
+        "body": "Section dyes say which section, never how much. They are user-assigned and were not validated as a categorical palette, so no chart may place two dyes side by side as the only way to tell series apart.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cool Paper Rule",
+        "body": "Paper sits at hue 250 with chroma under 0.01. A warm or cream paper breaks the world.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ledger Rule",
+        "body": "Any digit that measures time, counts or progress is set in the figures style. Proportional digits in a duration are a bug.",
+        "section": "typography"
+      },
+      {
+        "name": "The Rubric Rule",
+        "body": "A block is named by one 11px uppercase rubric on a hairline, never by a large heading. The rubric is the heading itself; nothing larger sits under it as a headline.",
+        "section": "typography"
+      },
+      {
+        "name": "The Margin Rule",
+        "body": "Time lives in the right margin of a row, right-aligned, in figures; content never runs into it.",
+        "section": "layout"
+      },
+      {
+        "name": "The Paper Is Flat Rule",
+        "body": "Rows, blocks and charts never get shadows or card boxes. Lift is only for things that float, and it is the single floating shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Popover Edit Rule",
+        "body": "Things are edited where they sit, in an anchored popover. No modal dialogs and no separate detail pages for tasks or projects.",
+        "section": "components"
+      },
+      {
+        "name": "The Printed Value Rule",
+        "body": "Every chart prints names and values as text; color alone never carries the reading, and multi-series charts that rely on telling dyes apart are not built.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "**Do** take every color from the tokens; set `--dye` and `--dye-deep` from a section and read those, never a specific dye.",
+      "**Do** set every time, duration, count and percentage in the figures style (JetBrains Mono, tabular).",
+      "**Do** name blocks with the 11px uppercase rubric on a rule-strong hairline.",
+      "**Do** keep UI transitions at 150 to 250ms with the ease-out curve (cubic-bezier(0.16, 1, 0.3, 1)), and let reduced motion cancel them.",
+      "**Do** edit in anchored popovers and add with inline quick-add lines.",
+      "**Do** keep copy terse: one or two words per label, no instructional sentences, no em dashes, none of the phrases blocked by scripts/copy-lint.mjs.",
+      "**Do** keep charts to one hue (cloth green, ribbon for today) or one bar per labeled row."
+    ],
+    "donts": [
+      "**Don't** use marigold for anything that is not \"now\": not brand fills, not secondary buttons, not decoration.",
+      "**Don't** put cards, boxes or drop shadows on rows, blocks or charts on the page; use rules and space.",
+      "**Don't** build a chart whose series are told apart only by adjacent section dyes, or that omits printed names and values.",
+      "**Don't** warm the paper toward cream or add a texture other than the dot grid.",
+      "**Don't** show a product name or wordmark; the book mark is the only identity.",
+      "**Don't** use the default Tailwind palette; it is switched off.",
+      "**Don't** use em dashes, stock AI phrasing or explanatory copy in the UI."
+    ]
+  }
+}

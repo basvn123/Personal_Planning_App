@@ -25,6 +25,8 @@
   --ribbon-2: oklch(0.74 0.16 70);
   --ribbon-ink: oklch(0.52 0.13 62);
   --ribbon-wash: oklch(0.955 0.045 85);
+  --on-ribbon: oklch(0.22 0.04 70);
+  --link: oklch(0.42 0.06 163);
   --danger: oklch(0.54 0.17 27);
   --danger-wash: oklch(0.96 0.025 27);
   --gutter-shade: oklch(0.2 0.02 258 / 0.08);
@@ -85,6 +87,7 @@
   --ribbon-2: oklch(0.72 0.15 70);
   --ribbon-ink: oklch(0.84 0.14 80);
   --ribbon-wash: oklch(0.255 0.022 80);
+  --link: oklch(0.8 0.08 178);
   --danger: oklch(0.7 0.15 27);
   --danger-wash: oklch(0.29 0.05 27);
   --gutter-shade: oklch(0 0 0 / 0.35);
@@ -143,6 +146,7 @@
     --ribbon-2: oklch(0.72 0.15 70);
     --ribbon-ink: oklch(0.84 0.14 80);
     --ribbon-wash: oklch(0.255 0.022 80);
+  --link: oklch(0.8 0.08 178);
     --danger: oklch(0.7 0.15 27);
     --danger-wash: oklch(0.29 0.05 27);
     --gutter-shade: oklch(0 0 0 / 0.35);
@@ -200,6 +204,7 @@
   --color-ribbon-2: var(--ribbon-2);
   --color-ribbon-ink: var(--ribbon-ink);
   --color-ribbon-wash: var(--ribbon-wash);
+  --color-on-ribbon: var(--on-ribbon);
   --color-danger: var(--danger);
   --color-danger-wash: var(--danger-wash);
   --color-transparent: transparent;
@@ -250,7 +255,7 @@
   }
   ::selection {
     background: var(--ribbon);
-    color: oklch(0.2 0.02 70);
+    color: var(--on-ribbon);
   }
   :focus-visible {
     outline: 2px solid var(--ribbon-2);
@@ -359,8 +364,7 @@
 .prose-doc h1 + *,
 .prose-doc h2 + *,
 .prose-doc h3 + * { margin-top: 0.4em; }
-.prose-doc a { color: var(--cloth-3); text-decoration: underline; text-decoration-thickness: 1px; }
-:root[data-theme="dark"] .prose-doc a { color: var(--dye-teal-deep); }
+.prose-doc a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; }
 .prose-doc strong { font-weight: 650; }
 .prose-doc ul { list-style: disc; padding-left: 1.3em; }
 .prose-doc ol { list-style: decimal; padding-left: 1.4em; }
