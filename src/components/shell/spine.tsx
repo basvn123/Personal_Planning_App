@@ -82,7 +82,7 @@ export function SpineBar() {
   return (
     <nav
       aria-label="Navigatie"
-      className="flex shrink-0 items-center justify-around gap-1 bg-cloth px-2 pt-1.5 pb-[max(0.375rem,calc(env(safe-area-inset-bottom)-1.25rem))] lg:hidden"
+      className="flex shrink-0 items-center justify-around gap-1 bg-cloth px-2 pt-1 pb-[max(0.375rem,calc(env(safe-area-inset-bottom)-1.5rem))] lg:hidden"
     >
       <BarItem {...week} />
       <BarItem {...sections} />

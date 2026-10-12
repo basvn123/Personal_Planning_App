@@ -46,7 +46,7 @@ export function Sheet({
         <Dialog.Content
           aria-describedby={undefined}
           onOpenAutoFocus={(e) => e.preventDefault()}
-          className="fixed inset-x-0 bottom-0 z-50 flex max-h-[min(88dvh,calc(100dvh-env(safe-area-inset-top)-1rem))] flex-col rounded-t-lg border-t border-rule bg-paper text-ink shadow-lift outline-none data-[state=open]:animate-[sheet_220ms_var(--ease-out)]"
+          className="fixed inset-x-0 bottom-[calc(-1*var(--screen-gap,0px))] z-50 flex max-h-[min(88dvh,calc(100dvh-env(safe-area-inset-top)-1rem))] flex-col rounded-t-lg border-t border-rule bg-paper text-ink shadow-lift outline-none data-[state=open]:animate-[sheet_220ms_var(--ease-out)]"
         >
           <div className="flex shrink-0 items-center gap-2 px-4 pb-1 pt-2">
             <span aria-hidden className="absolute left-1/2 top-1.5 h-1 w-9 -translate-x-1/2 rounded-full bg-rule-strong" />
