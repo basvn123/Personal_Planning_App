@@ -11,6 +11,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatStrip } from "@/components/ui/stat-strip";
 import { WeekNav } from "@/components/ui/week-nav";
+import { WeekJump } from "@/components/ui/week-jump";
 import { pageBody } from "@/components/ui/page-body";
 import { XpMeter } from "@/components/progress/xp-meter";
 import { getXp } from "@/server/queries/xp";
@@ -68,6 +69,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             next={`/dashboard?w=${shiftDay(from, 7)}`}
             now={isThisWeek ? undefined : "/dashboard"}
             nowLabel="Deze week"
+            jump={<WeekJump target="dashboard" current={from} days={days} today={today} weekStart={settings.weekStart === 0 ? 0 : 1} />}
           />
         }
         className="pt-2"

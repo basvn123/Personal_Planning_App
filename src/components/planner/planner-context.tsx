@@ -13,9 +13,9 @@ import {
 } from "@dnd-kit/core";
 import type { PlannerTask } from "@/server/queries/tasks";
 import { dyeVars } from "@/lib/dyes";
-import { createTask, deleteTask, setTaskStatus, updateTask, type TaskPatch } from "@/server/actions/tasks";
+import { createTask, createTasks, deleteTask, setTaskStatus, updateTask, type TaskPatch } from "@/server/actions/tasks";
 import { deleteSchedule } from "@/server/actions/schedules";
-import { useUi } from "@/lib/ui-store";
+import { useUi, type NewTask } from "@/lib/ui-store";
 import { XP_PER_TASK } from "@/lib/xp";
 
 export type PlannerSection = { id: string; name: string; slug: string; color: string };
@@ -38,6 +38,8 @@ type Ctx = {
   patch: (id: string, patch: TaskPatch) => void;
   toggle: (id: string) => void;
   remove: (id: string) => void;
+  /** One activity on several days, saved in one go; `shown` picks the ones this page displays. */
+  addMany: (inputs: NewTask[], shown: (input: NewTask) => boolean) => void;
   /** Deletes a whole schedule: its upcoming open occurrences leave the planner. */
   removeSeries: (scheduleId: string, fromTaskId: string) => void;
   error: string | null;
@@ -45,6 +47,26 @@ type Ctx = {
 };
 
 const PlannerCtx = createContext<Ctx | null>(null);
+
+/** A stand-in row shown until the server has saved the task. */
+function tempTask(input: NewTask, section: PlannerSection): PlannerTask {
+  return {
+    id: `temp-${crypto.randomUUID()}`,
+    title: input.title,
+    notesMd: "",
+    status: "todo",
+    plannedDate: input.plannedDate,
+    plannedStart: input.plannedStart,
+    plannedMinutes: input.plannedMinutes,
+    units: null,
+    rank: "~",
+    projectId: null,
+    scheduleId: null,
+    section,
+    loggedSeconds: 0,
+    docs: [],
+  };
+}
 
 export function usePlanner() {
   const ctx = useContext(PlannerCtx);
@@ -120,24 +142,16 @@ export function PlannerProvider({
       error,
       add: (input) => {
         const section = sections.find((s) => s.id === input.sectionId)!;
-        const temp: PlannerTask = {
-          id: `temp-${crypto.randomUUID()}`,
-          title: input.title,
-          notesMd: "",
-          status: "todo",
-          plannedDate: input.plannedDate,
-          plannedStart: input.plannedStart,
-          plannedMinutes: input.plannedMinutes,
-          units: null,
-          rank: "~",
-          projectId: null,
-          scheduleId: null,
-          section,
-          loggedSeconds: 0,
-          docs: [],
-        };
-        run((ts) => [...ts, temp], () => createTask(input));
+        run((ts) => [...ts, tempTask(input, section)], () => createTask(input));
         useUi.getState().showToast("Toegevoegd");
+      },
+      addMany: (inputs, shown) => {
+        const visible = inputs.filter(shown);
+        run(
+          (ts) => [...ts, ...visible.map((input) => tempTask(input, sections.find((s) => s.id === input.sectionId)!))],
+          () => createTasks(inputs),
+        );
+        useUi.getState().showToast(`Toegevoegd op ${inputs.length} dagen`);
       },
       patch: (id, p) => {
         run(
@@ -199,19 +213,22 @@ export function PlannerProvider({
   latest.current = { value, scope };
   useEffect(() => {
     const { setPlanner } = useUi.getState();
+    const fits = (task: NewTask) => {
+      const { value: v, scope: sc } = latest.current;
+      if (!v.sections.some((s) => s.id === task.sectionId)) return false;
+      return "days" in sc
+        ? task.plannedDate === null || sc.days.includes(task.plannedDate)
+        : task.sectionId === sc.sectionId && (task.plannedDate === null || task.plannedDate >= v.today);
+    };
     setPlanner({
       day: selectedDay,
       sectionId: "sectionId" in scope ? scope.sectionId : null,
       add: (task) => {
-        const { value: v, scope: sc } = latest.current;
-        const fits =
-          "days" in sc
-            ? task.plannedDate === null || sc.days.includes(task.plannedDate)
-            : task.sectionId === sc.sectionId && (task.plannedDate === null || task.plannedDate >= v.today);
-        if (!fits || !v.sections.some((s) => s.id === task.sectionId)) return false;
-        v.add(task);
+        if (!fits(task)) return false;
+        latest.current.value.add(task);
         return true;
       },
+      addMany: (tasks) => latest.current.value.addMany(tasks, fits),
     });
     return () => useUi.getState().setPlanner(null);
   }, [selectedDay, scope]);

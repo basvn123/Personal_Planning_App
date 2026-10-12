@@ -47,7 +47,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <SpineBar />
       <CommandPalette sections={sections} docs={docs} today={localDate(new Date(), settings.timezone)} />
       <Suspense>
-        <QuickAddSheet sections={sections} today={localDate(new Date(), settings.timezone)} />
+        <QuickAddSheet sections={sections} today={localDate(new Date(), settings.timezone)} weekStart={settings.weekStart === 0 ? 0 : 1} />
       </Suspense>
       <Toaster />
     </div>

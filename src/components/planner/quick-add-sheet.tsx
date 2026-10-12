@@ -4,12 +4,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { Sheet, usePhone } from "@/components/ui/sheet";
 import * as Dialog from "@radix-ui/react-dialog";
-import { createTask } from "@/server/actions/tasks";
+import { createTask, createTasks } from "@/server/actions/tasks";
+import { MonthCalendar } from "@/components/ui/month-calendar";
 import { useUi, type NewTask } from "@/lib/ui-store";
 import { parseQuickAdd } from "@/lib/quick-add";
-import { formatDay, formatMinutes } from "@/lib/time";
+import { formatDay, formatMinutes, shiftDay, weekDays } from "@/lib/time";
 import { dyeVars } from "@/lib/dyes";
-import { DayChips, DurationChips, FieldGroup, SectionChips, TimeField } from "./task-fields";
+import { Chip, DayChips, DurationChips, FieldGroup, SectionChips, TimeField } from "./task-fields";
 
 type Section = { id: string; name: string; slug: string; color: string };
 
@@ -26,7 +27,15 @@ function lastSection(ids: string[]) {
  * desktop. Day, time and duration are set right here, not afterwards. The title
  * also understands quick-add words ("#study morgen 14:00 45m") for fast typists.
  */
-export function QuickAddSheet({ sections, today }: { sections: Section[]; today: string }) {
+export function QuickAddSheet({
+  sections,
+  today,
+  weekStart = 1,
+}: {
+  sections: Section[];
+  today: string;
+  weekStart?: 0 | 1;
+}) {
   const open = useUi((s) => s.addOpen);
   const setOpen = useUi((s) => s.setAddOpen);
   const router = useRouter();
@@ -40,6 +49,9 @@ export function QuickAddSheet({ sections, today }: { sections: Section[]; today:
   const [time, setTime] = useState("");
   const [minutes, setMinutes] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Several days at once: the same activity is added to every picked day.
+  const [multi, setMulti] = useState(false);
+  const [picked, setPicked] = useState<string[]>([]);
 
   // Each opening starts from where you are: the tapped day, the day in view, the section you are in.
   useEffect(() => {
@@ -53,7 +65,26 @@ export function QuickAddSheet({ sections, today }: { sections: Section[]; today:
     setTime(addPreset?.time ?? "");
     setMinutes(addPreset?.time ? 60 : null);
     setError(null);
+    setMulti(false);
+    setPicked([]);
   }, [open, pathname, sections, today]);
+
+  function pickSingle(d: string | null) {
+    setMulti(false);
+    setDay(d);
+  }
+
+  function startMulti() {
+    if (multi) return pickSingle(picked[0] ?? today);
+    setMulti(true);
+    setPicked(day ? [day] : [today]);
+    setError(null);
+  }
+
+  function toggleDay(d: string) {
+    setPicked((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d].sort()));
+    setError(null);
+  }
 
   // Quick-add words in the title fill the fields as you type; the chips stay the source of truth.
   const parsed = useMemo(() => parseQuickAdd(title, today, sections), [title, today, sections]);
@@ -69,19 +100,39 @@ export function QuickAddSheet({ sections, today }: { sections: Section[]; today:
     const name = parsed.title.trim();
     if (!name) return setError("Geef het een naam.");
     if (!sectionId) return setError("Kies een sectie.");
-    const task: NewTask = {
+    if (multi && picked.length === 0) return setError("Tik minstens één dag aan.");
+    const dates = multi ? picked : [day];
+    const tasks: NewTask[] = dates.map((d) => ({
       title: name,
       sectionId,
-      plannedDate: day,
-      plannedStart: day ? time || null : null,
-      plannedMinutes: day ? minutes : null,
-    };
+      plannedDate: d,
+      plannedStart: d ? time || null : null,
+      plannedMinutes: d ? minutes : null,
+    }));
     setOpen(false);
     try {
       localStorage.setItem("last-section", sectionId);
     } catch {}
     const { planner, showToast } = useUi.getState();
-    const where = day ? (day === today ? "vandaag" : formatDay(day, "EEEE d MMM")) : "to-do";
+
+    if (tasks.length > 1) {
+      // On a planner page the ones it shows appear at once; one save covers all days.
+      if (planner) return planner.addMany(tasks);
+      start(async () => {
+        try {
+          await createTasks(tasks);
+          showToast(`Toegevoegd op ${tasks.length} dagen`);
+          router.refresh();
+        } catch {
+          showToast("Niet opgeslagen, probeer opnieuw");
+        }
+      });
+      return;
+    }
+
+    const task = tasks[0];
+    const d = task.plannedDate;
+    const where = d ? (d === today ? "vandaag" : formatDay(d, "EEEE d MMM")) : "to-do";
     // On a planner page that shows this task, it appears at once; elsewhere it saves and the page refreshes.
     if (planner?.add(task)) {
       showToast(`Toegevoegd aan ${where}`);
@@ -97,6 +148,14 @@ export function QuickAddSheet({ sections, today }: { sections: Section[]; today:
       }
     });
   }
+
+  const anchor = picked[0] ?? day ?? today;
+  const presets: { label: string; days: string[] }[] = [
+    { label: "Werkdagen", days: weekDays(anchor, 1).slice(0, 5) },
+    { label: "Hele week", days: weekDays(anchor, weekStart) },
+    { label: `7 dagen vanaf ${formatDay(anchor, "EEEEEE d")}`, days: Array.from({ length: 7 }, (_, i) => shiftDay(anchor, i)) },
+  ];
+  const planned = multi ? picked.length > 0 : day !== null;
 
   const section = sections.find((s) => s.id === sectionId);
   const form = (
@@ -116,10 +175,36 @@ export function QuickAddSheet({ sections, today }: { sections: Section[]; today:
       />
 
       <FieldGroup label="Wanneer">
-        <DayChips value={day} onChange={setDay} today={today} />
+        <DayChips value={day} onChange={pickSingle} today={today} multi={multi} onMulti={startMulti} />
       </FieldGroup>
 
-      {day && (
+      {multi && (
+        <div className="flex flex-col gap-3 rounded-xl border border-rule bg-canvas p-3">
+          <div className="flex flex-wrap gap-1.5">
+            {presets.map((p) => (
+              <Chip key={p.label} on={p.days.length === picked.length && p.days.every((d) => picked.includes(d))} onClick={() => setPicked(p.days)}>
+                {p.label}
+              </Chip>
+            ))}
+            {picked.length > 0 && (
+              <Chip on={false} onClick={() => setPicked([])}>
+                Wissen
+              </Chip>
+            )}
+          </div>
+          <MonthCalendar start={anchor} today={today} weekStart={weekStart} selected={picked} onPick={toggleDay} label="Kies de dagen" />
+          <p className="text-sm text-ink-2" aria-live="polite">
+            {picked.length === 0
+              ? "Tik de dagen aan waarop dit moet gebeuren."
+              : `${picked.length} ${picked.length === 1 ? "dag" : "dagen"}: ${picked
+                  .slice(0, 4)
+                  .map((d) => formatDay(d, "EEEEEE d MMM"))
+                  .join(", ")}${picked.length > 4 ? ` en nog ${picked.length - 4}` : ""}`}
+          </p>
+        </div>
+      )}
+
+      {planned && (
         <>
           <FieldGroup label="Duur">
             <DurationChips value={minutes} onChange={setMinutes} />
@@ -143,9 +228,15 @@ export function QuickAddSheet({ sections, today }: { sections: Section[]; today:
       >
         Toevoegen
         <span className="figures text-sm font-normal text-cloth-ink-2">
-          {day ? (day === today ? "vandaag" : formatDay(day, "EEEEEE d")) : "to-do"}
-          {day && time ? ` ${time}` : ""}
-          {day && minutes ? ` · ${formatMinutes(minutes)}` : ""}
+          {multi
+            ? `op ${picked.length} ${picked.length === 1 ? "dag" : "dagen"}`
+            : day
+              ? day === today
+                ? "vandaag"
+                : formatDay(day, "EEEEEE d")
+              : "to-do"}
+          {planned && time ? ` ${time}` : ""}
+          {planned && minutes ? ` · ${formatMinutes(minutes)}` : ""}
         </span>
       </button>
     </form>

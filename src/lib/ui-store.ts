@@ -16,6 +16,8 @@ export type PlannerHook = {
   sectionId: string | null;
   /** Adds optimistically when the task belongs on this page; false means "not mine". */
   add: (task: NewTask) => boolean;
+  /** Saves the same activity on several days; shows at once the ones this page displays. */
+  addMany: (tasks: NewTask[]) => void;
 };
 
 export type AddPreset = { day?: string | null; sectionId?: string; time?: string };

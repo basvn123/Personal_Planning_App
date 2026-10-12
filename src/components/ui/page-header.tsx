@@ -22,13 +22,14 @@ export function PageHeader({
   as?: "h1" | "h2";
 }) {
   return (
-    <header className={cx("flex items-start gap-3 px-1", className)}>
+    // When the actions don't fit next to the title, they wrap to their own row instead of squeezing it.
+    <header className={cx("flex flex-wrap items-start gap-x-3 gap-y-2 px-1", className)}>
       {lead}
-      <div className="min-w-0 flex-1">
+      <div className="min-w-[8.5rem] flex-1">
         <Tag
           className={cx(
-            "flex items-center gap-1.5 font-bold leading-tight tracking-[-0.025em] text-ink [overflow-wrap:anywhere]",
-            Tag === "h1" ? "text-2xl" : "text-xl",
+            "flex items-center gap-1.5 font-bold leading-tight tracking-[-0.025em] text-ink [overflow-wrap:break-word]",
+            Tag === "h1" ? "text-2xl" : "text-lg lg:text-xl",
           )}
         >
           <span className="min-w-0 first-letter:uppercase">{title}</span>
@@ -36,7 +37,7 @@ export function PageHeader({
         </Tag>
         {subtitle && <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm text-ink-2">{subtitle}</div>}
       </div>
-      {actions && <div className="flex shrink-0 items-center gap-0.5">{actions}</div>}
+      {actions && <div className="ml-auto flex shrink-0 items-center gap-0.5">{actions}</div>}
     </header>
   );
 }

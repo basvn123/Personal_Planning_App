@@ -46,11 +46,7 @@ function refresh() {
   revalidatePath("/", "layout");
 }
 
-export async function createTask(input: z.input<typeof createSchema>) {
-  const userId = await requireUserId();
-  const v = createSchema.parse(input);
-  await ownSections(userId, v.sectionId);
-  if (v.projectId) await ownProjects(userId, v.projectId);
+async function insertTask(userId: string, v: z.infer<typeof createSchema>) {
   const [row] = await db
     .insert(tasks)
     .values({
@@ -65,8 +61,30 @@ export async function createTask(input: z.input<typeof createSchema>) {
       rank: rankBetween(await lastRank(userId, v.sectionId, v.plannedDate ?? null), null),
     })
     .returning({ id: tasks.id });
-  refresh();
   return row.id;
+}
+
+export async function createTask(input: z.input<typeof createSchema>) {
+  const userId = await requireUserId();
+  const v = createSchema.parse(input);
+  await ownSections(userId, v.sectionId);
+  if (v.projectId) await ownProjects(userId, v.projectId);
+  const id = await insertTask(userId, v);
+  refresh();
+  return id;
+}
+
+/** The same activity on several days at once (up to two months of days). */
+export async function createTasks(inputs: z.input<typeof createSchema>[]) {
+  const userId = await requireUserId();
+  const list = z.array(createSchema).min(1).max(62).parse(inputs);
+  for (const sectionId of new Set(list.map((v) => v.sectionId))) await ownSections(userId, sectionId);
+  for (const projectId of new Set(list.map((v) => v.projectId).filter((p): p is string => Boolean(p))))
+    await ownProjects(userId, projectId);
+  const ids: string[] = [];
+  for (const v of list) ids.push(await insertTask(userId, v));
+  refresh();
+  return ids;
 }
 
 export async function updateTask(id: string, patch: TaskPatch) {
