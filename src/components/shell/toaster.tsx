@@ -18,7 +18,7 @@ export function Toaster() {
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none fixed inset-x-0 bottom-[calc(4.75rem+max(0px,env(safe-area-inset-bottom)-1.5rem)-var(--screen-gap,0px))] z-[60] flex justify-center px-4 lg:bottom-6"
+      className="toast-bottom pointer-events-none fixed inset-x-0 z-[60] flex justify-center px-4 lg:bottom-6"
     >
       {shown && (
         <span

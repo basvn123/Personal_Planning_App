@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { History, Plus, Timer, Trash2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button, inputClass } from "@/components/ui/button";
 import { addManualEntry, deleteEntry, updateEntry } from "@/server/actions/time";
@@ -25,28 +27,34 @@ export function TimeLog({
   sections: PlannerSection[];
 }) {
   const [adding, setAdding] = useState(false);
+  const total = entries.reduce((sum, e) => sum + (e.endedAt ? e.seconds : 0), 0);
   return (
-    <section aria-label="Logboek" className="mt-7">
-      <div className="flex h-8 items-center justify-between border-b border-rule-strong">
-        <h3 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Logboek</h3>
+    <Card
+      icon={History}
+      title="Logboek"
+      meta={total > 0 ? `${formatDuration(total)} gelogd` : undefined}
+      action={
         <button
           type="button"
           onClick={() => setAdding((a) => !a)}
           aria-expanded={adding}
-          className="inline-flex h-9 items-center gap-1 rounded-xs px-1.5 text-sm text-ink-2 hover:bg-paper-3 hover:text-ink lg:h-7 lg:text-xs"
+          className="inline-flex h-10 items-center gap-1 rounded-full px-3 text-sm font-medium text-[var(--link)] hover:bg-paper-3 lg:h-8 lg:text-xs"
         >
-          <Plus className="size-3.5" strokeWidth={1.75} />
+          <Plus className="size-4" strokeWidth={2.25} />
           Tijd loggen
         </button>
-      </div>
+      }
+    >
       {adding && <AddEntry day={day} tasks={tasks} sections={sections} onDone={() => setAdding(false)} />}
-      <ul>
+      <ul className="divide-y divide-rule">
         {entries.map((e) => (
           <EntryRow key={e.id} entry={e} />
         ))}
       </ul>
-      {entries.length === 0 && !adding && <p className="py-3 text-sm text-ink-3">Nog niets gelogd.</p>}
-    </section>
+      {entries.length === 0 && !adding && (
+        <EmptyState icon={Timer} text="Start de timer op een taak met de afspeelknop, of log achteraf met Tijd loggen." />
+      )}
+    </Card>
   );
 }
 
@@ -61,9 +69,9 @@ function EntryRow({ entry }: { entry: LogEntry }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <li style={dyeVars(entry.section.color)} className="border-b border-rule">
+    <li style={dyeVars(entry.section.color)}>
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger className="flex h-10 w-full items-center gap-3 text-left text-sm transition-colors hover:bg-paper-3/60">
+        <PopoverTrigger className="flex min-h-11 w-full items-center gap-3 text-left text-sm transition-colors hover:bg-paper-3/60">
           <span className="figures w-[6.5rem] shrink-0 text-ink-2">
             {entry.startClock}
             <span className="text-ink-3">{" tot "}</span>

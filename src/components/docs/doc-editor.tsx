@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { BookOpen, Check, FolderInput, PenLine, Pin, Trash2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Segmented } from "@/components/ui/segmented";
 import { Button, IconButton } from "@/components/ui/button";
 import {
   deleteDocument,
@@ -98,7 +99,7 @@ export function DocEditor({
   }
 
   return (
-    <article className="flex min-h-full flex-col px-5 pt-5 lg:px-10 lg:pt-6">
+    <article className="m-3 flex min-h-[calc(100%-1.5rem)] flex-col rounded-xl border border-rule bg-card px-4 pt-4 shadow-[0_1px_2px_oklch(0.2_0.02_258/0.04)] sm:mx-4 lg:m-6 lg:min-h-[calc(100%-3rem)] lg:px-8 lg:pt-6">
       <div className="flex flex-wrap items-center gap-1 pb-4">
         <div className="mr-auto flex flex-wrap items-center gap-1">
           {allSections
@@ -153,14 +154,17 @@ export function DocEditor({
         <div className="ml-auto flex items-center gap-1">
           <InfoButton topic="document" align="end" />
           <SaveIndicator state={state} />
-          <div role="group" aria-label="Weergave" className="ml-1 flex rounded-sm bg-paper-3 p-0.5">
-            <ModeButton active={mode === "write"} onClick={() => switchMode("write")} label="Schrijven">
-              <PenLine className="size-3.5" strokeWidth={1.75} />
-            </ModeButton>
-            <ModeButton active={mode === "read"} onClick={() => switchMode("read")} label="Lezen">
-              <BookOpen className="size-3.5" strokeWidth={1.75} />
-            </ModeButton>
-          </div>
+          <Segmented
+            label="Weergave"
+            size="sm"
+            value={mode}
+            onChange={switchMode}
+            className="ml-1 w-[5.5rem]"
+            options={[
+              { value: "write", label: "", icon: PenLine, title: "Schrijven" },
+              { value: "read", label: "", icon: BookOpen, title: "Lezen" },
+            ]}
+          />
           <IconButton
             label={pinned ? "Losmaken" : "Vastzetten"}
             aria-pressed={pinned}
@@ -239,34 +243,6 @@ export function DocEditor({
         )}
       </div>
     </article>
-  );
-}
-
-function ModeButton({
-  active,
-  onClick,
-  label,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      aria-label={label}
-      title={label}
-      className={cx(
-        "grid h-7 w-8 place-items-center rounded-xs transition-colors duration-150",
-        active ? "bg-paper text-ink shadow-[0_1px_2px_oklch(0.2_0.02_258/0.12)]" : "text-ink-3 hover:text-ink",
-      )}
-    >
-      {children}
-    </button>
   );
 }
 

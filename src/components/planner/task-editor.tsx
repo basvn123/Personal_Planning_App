@@ -9,7 +9,7 @@ import { linkDocumentTask } from "@/server/actions/documents";
 import { listSectionDocuments } from "@/server/actions/tasks";
 import type { PlannerTask } from "@/server/queries/tasks";
 import { usePlanner } from "./planner-context";
-import { DayChips, DurationChips, SectionChips, TimeField } from "./task-fields";
+import { DayChips, DurationChips, FieldGroup as Field, SectionChips, TimeField } from "./task-fields";
 import { cx } from "@/lib/cx";
 
 /** Edit form for one task. Every field saves on change or blur. */
@@ -272,15 +272,6 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
           {task.scheduleId ? "Alleen deze" : "Verwijderen"}
         </Button>
       </div>
-    </div>
-  );
-}
-
-function Field({ label, className, children }: { label: string; className?: string; children: React.ReactNode }) {
-  return (
-    <div role="group" aria-label={label} className={cx("flex flex-col gap-1", className)}>
-      <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">{label}</span>
-      {children}
     </div>
   );
 }

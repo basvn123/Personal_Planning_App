@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Spread } from "@/components/shell/spread";
 import { Importer } from "@/components/import/importer";
 import { ImportHistory } from "@/components/import/import-history";
-import { InfoButton } from "@/components/help/info-button";
+import { FileUp, History } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/page-header";
+import { pageBody } from "@/components/ui/page-body";
 import { listImports } from "@/server/actions/imports";
 import { getSections, getSettings } from "@/server/queries/core";
 import { localDate } from "@/lib/time";
@@ -17,18 +20,23 @@ export default async function ImportPage() {
       leftLabel="Importeren"
       rightLabel="Eerder"
       left={
-        <div className="px-5 pb-12 pt-6 lg:px-8">
-          <h1 className="mb-6 flex items-center gap-1.5 text-xl font-semibold tracking-[-0.02em]">
-            Schema importeren
-            <InfoButton topic="import" />
-          </h1>
-          <Importer sections={sections.map(({ id, name }) => ({ id, name }))} today={today} />
+        <div className={pageBody}>
+          <PageHeader
+            title="Schema importeren"
+            info="import"
+            subtitle="Een trainings- of studieschema uit een CSV- of JSON-bestand in één keer in je planning."
+            className="pt-2"
+          />
+          <Card icon={FileUp} title="Bestand" bodyClassName="pt-1">
+            <Importer sections={sections.map(({ id, name }) => ({ id, name }))} today={today} />
+          </Card>
         </div>
       }
       right={
-        <div className="px-5 pb-12 pt-6 lg:px-10">
-          <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Eerdere imports</h2>
-          <ImportHistory items={history} />
+        <div className={pageBody}>
+          <Card icon={History} title="Eerdere imports" count={history.length}>
+            <ImportHistory items={history} />
+          </Card>
         </div>
       }
     />

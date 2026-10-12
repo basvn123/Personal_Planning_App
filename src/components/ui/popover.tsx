@@ -21,7 +21,7 @@ export function PopoverContent({
         {...props}
         className={cx(
           // Never taller than the room left on screen; long content scrolls inside.
-          "z-50 max-h-[var(--radix-popover-content-available-height)] overflow-y-auto overscroll-contain rounded-md border border-rule bg-paper p-3 text-ink shadow-lift outline-none",
+          "z-50 max-h-[var(--radix-popover-content-available-height)] overflow-y-auto overscroll-contain rounded-lg border border-rule bg-card p-3 text-ink shadow-lift outline-none",
           "data-[state=open]:animate-[pop_160ms_var(--ease-out)]",
           className,
         )}

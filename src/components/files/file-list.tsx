@@ -16,16 +16,16 @@ export function FileList({ slug, files }: { slug: string; files: FileListItem[] 
         const href = `/s/${slug}/f/${f.id}`;
         const active = pathname === href;
         return (
-          <li key={f.id} className="border-b border-rule">
+          <li key={f.id} className="border-t border-rule">
             <Link
               href={href}
               aria-current={active ? "page" : undefined}
               className={cx(
-                "-mx-2 flex h-10 items-center gap-2 rounded-xs px-2 transition-colors",
+                "-mx-2 flex min-h-11 items-center gap-2.5 rounded-md px-2 transition-colors",
                 active ? "bg-ribbon-wash text-ink" : "text-ink hover:bg-paper-3/70",
               )}
             >
-              <FileIcon contentType={f.contentType} name={f.name} className="size-3.5 shrink-0 text-ink-3" />
+              <FileIcon contentType={f.contentType} name={f.name} className="size-4 shrink-0 text-ink-3" />
               <span className="min-w-0 flex-1 truncate">{f.name}</span>
               <span className="figures shrink-0 text-xs text-ink-3">{formatBytes(f.size)}</span>
               <span className="figures w-12 shrink-0 text-right text-xs text-ink-3">{f.added}</span>

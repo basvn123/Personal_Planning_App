@@ -5,8 +5,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cx } from "@/lib/cx";
 
 /**
- * Two facing pages. Desktop shows both with a gutter; on a phone the pages
- * sit side by side in a horizontal snap scroller with a two-way switch on top.
+ * Two pages of cards on the grey canvas. Desktop shows both side by side; on a
+ * phone they sit in a horizontal snap scroller with a two-way switch on top.
  */
 export function Spread({
   left,
@@ -15,6 +15,7 @@ export function Spread({
   rightLabel,
   initial = "left",
   rightPathPattern,
+  rightLabelOnPattern,
 }: {
   left: React.ReactNode;
   right: React.ReactNode;
@@ -23,10 +24,14 @@ export function Spread({
   initial?: "left" | "right";
   /** On a phone, flip to the right page whenever the path matches this regex. */
   rightPathPattern?: string;
+  /** The right switch label while the path matches `rightPathPattern`. */
+  rightLabelOnPattern?: string;
 }) {
   const pathname = usePathname();
   const scroller = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState<"left" | "right">(initial);
+  const matched = Boolean(rightPathPattern && new RegExp(rightPathPattern).test(pathname));
+  const rightText = matched && rightLabelOnPattern ? rightLabelOnPattern : rightLabel;
 
   // Before paint, so a page that opens on the right never flashes the left one first.
   useLayoutEffect(() => {
@@ -59,22 +64,24 @@ export function Spread({
 
   return (
     <div className="flex h-full flex-col">
-      <div role="tablist" aria-label="Pagina's" className="flex shrink-0 gap-1 border-b border-rule bg-paper-2 p-1 lg:hidden">
-        {(["left", "right"] as const).map((side) => (
-          <button
-            key={side}
-            type="button"
-            role="tab"
-            aria-selected={current === side}
-            onClick={() => show(side)}
-            className={cx(
-              "h-8 min-w-0 flex-1 truncate rounded-sm px-2 text-sm transition-colors duration-150",
-              current === side ? "bg-paper font-medium text-ink shadow-[0_1px_2px_oklch(0.2_0.02_258/0.1)]" : "text-ink-3",
-            )}
-          >
-            {side === "left" ? leftLabel : rightLabel}
-          </button>
-        ))}
+      <div className="shrink-0 bg-canvas px-3 pb-1 pt-2 lg:hidden">
+        <div role="tablist" aria-label="Pagina's" className="flex rounded-lg bg-paper-3 p-0.5">
+          {(["left", "right"] as const).map((side) => (
+            <button
+              key={side}
+              type="button"
+              role="tab"
+              aria-selected={current === side}
+              onClick={() => show(side)}
+              className={cx(
+                "h-9 min-w-0 flex-1 truncate rounded-md px-2 text-sm transition-colors duration-150",
+                current === side ? "bg-card font-semibold text-ink shadow-[0_1px_2px_oklch(0.2_0.02_258/0.12)]" : "text-ink-2",
+              )}
+            >
+              {side === "left" ? leftLabel : rightText}
+            </button>
+          ))}
+        </div>
       </div>
       <div
         ref={scroller}
@@ -84,7 +91,7 @@ export function Spread({
         <Page side="left" label={leftLabel}>
           {left}
         </Page>
-        <Page side="right" label={rightLabel}>
+        <Page side="right" label={rightText}>
           {right}
         </Page>
       </div>
@@ -97,10 +104,8 @@ function Page({ side, label, children }: { side: "left" | "right"; label: string
     <section
       aria-label={label}
       className={cx(
-        "paper relative h-full w-full shrink-0 snap-start overflow-y-auto overscroll-contain lg:w-auto",
-        side === "left"
-          ? "lg:shadow-[inset_-28px_0_28px_-24px_var(--gutter-shade)]"
-          : "bg-paper-2 lg:shadow-[inset_28px_0_28px_-24px_var(--gutter-shade)]",
+        "relative h-full w-full shrink-0 snap-start overflow-y-auto overscroll-contain bg-canvas lg:w-auto",
+        side === "right" && "lg:border-l lg:border-rule",
       )}
     >
       {children}

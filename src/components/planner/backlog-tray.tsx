@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronDown, Inbox } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { dyeVars } from "@/lib/dyes";
 import { cx } from "@/lib/cx";
 import { usePlanner } from "./planner-context";
 import { TaskRow } from "./task-row";
 
-/** Open backlog items from every section, ready to drag onto a day or send with the calendar button. */
+/** Open to-dos from every section, ready to drag onto a day or send with the calendar button. */
 export function BacklogTray() {
   const { tasks, sections } = usePlanner();
   const [open, setOpen] = useState(false);
@@ -17,35 +19,43 @@ export function BacklogTray() {
     .filter((g) => g.items.length > 0);
 
   return (
-    <section aria-label="To-do" className="mt-7">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        className="flex h-8 w-full items-center gap-1.5 border-b border-rule-strong text-left"
-      >
-        <ChevronRight className={cx("size-3.5 text-ink-3 transition-transform duration-200", open && "rotate-90")} strokeWidth={2} />
-        <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">To-do</span>
-        <span className="figures ml-auto text-xs text-ink-3">{backlog.length}</span>
-      </button>
-      {open && (
-        <div className="pt-1">
-          {groups.length === 0 && <p className="py-3 text-sm text-ink-3">{"Geen open to-do's."}</p>}
-          {groups.map(({ section, items }) => (
-            <div key={section.id} className="py-2" style={dyeVars(section.color)}>
-              <h4 className="mb-1 flex items-center gap-1.5 text-xs font-medium text-ink-2">
-                <span className="size-2 rounded-[2px] bg-[var(--dye)]" />
-                {section.name}
-              </h4>
-              <ul className="pl-3.5">
-                {items.map((t) => (
-                  <TaskRow key={t.id} task={t} variant="week" />
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      )}
-    </section>
+    <Card
+      icon={Inbox}
+      title="To-do"
+      count={backlog.length}
+      meta={!open && backlog.length > 0 ? "uit al je secties" : undefined}
+      action={
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-label={open ? "To-do inklappen" : "To-do openen"}
+          className="grid size-10 place-items-center rounded-full text-ink-2 hover:bg-paper-3 lg:size-8"
+        >
+          <ChevronDown className={cx("size-5 transition-transform duration-200 lg:size-4", open && "rotate-180")} strokeWidth={2} />
+        </button>
+      }
+    >
+      {open &&
+        (groups.length === 0 ? (
+          <EmptyState icon={Inbox} text="Geen open to-do's. Zet ze in een sectie onder To-do, dan plan je ze hier in." />
+        ) : (
+          <div className="flex flex-col gap-3 pt-1">
+            {groups.map(({ section, items }) => (
+              <div key={section.id} style={dyeVars(section.color)}>
+                <h3 className="mb-1 flex items-center gap-1.5 text-xs font-medium text-ink-2">
+                  <span className="size-2 rounded-[2px] bg-[var(--dye)]" />
+                  {section.name}
+                </h3>
+                <ul className="pl-3.5">
+                  {items.map((t) => (
+                    <TaskRow key={t.id} task={t} variant="week" />
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        ))}
+    </Card>
   );
 }

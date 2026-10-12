@@ -27,7 +27,7 @@ export function DayStrip({ days }: { days: string[] }) {
             onClick={() => selectDay(day)}
             className={cx(
               "relative flex h-[3.75rem] flex-col items-center justify-center gap-0.5 rounded-md transition-colors",
-              selected ? "bg-cloth text-cloth-ink" : "bg-paper-2 text-ink active:bg-paper-3",
+              selected ? "bg-cloth text-cloth-ink" : "bg-canvas text-ink active:bg-paper-3",
             )}
           >
             <span

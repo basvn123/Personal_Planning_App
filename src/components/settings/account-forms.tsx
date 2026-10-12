@@ -135,7 +135,7 @@ export function PeopleManager({ people, meId }: { people: Person[]; meId: string
         ))}
       </ul>
       <form
-        className="flex flex-col gap-2.5 rounded-sm border border-rule bg-paper/70 p-3"
+        className="flex flex-col gap-2.5 rounded-lg border border-rule bg-canvas p-3"
         onSubmit={(e) => {
           e.preventDefault();
           invite.run(() => invitePerson({ name, email, password }), `${name} kan nu inloggen.`, () => {

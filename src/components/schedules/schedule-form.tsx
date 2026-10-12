@@ -6,7 +6,7 @@ import { Button, inputClass } from "@/components/ui/button";
 import { createSchedule, deleteSchedule, setScheduleActive, updateSchedule } from "@/server/actions/schedules";
 import { WEEKDAY_CODES, type Recurrence, type WeekdayCode } from "@/lib/recurrence";
 import { cx } from "@/lib/cx";
-import { DurationChips, SectionChips } from "@/components/planner/task-fields";
+import { DurationChips, FieldGroup as Row, SectionChips } from "@/components/planner/task-fields";
 
 const DAY_LABELS: Record<WeekdayCode, string> = { MO: "M", TU: "D", WE: "W", TH: "D", FR: "V", SA: "Z", SU: "Z" };
 const DAY_NAMES: Record<WeekdayCode, string> = { MO: "maandag", TU: "dinsdag", WE: "woensdag", TH: "donderdag", FR: "vrijdag", SA: "zaterdag", SU: "zondag" };
@@ -185,14 +185,5 @@ export function ScheduleForm({
         </p>
       )}
     </form>
-  );
-}
-
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">{label}</span>
-      {children}
-    </div>
   );
 }

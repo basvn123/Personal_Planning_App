@@ -18,14 +18,16 @@ export type PlannerHook = {
   add: (task: NewTask) => boolean;
 };
 
+export type AddPreset = { day?: string | null; sectionId?: string; time?: string };
+
 type UiState = {
   paletteOpen: boolean;
   openPalette: () => void;
   setPaletteOpen: (open: boolean) => void;
   addOpen: boolean;
   /** Preset for the add sheet, e.g. the day row whose plus was tapped. */
-  addPreset: { day?: string | null; sectionId?: string } | null;
-  openAdd: (preset?: { day?: string | null; sectionId?: string }) => void;
+  addPreset: AddPreset | null;
+  openAdd: (preset?: AddPreset) => void;
   setAddOpen: (open: boolean) => void;
   planner: PlannerHook | null;
   setPlanner: (p: PlannerHook | null) => void;

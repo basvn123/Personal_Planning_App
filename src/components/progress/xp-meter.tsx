@@ -24,7 +24,7 @@ export function XpMeter({ xp, className }: { xp: XpSummary; className?: string }
     <section aria-label="Voortgang" className={cx("flex flex-col gap-1.5", className)}>
       <div className="flex items-baseline gap-2">
         <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink">
-          <Trophy className="size-3.5 text-cloth-3" strokeWidth={2} />
+          <Trophy className="size-3.5 text-[var(--link)]" strokeWidth={2} />
           Level {lvl.level}
         </span>
         <span className="text-sm text-ink-2">{lvl.title}</span>
@@ -40,7 +40,7 @@ export function XpMeter({ xp, className }: { xp: XpSummary; className?: string }
         aria-valuenow={lvl.into}
         className="h-1.5 overflow-hidden rounded-full bg-paper-3"
       >
-        <div className="h-full rounded-full bg-cloth-3 transition-[width] duration-500 ease-out" style={{ width: `${lvl.percent}%` }} />
+        <div className="h-full rounded-full bg-[var(--link)] transition-[width] duration-500 ease-out" style={{ width: `${lvl.percent}%` }} />
       </div>
       <p className="flex flex-wrap gap-x-3 text-xs text-ink-3">
         <span className="figures">
@@ -55,5 +55,40 @@ export function XpMeter({ xp, className }: { xp: XpSummary; className?: string }
         )}
       </p>
     </section>
+  );
+}
+
+/** One line of XP for the top of the day: level, a short bar, and today's points. */
+export function XpLine({ xp, className }: { xp: XpSummary; className?: string }) {
+  const pending = useUi((s) => s.xpPending);
+  const total = Math.max(0, xp.total + pending);
+  const today = Math.max(0, xp.today + pending);
+  const lvl = levelFor(total);
+  return (
+    <div className={cx("flex items-center gap-2.5 text-xs text-ink-2", className)} title={`${lvl.into}/${lvl.need} XP naar level ${lvl.level + 1}`}>
+      <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-ink">
+        <Trophy className="size-3.5 text-[var(--link)]" strokeWidth={2} />
+        Level {lvl.level}
+      </span>
+      <span
+        role="progressbar"
+        aria-label={`Level ${lvl.level + 1}`}
+        aria-valuemin={0}
+        aria-valuemax={lvl.need}
+        aria-valuenow={lvl.into}
+        className="h-1.5 min-w-10 flex-1 overflow-hidden rounded-full bg-paper-3"
+      >
+        <span className="block h-full rounded-full bg-[var(--link)] transition-[width] duration-500 ease-out" style={{ width: `${lvl.percent}%` }} />
+      </span>
+      <span className="figures shrink-0">
+        <span className={cx(today > 0 && "font-semibold text-ink")}>+{today}</span> XP vandaag
+      </span>
+      {xp.streak > 0 && (
+        <span className="figures inline-flex shrink-0 items-center gap-0.5">
+          <Flame className="size-3.5" strokeWidth={2} />
+          {xp.streak}
+        </span>
+      )}
+    </div>
   );
 }

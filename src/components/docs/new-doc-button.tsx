@@ -1,10 +1,11 @@
 "use client";
 
+import { cardActionClass } from "@/components/ui/card";
+import { emptyActionClass } from "@/components/ui/empty-state";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Plus } from "lucide-react";
 import { createDocument } from "@/server/actions/documents";
-import { cx } from "@/lib/cx";
 
 export function NewDocButton({ sectionId, slug, variant = "icon" }: { sectionId: string; slug: string; variant?: "icon" | "button" }) {
   const router = useRouter();
@@ -21,7 +22,7 @@ export function NewDocButton({ sectionId, slug, variant = "icon" }: { sectionId:
         type="button"
         onClick={create}
         disabled={pending}
-        className="inline-flex h-8 items-center gap-1.5 rounded-sm bg-cloth px-3 text-sm font-medium text-cloth-ink transition-colors hover:bg-cloth-3 disabled:opacity-50"
+        className={emptyActionClass}
       >
         <Plus className="size-4" strokeWidth={2} />
         Nieuw document
@@ -34,11 +35,9 @@ export function NewDocButton({ sectionId, slug, variant = "icon" }: { sectionId:
       disabled={pending}
       aria-label="Nieuw document"
       title="Nieuw document"
-      className={cx(
-        "grid size-7 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink disabled:opacity-40",
-      )}
+      className={cardActionClass}
     >
-      <Plus className="size-4" strokeWidth={1.75} />
+      <Plus className="size-5 lg:size-4" strokeWidth={2.25} />
     </button>
   );
 }

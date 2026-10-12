@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { CalendarClock, ChevronLeft, ChevronRight, Clock, ListTodo, Plus } from "lucide-react";
 import { IconButton } from "@/components/ui/button";
 import { formatDay, formatDuration, formatMinutes, shiftDay } from "@/lib/time";
 import { useUi } from "@/lib/ui-store";
@@ -13,7 +13,12 @@ import { TaskRow } from "./task-row";
 import { DayStrip } from "./day-strip";
 import { TimeLog } from "@/components/timer/time-log";
 import { BacklogTray } from "./backlog-tray";
-import { InfoButton } from "@/components/help/info-button";
+import { Card, CardAddButton } from "@/components/ui/card";
+import { EmptyAction, EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
+import { pageBody } from "@/components/ui/page-body";
+import { XpLine } from "@/components/progress/xp-meter";
+import type { XpSummary } from "@/server/queries/xp";
 import type { LogEntry } from "@/server/queries/time";
 import type { PlannerTask } from "@/server/queries/tasks";
 
@@ -45,10 +50,12 @@ export function DayPlan({
   days,
   logged,
   entries,
+  xp,
 }: {
   days: string[];
   logged: Record<string, number>;
   entries: LogEntry[];
+  xp: XpSummary;
 }) {
   const router = useRouter();
   const openAdd = useUi((s) => s.openAdd);
@@ -67,94 +74,120 @@ export function DayPlan({
     else router.push(`/week?d=${next}&day=${next}`);
   }
 
+  // A sensible first guess for "something at a set time": the next whole hour today, nine o'clock otherwise.
+  const suggestTime = () => {
+    if (day !== today || now === null) return "09:00";
+    const next = Math.min(23, Math.floor(now / 60) + 1);
+    return `${String(next).padStart(2, "0")}:00`;
+  };
+
   const label = day === today ? "Vandaag" : day === shiftDay(today, 1) ? "Morgen" : day === shiftDay(today, -1) ? "Gisteren" : null;
 
   return (
-    <div className="flex min-h-full flex-col px-4 pb-16 pt-4 sm:px-5 lg:px-10 lg:pt-6">
-      <DayStrip days={days} />
-
-      <header className="mt-4 flex items-start gap-3 lg:mt-0">
-        <div className="min-w-0 flex-1">
-          <h2 className="flex items-center gap-1.5 text-xl font-semibold tracking-[-0.02em]">
-            <span className="first-letter:uppercase">{formatDay(day, "EEEE d MMMM")}</span>
-            <InfoButton topic="day" />
-          </h2>
-          <p className="mt-0.5 flex flex-wrap gap-x-3 text-sm text-ink-2">
-            {label && <span className="text-ribbon-ink">{label}</span>}
-            {dayTasks.length > 0 && (
-              <span className="figures">
-                {done}/{dayTasks.length} klaar
-              </span>
-            )}
-            {planned > 0 && <span className="figures">{formatDuration(planned)} gepland</span>}
-            <span className="figures">{formatDuration(logged[day] ?? 0)} gelogd</span>
-          </p>
-        </div>
-        <div className="flex items-center">
-          <IconButton label="Vorige dag" onClick={() => go(-1)} className="max-lg:size-10">
-            <ChevronLeft className="size-4" strokeWidth={1.75} />
-          </IconButton>
-          <IconButton label="Volgende dag" onClick={() => go(1)} className="max-lg:size-10">
-            <ChevronRight className="size-4" strokeWidth={1.75} />
-          </IconButton>
-        </div>
-      </header>
-
-      {dayTasks.length > 0 && (
-        <div
-          role="progressbar"
-          aria-label="Klaar vandaag"
-          aria-valuemin={0}
-          aria-valuemax={dayTasks.length}
-          aria-valuenow={done}
-          className="mt-3 h-1.5 overflow-hidden rounded-full bg-paper-3"
-        >
+    <div className={pageBody}>
+      <Card bodyClassName="flex flex-col gap-3 pt-3">
+        <DayStrip days={days} />
+        <PageHeader
+          as="h2"
+          title={
+            <>
+              <span className="lg:hidden">{formatDay(day, "EEEE d MMM")}</span>
+              <span className="max-lg:hidden">{formatDay(day, "EEEE d MMMM")}</span>
+            </>
+          }
+          info="day"
+          subtitle={
+            <>
+              {label && <span className="font-medium text-ribbon-ink">{label}</span>}
+              {dayTasks.length > 0 && (
+                <span className="figures">
+                  {done}/{dayTasks.length} klaar
+                </span>
+              )}
+              {planned > 0 && <span className="figures">{formatDuration(planned)} gepland</span>}
+              <span className="figures">{formatDuration(logged[day] ?? 0)} gelogd</span>
+            </>
+          }
+          actions={
+            <>
+              <IconButton label="Vorige dag" onClick={() => go(-1)} className="rounded-full max-lg:size-10">
+                <ChevronLeft className="size-5 lg:size-4" strokeWidth={1.75} />
+              </IconButton>
+              <IconButton label="Volgende dag" onClick={() => go(1)} className="rounded-full max-lg:size-10">
+                <ChevronRight className="size-5 lg:size-4" strokeWidth={1.75} />
+              </IconButton>
+            </>
+          }
+          className="px-0"
+        />
+        {dayTasks.length > 0 && (
           <div
-            className="h-full rounded-full bg-cloth-3 transition-[width] duration-500 ease-out"
-            style={{ width: `${(done / dayTasks.length) * 100}%` }}
-          />
-        </div>
-      )}
+            role="progressbar"
+            aria-label="Klaar"
+            aria-valuemin={0}
+            aria-valuemax={dayTasks.length}
+            aria-valuenow={done}
+            className="h-2 overflow-hidden rounded-full bg-paper-3"
+          >
+            <div
+              className="h-full rounded-full bg-cloth-3 transition-[width] duration-500 ease-out"
+              style={{ width: `${(done / dayTasks.length) * 100}%` }}
+            />
+          </div>
+        )}
+        <XpLine xp={xp} />
+      </Card>
 
       {error && (
-        <p role="alert" className="mt-4 rounded-sm bg-danger-wash px-3 py-2 text-sm text-danger">
+        <p role="alert" className="rounded-xl bg-danger-wash px-4 py-3 text-sm text-danger">
           {error}
         </p>
       )}
 
-      <section aria-label="Op tijd" className="mt-6">
-        <h3 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">
-          Op tijd
-        </h3>
-        <Agenda tasks={timed} now={day === today ? now : null} />
-        {timed.length === 0 && (
-          <p className="border-b border-rule py-3 text-sm text-ink-3">Nog niets met een vaste tijd.</p>
+      <Card
+        icon={Clock}
+        title="Op tijd"
+        count={timed.length}
+        action={<CardAddButton label="Iets op een vast uur toevoegen" onClick={() => openAdd({ day, time: suggestTime() })} />}
+      >
+        {timed.length > 0 ? (
+          <Agenda tasks={timed} now={day === today ? now : null} />
+        ) : (
+          <EmptyState
+            icon={CalendarClock}
+            text="Lessen, sport en afspraken met een uur komen hier op een tijdlijn."
+            action={<EmptyAction onClick={() => openAdd({ day, time: suggestTime() })}>Inplannen op een uur</EmptyAction>}
+          />
         )}
-      </section>
+      </Card>
 
-      <section aria-label="Zonder tijd" className="mt-6">
-        <h3 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">
-          Zonder tijd
-        </h3>
-        <ul>
-          {anytime.map((t) => (
-            <TaskRow key={t.id} task={t} variant="day" lead={<DurationLead task={t} />} />
-          ))}
-        </ul>
-        <div className="border-b border-rule max-lg:hidden">
+      <Card
+        icon={ListTodo}
+        title="Zonder tijd"
+        count={anytime.length}
+        action={<CardAddButton label="Taak zonder uur toevoegen" onClick={() => openAdd({ day })} />}
+      >
+        {anytime.length > 0 ? (
+          <ul>
+            {anytime.map((t) => (
+              <TaskRow key={t.id} task={t} variant="day" lead={<DurationLead task={t} />} />
+            ))}
+          </ul>
+        ) : (
+          <EmptyState icon={ListTodo} text="Wat vandaag moet, maar niet op een vast uur." className="lg:hidden" />
+        )}
+        <div className="border-t border-rule max-lg:hidden">
           <InlineAdd day={day} placeholder="Taak toevoegen, bv. Hoofdstuk 3 lezen #italian 14:00 45m" />
         </div>
-      </section>
-
-      <button
-        type="button"
-        onClick={() => openAdd({ day })}
-        className="mt-4 flex h-12 items-center justify-center gap-2 rounded-md border border-dashed border-rule-strong text-base font-medium text-ink-2 transition-colors hover:border-cloth-3 hover:text-ink active:bg-paper-3 lg:h-10 lg:justify-start lg:border-0 lg:px-0 lg:text-sm lg:text-ink-3"
-      >
-        <Plus className="size-4" strokeWidth={2} />
-        <span className="lg:hidden">Taak toevoegen op {formatDay(day, "EEEEEE d")}</span>
-        <span className="max-lg:hidden">Met dag, tijd en duur toevoegen</span>
-      </button>
+        <button
+          type="button"
+          onClick={() => openAdd({ day })}
+          className="mt-1 flex h-11 w-full items-center gap-2 rounded-lg px-1 text-sm font-medium text-[var(--link)] active:bg-paper-3 lg:hidden"
+        >
+          <Plus className="size-4" strokeWidth={2.25} />
+          Toevoegen op {formatDay(day, "EEEEEE d MMM")}
+        </button>
+      </Card>
 
       <BacklogTray />
 

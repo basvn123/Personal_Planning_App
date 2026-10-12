@@ -50,8 +50,8 @@ export function QuickAddSheet({ sections, today }: { sections: Section[]; today:
     setTitle("");
     setSectionId(addPreset?.sectionId ?? planner?.sectionId ?? here ?? lastSection(sections.map((s) => s.id)));
     setDay(addPreset && "day" in addPreset ? (addPreset.day ?? null) : (planner?.day ?? today));
-    setTime("");
-    setMinutes(null);
+    setTime(addPreset?.time ?? "");
+    setMinutes(addPreset?.time ? 60 : null);
     setError(null);
   }, [open, pathname, sections, today]);
 
@@ -164,7 +164,7 @@ export function QuickAddSheet({ sections, today }: { sections: Section[]; today:
         <Dialog.Overlay className="fixed inset-0 z-40 bg-[oklch(0.15_0.02_163/0.35)] data-[state=open]:animate-[fade_150ms_ease-out]" />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed left-1/2 top-[12vh] z-50 max-h-[80vh] w-[min(30rem,calc(100vw-1.5rem))] -translate-x-1/2 overflow-y-auto rounded-lg border border-rule bg-paper p-5 text-ink shadow-lift outline-none data-[state=open]:animate-[rise_180ms_var(--ease-out)]"
+          className="fixed left-1/2 top-[12vh] z-50 max-h-[80vh] w-[min(30rem,calc(100vw-1.5rem))] -translate-x-1/2 overflow-y-auto rounded-xl border border-rule bg-card p-5 text-ink shadow-lift outline-none data-[state=open]:animate-[rise_180ms_var(--ease-out)]"
         >
           <Dialog.Title className="sr-only">Activiteit toevoegen</Dialog.Title>
           {form}

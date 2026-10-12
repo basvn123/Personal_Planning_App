@@ -4,8 +4,11 @@ import { redirect } from "next/navigation";
 import { Spread } from "@/components/shell/spread";
 import { SettingsAside, SettingsForm } from "@/components/settings/settings-form";
 import { AccountForm, PeopleManager } from "@/components/settings/account-forms";
-import { InfoButton } from "@/components/help/info-button";
-import { PhoneExtras } from "@/components/settings/phone-extras";
+import { User, Users } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/page-header";
+import { pageBody } from "@/components/ui/page-body";
+import { cx } from "@/lib/cx";
 import { getSettings } from "@/server/queries/core";
 import { currentUser } from "@/server/auth";
 import { listPeople } from "@/server/actions/settings";
@@ -23,30 +26,24 @@ export default async function SettingsPage() {
   const days = weekDays(localDate(new Date(), s.timezone), s.weekStart === 0 ? 0 : 1);
   return (
     <Spread
-      leftLabel="Account en tijd"
+      leftLabel="Account"
       rightLabel="Overige"
       initial={!me.email || !me.hasPassword ? "left" : undefined}
       left={
-        <div className="flex flex-col gap-9 px-5 pb-16 pt-6 lg:px-8">
-          <h1 className="flex items-center gap-1.5 text-xl font-semibold tracking-[-0.02em]">
-            Instellingen
-            <InfoButton topic="settings" />
-          </h1>
-          <section aria-label="Account" className="flex max-w-lg flex-col gap-4">
-            <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Account</h2>
+        <div className={pageBody}>
+          <PageHeader title="Instellingen" info="settings" className="pt-2" />
+          <Card icon={User} title="Account" bodyClassName="flex flex-col gap-4 pt-1">
             <AccountForm name={me.name} email={me.email} hasPassword={me.hasPassword} />
-          </section>
+          </Card>
           <SettingsForm origin={origin} timezone={s.timezone} weekStart={s.weekStart} icsToken={s.icsToken} weekFrom={days[0]} weekTo={days[6]} />
-          <PhoneExtras />
         </div>
       }
       right={
-        <div className="flex flex-col gap-9 px-5 pb-16 pt-6 lg:px-10 lg:pt-[4.75rem]">
+        <div className={cx(pageBody, "lg:pt-[4.75rem]")}>
           {me.role === "owner" && (
-            <section aria-label="Mensen" className="flex max-w-xl flex-col gap-4">
-              <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Mensen</h2>
+            <Card icon={Users} title="Mensen" count={people.length} bodyClassName="flex flex-col gap-4 pt-1">
               <PeopleManager people={people} meId={me.id} />
-            </section>
+            </Card>
           )}
           <SettingsAside />
         </div>

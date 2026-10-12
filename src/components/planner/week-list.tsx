@@ -5,85 +5,95 @@ import { Plus } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { formatDay, formatDuration } from "@/lib/time";
 import { cx } from "@/lib/cx";
-import { Ribbon } from "./ribbon";
 import { InlineAdd } from "./inline-add";
 import { sortDay, usePlanner } from "./planner-context";
 import { TaskRow } from "./task-row";
 
+/** The week as seven day cards: a date badge, that day's tasks, and its time meter. */
 export function WeekList({ days, logged }: { days: string[]; logged: Record<string, number> }) {
   const { tasks, today, selectedDay, selectDay } = usePlanner();
   const openAdd = useUi((s) => s.openAdd);
-  const todayIndex = days.indexOf(today);
-  const isThisWeek = todayIndex >= 0;
 
   return (
-    <ol className="flex flex-1 flex-col border-t border-rule-strong">
-      {days.map((day, i) => {
+    <ol className="flex flex-col gap-2 lg:gap-3">
+      {days.map((day) => {
         const isToday = day === today;
         const isSelected = day === selectedDay;
         const dayTasks = sortDay(tasks.filter((t) => t.plannedDate === day));
         const planned = dayTasks.reduce((s, t) => s + (t.plannedMinutes ?? 0) * 60, 0);
+        const done = dayTasks.filter((t) => t.status === "done").length;
         const spent = logged[day] ?? 0;
         return (
           <DayRow
             key={day}
             day={day}
             className={cx(
-              "group/day relative grid min-h-[4.75rem] flex-1 grid-cols-[2.5rem_1fr_2.75rem] gap-x-2 border-b border-rule py-2.5 pl-4 pr-8 sm:grid-cols-[3.25rem_1fr_3.25rem] sm:gap-x-3 sm:px-5 sm:pr-11 lg:px-8 lg:pr-14",
-              i >= 5 && "bg-paper-2/50",
-              isToday && "bg-ribbon-wash/55",
+              "group/day relative grid grid-cols-[3rem_1fr_auto] gap-x-3 overflow-hidden rounded-xl border bg-card px-3 py-3 shadow-[0_1px_2px_oklch(0.2_0.02_258/0.04)] sm:px-4",
+              isToday ? "border-ribbon-2/60" : "border-rule",
             )}
             isToday={isToday}
           >
-            {isThisWeek && i < todayIndex && <Ribbon kind="through" />}
-            {isToday && <Ribbon kind="tail" />}
+            {/* Marigold means now: today's card carries it on its edge. */}
+            {isToday && <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-ribbon" />}
             <button
               type="button"
               onClick={() => selectDay(day)}
               aria-pressed={isSelected}
               aria-label={`${formatDay(day, "EEEE d MMMM")} openen`}
-              className="-m-1 flex flex-col self-start rounded-xs p-1 text-left leading-none transition-colors hover:bg-paper-3/70"
+              className={cx(
+                "flex size-12 flex-col items-center justify-center self-start rounded-lg leading-none transition-colors",
+                isSelected ? "bg-cloth text-cloth-ink" : "bg-canvas text-ink hover:bg-paper-3",
+              )}
             >
               <span
                 className={cx(
-                  "text-2xs font-medium uppercase tracking-[0.08em]",
-                  isToday ? "text-ribbon-ink" : "text-ink-3",
+                  "text-2xs font-medium uppercase tracking-[0.06em]",
+                  isSelected ? "text-cloth-ink-2" : isToday ? "text-ribbon-ink" : "text-ink-3",
                 )}
               >
                 {formatDay(day, "EEEEEE")}
               </span>
-              <span
-                className={cx(
-                  "figures mt-1 text-xl font-medium",
-                  isSelected ? "text-ink underline decoration-ribbon-2 decoration-2 underline-offset-[5px]" : "text-ink",
-                )}
-              >
-                {formatDay(day, "d")}
-              </span>
+              <span className="figures mt-1 text-lg font-semibold">{formatDay(day, "d")}</span>
             </button>
-            <ul className="min-w-0">
-              {dayTasks.map((t) => (
-                <TaskRow key={t.id} task={t} variant="week" />
-              ))}
-              <li
-                className={cx(
-                  "transition-opacity duration-150 max-lg:hidden lg:opacity-0 lg:group-hover/day:opacity-100 lg:focus-within:opacity-100",
-                  dayTasks.length === 0 && "lg:opacity-60",
+            <div className="min-w-0">
+              <div className="flex min-h-6 items-center gap-2">
+                {isToday && (
+                  <span className="rounded-full bg-ribbon-wash px-2 py-px text-2xs font-semibold uppercase tracking-[0.06em] text-ribbon-ink">
+                    Vandaag
+                  </span>
                 )}
-              >
-                <InlineAdd day={day} compact placeholder="Toevoegen" />
-              </li>
-              <li className="lg:hidden">
-                <button
-                  type="button"
-                  onClick={() => openAdd({ day })}
-                  className="-ml-1 mt-0.5 inline-flex h-9 items-center gap-1.5 rounded-sm px-1 text-sm text-ink-3 active:bg-paper-3"
+                {dayTasks.length > 0 ? (
+                  <span className={cx("figures text-xs", done === dayTasks.length ? "font-medium text-[var(--link)]" : "text-ink-3")}>
+                    {done}/{dayTasks.length} klaar
+                  </span>
+                ) : (
+                  <span className="text-xs text-ink-3">Nog niets gepland</span>
+                )}
+              </div>
+              <ul className="min-w-0">
+                {dayTasks.map((t) => (
+                  <TaskRow key={t.id} task={t} variant="week" />
+                ))}
+                <li
+                  className={cx(
+                    "transition-opacity duration-150 max-lg:hidden lg:opacity-0 lg:group-hover/day:opacity-100 lg:focus-within:opacity-100",
+                    dayTasks.length === 0 && "lg:opacity-60",
+                  )}
                 >
-                  <Plus className="size-4" strokeWidth={2} />
-                  Toevoegen
-                </button>
-              </li>
-            </ul>
+                  <InlineAdd day={day} compact placeholder="Toevoegen" />
+                </li>
+                <li className="lg:hidden">
+                  <button
+                    type="button"
+                    onClick={() => openAdd({ day })}
+                    className="-ml-1 mt-0.5 inline-flex h-10 items-center gap-1.5 rounded-lg px-1.5 text-sm font-medium text-[var(--link)] active:bg-paper-3"
+                  >
+                    <Plus className="size-4" strokeWidth={2.25} />
+                    Toevoegen
+                  </button>
+                </li>
+              </ul>
+            </div>
             <DayMeter planned={planned} logged={spent} />
           </DayRow>
         );
@@ -92,7 +102,7 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
   );
 }
 
-/** Logged time against planned time for one day, in the page margin. */
+/** Logged time against planned time for one day, in the card's right margin. */
 function DayMeter({ planned, logged }: { planned: number; logged: number }) {
   const max = Math.max(planned, logged, 1);
   return (
@@ -129,7 +139,7 @@ function DayRow({
     <li
       ref={setNodeRef}
       aria-current={isToday ? "date" : undefined}
-      className={cx(className, isOver && "bg-ribbon-wash shadow-[inset_0_0_0_1.5px_var(--ribbon-2)]")}
+      className={cx(className, isOver && "bg-ribbon-wash ring-2 ring-ribbon-2")}
     >
       {children}
     </li>
