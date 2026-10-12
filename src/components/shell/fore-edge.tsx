@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   closestCenter,
   DndContext,
@@ -15,7 +15,6 @@ import {
 } from "@dnd-kit/core";
 import {
   arrayMove,
-  horizontalListSortingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
@@ -81,25 +80,48 @@ export function ForeEdge({ sections, activeRoot }: { sections: TabSection[]; act
   );
 }
 
-/** Phone: the same tabs as a strip along the top of the page. */
+/**
+ * Phone: the same tabs as a strip along the top of the page. Big enough to hit
+ * with a thumb, and fixed in place: it scrolls sideways only, and a long press
+ * never picks a tab up (reordering is a desktop thing).
+ */
 export function TabStrip({ sections, activeRoot }: { sections: TabSection[]; activeRoot?: Record<string, string> }) {
-  const { items, sensors, onDragEnd } = useOrderedTabs(sections);
   const activeSlug = useActiveSlug();
   const activeTab = activeSlug ? (activeRoot?.[activeSlug] ?? activeSlug) : null;
   return (
     <nav
       aria-label="Secties"
-      className="flex shrink-0 items-end gap-1 overflow-x-auto bg-cloth px-3 pt-[max(0.5rem,env(safe-area-inset-top))] [scrollbar-width:none] lg:hidden"
+      className="flex shrink-0 touch-pan-x items-end gap-1.5 overflow-x-auto overscroll-x-contain bg-cloth px-3 pt-[max(0.625rem,env(safe-area-inset-top))] [scrollbar-width:none] lg:hidden"
     >
-      <DndContext id="tab-strip" sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-        <SortableContext items={items} strategy={horizontalListSortingStrategy}>
-          {items.map((s) => (
-            <Tab key={s.id} section={s} active={activeTab === s.slug} orientation="horizontal" />
-          ))}
-        </SortableContext>
-      </DndContext>
+      {sections.map((s) => (
+        <StripTab key={s.id} section={s} active={activeTab === s.slug} />
+      ))}
       <NewSectionTab orientation="horizontal" />
     </nav>
+  );
+}
+
+function StripTab({ section: s, active }: { section: TabSection; active: boolean }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    if (active) ref.current?.scrollIntoView({ inline: "center", block: "nearest" });
+  }, [active]);
+  return (
+    <Link
+      ref={ref}
+      href={`/s/${s.slug}`}
+      aria-current={active ? "page" : undefined}
+      style={dyeVars(s.color)}
+      draggable={false}
+      className={cx(
+        "flex h-11 shrink-0 select-none items-center whitespace-nowrap rounded-t-md px-4 text-[0.9375rem] text-ink transition-[background-color,translate] duration-200 ease-out",
+        active
+          ? "bg-[var(--dye)] font-semibold"
+          : "translate-y-1 bg-[color-mix(in_oklch,var(--dye)_86%,var(--cloth))] font-medium active:translate-y-0.5",
+      )}
+    >
+      {s.name}
+    </Link>
   );
 }
 

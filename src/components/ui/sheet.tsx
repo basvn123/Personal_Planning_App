@@ -29,11 +29,14 @@ export function Sheet({
   open,
   onOpenChange,
   title,
+  actions,
   children,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
+  /** Buttons next to the close button, always in reach at the top. */
+  actions?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
@@ -48,6 +51,7 @@ export function Sheet({
           <div className="flex shrink-0 items-center gap-2 px-4 pb-1 pt-2">
             <span aria-hidden className="absolute left-1/2 top-1.5 h-1 w-9 -translate-x-1/2 rounded-full bg-rule-strong" />
             <Dialog.Title className="sr-only">{title}</Dialog.Title>
+            <div className="mt-1 flex items-center gap-1">{actions}</div>
             <Dialog.Close
               aria-label="Sluiten"
               className="ml-auto mt-1 grid size-9 place-items-center rounded-full text-ink-2 hover:bg-paper-3 hover:text-ink"

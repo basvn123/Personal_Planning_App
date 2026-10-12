@@ -15,6 +15,8 @@ import type { PlannerTask } from "@/server/queries/tasks";
 import { dyeVars } from "@/lib/dyes";
 import { createTask, deleteTask, setTaskStatus, updateTask, type TaskPatch } from "@/server/actions/tasks";
 import { deleteSchedule } from "@/server/actions/schedules";
+import { useUi } from "@/lib/ui-store";
+import { XP_PER_TASK } from "@/lib/xp";
 
 export type PlannerSection = { id: string; name: string; slug: string; color: string };
 export type PlannerProject = { id: string; name: string; sectionId: string; unitLabel: string };
@@ -128,6 +130,7 @@ export function PlannerProvider({
           docs: [],
         };
         run((ts) => [...ts, temp], () => createTask(input));
+        useUi.getState().showToast("Toegevoegd");
       },
       patch: (id, p) => {
         run(
@@ -156,10 +159,14 @@ export function PlannerProvider({
         const t = tasks.find((x) => x.id === id);
         if (!t || id.startsWith("temp-")) return;
         const next = t.status === "done" ? "todo" : "done";
+        const ui = useUi.getState();
+        ui.gainXp(next === "done" ? XP_PER_TASK : -XP_PER_TASK);
+        if (next === "done") ui.showToast(`+${XP_PER_TASK} XP`);
         run((ts) => ts.map((x) => (x.id === id ? { ...x, status: next } : x)), () => setTaskStatus(id, next));
       },
       remove: (id) => {
         run((ts) => ts.filter((t) => t.id !== id), () => deleteTask(id));
+        useUi.getState().showToast("Verwijderd");
       },
       removeSeries: (scheduleId, fromTaskId) => {
         const open = (t: PlannerTask) => t.status !== "done" && t.loggedSeconds === 0;

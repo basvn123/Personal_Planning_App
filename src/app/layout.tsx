@@ -25,8 +25,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#1f4a3b" },
-    { media: "(prefers-color-scheme: dark)", color: "#16302a" },
+    { media: "(prefers-color-scheme: light)", color: "#164632" },
+    { media: "(prefers-color-scheme: dark)", color: "#163e2d" },
   ],
   viewportFit: "cover",
   // An app, not a page: no pinch zoom, and focusing a field never zooms in.
