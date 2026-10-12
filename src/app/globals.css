@@ -1,0 +1,383 @@
+@import "tailwindcss";
+
+/*
+ * Tokens. The default Tailwind palette is switched off; only these exist.
+ * Light: cool paper, graphite ink, bottle-green cloth, marigold ribbon.
+ * Dark: the same book at night.
+ */
+:root {
+  color-scheme: light;
+  --paper: oklch(0.986 0.003 250);
+  --paper-2: oklch(0.968 0.004 250);
+  --paper-3: oklch(0.945 0.005 250);
+  --rule: oklch(0.905 0.006 250);
+  --rule-strong: oklch(0.84 0.008 250);
+  --dot: oklch(0.86 0.008 250);
+  --ink: oklch(0.235 0.014 258);
+  --ink-2: oklch(0.43 0.013 258);
+  --ink-3: oklch(0.56 0.011 258);
+  --cloth: oklch(0.355 0.062 163);
+  --cloth-2: oklch(0.3 0.055 163);
+  --cloth-3: oklch(0.42 0.06 163);
+  --cloth-ink: oklch(0.95 0.018 150);
+  --cloth-ink-2: oklch(0.8 0.03 155);
+  --ribbon: oklch(0.81 0.155 78);
+  --ribbon-2: oklch(0.74 0.16 70);
+  --ribbon-ink: oklch(0.52 0.13 62);
+  --ribbon-wash: oklch(0.955 0.045 85);
+  --on-ribbon: oklch(0.22 0.04 70);
+  --link: oklch(0.42 0.06 163);
+  --danger: oklch(0.54 0.17 27);
+  --danger-wash: oklch(0.96 0.025 27);
+  --gutter-shade: oklch(0.2 0.02 258 / 0.08);
+  --lift: 0 1px 2px oklch(0.2 0.02 258 / 0.06),
+    0 4px 14px -4px oklch(0.2 0.02 258 / 0.12);
+
+  --heat-0: oklch(0.93 0.008 250);
+  --heat-1: oklch(0.87 0.05 160);
+  --heat-2: oklch(0.74 0.08 162);
+  --heat-3: oklch(0.58 0.085 163);
+  --heat-4: oklch(0.42 0.07 163);
+  --bar: oklch(0.45 0.07 163);
+
+  /* Index-tab dyes for sections: fill, and a deep tone for marks and text. */
+  --dye-moss: oklch(0.82 0.085 145);
+  --dye-moss-deep: oklch(0.48 0.1 145);
+  --dye-lagoon: oklch(0.82 0.075 200);
+  --dye-lagoon-deep: oklch(0.48 0.09 205);
+  --dye-cobalt: oklch(0.8 0.075 255);
+  --dye-cobalt-deep: oklch(0.47 0.14 260);
+  --dye-iris: oklch(0.8 0.08 290);
+  --dye-iris-deep: oklch(0.48 0.14 290);
+  --dye-plum: oklch(0.8 0.08 330);
+  --dye-plum-deep: oklch(0.48 0.14 335);
+  --dye-rose: oklch(0.83 0.08 10);
+  --dye-rose-deep: oklch(0.52 0.15 12);
+  --dye-coral: oklch(0.83 0.09 40);
+  --dye-coral-deep: oklch(0.55 0.15 38);
+  --dye-ochre: oklch(0.86 0.1 85);
+  --dye-ochre-deep: oklch(0.56 0.12 75);
+  --dye-olive: oklch(0.84 0.08 115);
+  --dye-olive-deep: oklch(0.5 0.1 115);
+  --dye-slate: oklch(0.82 0.02 250);
+  --dye-slate-deep: oklch(0.45 0.03 255);
+  --dye-clay: oklch(0.8 0.05 55);
+  --dye-clay-deep: oklch(0.5 0.08 50);
+  --dye-teal: oklch(0.82 0.08 175);
+  --dye-teal-deep: oklch(0.48 0.09 178);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: oklch(0.205 0.009 258);
+  --paper-2: oklch(0.228 0.01 258);
+  --paper-3: oklch(0.26 0.011 258);
+  --rule: oklch(0.3 0.011 258);
+  --rule-strong: oklch(0.37 0.012 258);
+  --dot: oklch(0.33 0.012 258);
+  --ink: oklch(0.935 0.006 250);
+  --ink-2: oklch(0.76 0.01 250);
+  --ink-3: oklch(0.63 0.012 250);
+  --cloth: oklch(0.33 0.055 163);
+  --cloth-2: oklch(0.265 0.045 163);
+  --cloth-3: oklch(0.4 0.06 163);
+  --cloth-ink: oklch(0.93 0.02 150);
+  --cloth-ink-2: oklch(0.76 0.035 155);
+  --ribbon: oklch(0.8 0.15 78);
+  --ribbon-2: oklch(0.72 0.15 70);
+  --ribbon-ink: oklch(0.84 0.14 80);
+  --ribbon-wash: oklch(0.255 0.022 80);
+  --link: oklch(0.8 0.08 178);
+  --danger: oklch(0.7 0.15 27);
+  --danger-wash: oklch(0.29 0.05 27);
+  --gutter-shade: oklch(0 0 0 / 0.35);
+  --lift: 0 1px 2px oklch(0 0 0 / 0.3), 0 6px 18px -6px oklch(0 0 0 / 0.5);
+  --heat-0: oklch(0.27 0.01 258);
+  --heat-1: oklch(0.36 0.04 163);
+  --heat-2: oklch(0.48 0.06 163);
+  --heat-3: oklch(0.62 0.08 162);
+  --heat-4: oklch(0.78 0.09 160);
+  --bar: oklch(0.68 0.08 162);
+
+  --dye-moss: oklch(0.6 0.09 145);
+  --dye-moss-deep: oklch(0.8 0.1 145);
+  --dye-lagoon: oklch(0.6 0.08 205);
+  --dye-lagoon-deep: oklch(0.8 0.08 205);
+  --dye-cobalt: oklch(0.58 0.11 260);
+  --dye-cobalt-deep: oklch(0.8 0.09 260);
+  --dye-iris: oklch(0.58 0.11 290);
+  --dye-iris-deep: oklch(0.8 0.09 290);
+  --dye-plum: oklch(0.58 0.11 335);
+  --dye-plum-deep: oklch(0.8 0.09 335);
+  --dye-rose: oklch(0.6 0.12 12);
+  --dye-rose-deep: oklch(0.82 0.09 12);
+  --dye-coral: oklch(0.62 0.12 40);
+  --dye-coral-deep: oklch(0.83 0.09 40);
+  --dye-ochre: oklch(0.66 0.11 80);
+  --dye-ochre-deep: oklch(0.85 0.1 85);
+  --dye-olive: oklch(0.6 0.08 115);
+  --dye-olive-deep: oklch(0.82 0.08 115);
+  --dye-slate: oklch(0.56 0.025 255);
+  --dye-slate-deep: oklch(0.8 0.02 255);
+  --dye-clay: oklch(0.58 0.06 50);
+  --dye-clay-deep: oklch(0.8 0.05 55);
+  --dye-teal: oklch(0.6 0.08 178);
+  --dye-teal-deep: oklch(0.8 0.08 178);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: oklch(0.205 0.009 258);
+    --paper-2: oklch(0.228 0.01 258);
+    --paper-3: oklch(0.26 0.011 258);
+    --rule: oklch(0.3 0.011 258);
+    --rule-strong: oklch(0.37 0.012 258);
+    --dot: oklch(0.33 0.012 258);
+    --ink: oklch(0.935 0.006 250);
+    --ink-2: oklch(0.76 0.01 250);
+    --ink-3: oklch(0.63 0.012 250);
+    --cloth: oklch(0.33 0.055 163);
+    --cloth-2: oklch(0.265 0.045 163);
+    --cloth-3: oklch(0.4 0.06 163);
+    --cloth-ink: oklch(0.93 0.02 150);
+    --cloth-ink-2: oklch(0.76 0.035 155);
+    --ribbon: oklch(0.8 0.15 78);
+    --ribbon-2: oklch(0.72 0.15 70);
+    --ribbon-ink: oklch(0.84 0.14 80);
+    --ribbon-wash: oklch(0.255 0.022 80);
+  --link: oklch(0.8 0.08 178);
+    --danger: oklch(0.7 0.15 27);
+    --danger-wash: oklch(0.29 0.05 27);
+    --gutter-shade: oklch(0 0 0 / 0.35);
+    --lift: 0 1px 2px oklch(0 0 0 / 0.3), 0 6px 18px -6px oklch(0 0 0 / 0.5);
+    --heat-0: oklch(0.27 0.01 258);
+    --heat-1: oklch(0.36 0.04 163);
+    --heat-2: oklch(0.48 0.06 163);
+    --heat-3: oklch(0.62 0.08 162);
+    --heat-4: oklch(0.78 0.09 160);
+    --bar: oklch(0.68 0.08 162);
+
+    --dye-moss: oklch(0.6 0.09 145);
+    --dye-moss-deep: oklch(0.8 0.1 145);
+    --dye-lagoon: oklch(0.6 0.08 205);
+    --dye-lagoon-deep: oklch(0.8 0.08 205);
+    --dye-cobalt: oklch(0.58 0.11 260);
+    --dye-cobalt-deep: oklch(0.8 0.09 260);
+    --dye-iris: oklch(0.58 0.11 290);
+    --dye-iris-deep: oklch(0.8 0.09 290);
+    --dye-plum: oklch(0.58 0.11 335);
+    --dye-plum-deep: oklch(0.8 0.09 335);
+    --dye-rose: oklch(0.6 0.12 12);
+    --dye-rose-deep: oklch(0.82 0.09 12);
+    --dye-coral: oklch(0.62 0.12 40);
+    --dye-coral-deep: oklch(0.83 0.09 40);
+    --dye-ochre: oklch(0.66 0.11 80);
+    --dye-ochre-deep: oklch(0.85 0.1 85);
+    --dye-olive: oklch(0.6 0.08 115);
+    --dye-olive-deep: oklch(0.82 0.08 115);
+    --dye-slate: oklch(0.56 0.025 255);
+    --dye-slate-deep: oklch(0.8 0.02 255);
+    --dye-clay: oklch(0.58 0.06 50);
+    --dye-clay-deep: oklch(0.8 0.05 55);
+    --dye-teal: oklch(0.6 0.08 178);
+    --dye-teal-deep: oklch(0.8 0.08 178);
+  }
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-cloth: var(--cloth);
+  --color-cloth-2: var(--cloth-2);
+  --color-cloth-3: var(--cloth-3);
+  --color-cloth-ink: var(--cloth-ink);
+  --color-cloth-ink-2: var(--cloth-ink-2);
+  --color-ribbon: var(--ribbon);
+  --color-ribbon-2: var(--ribbon-2);
+  --color-ribbon-ink: var(--ribbon-ink);
+  --color-ribbon-wash: var(--ribbon-wash);
+  --color-on-ribbon: var(--on-ribbon);
+  --color-danger: var(--danger);
+  --color-danger-wash: var(--danger-wash);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-figures), ui-monospace, monospace;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.375rem;
+  --text-md: 1rem;
+  --text-md--line-height: 1.5rem;
+  --text-lg: 1.1875rem;
+  --text-lg--line-height: 1.625rem;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.875rem;
+  --text-2xl: 2rem;
+  --text-2xl--line-height: 2.25rem;
+
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --shadow-lift: var(--lift);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background: var(--cloth-2);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--ribbon);
+    color: var(--on-ribbon);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ribbon-2);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+  input,
+  textarea {
+    caret-color: var(--ribbon-2);
+  }
+  ::placeholder {
+    color: var(--ink-3);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule-strong) transparent;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+  a {
+    text-underline-offset: 3px;
+  }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%238b919c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4.5 6.5 3.5 3.5 3.5-3.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1rem;
+    padding-right: 2rem !important;
+  }
+}
+
+@layer components {
+  /* A printed dot grid, as on planner paper. */
+  .paper {
+    background-color: var(--paper);
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      var(--dot) 0.9px,
+      transparent 1.1px
+    );
+    background-size: 18px 18px;
+    background-position: 8px 8px;
+  }
+  .figures {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "zero" 0;
+    letter-spacing: -0.01em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px) scale(0.985);
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-3px) scale(0.98);
+  }
+}
+
+/* Rendered markdown. */
+.prose-doc {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  max-width: 68ch;
+  overflow-wrap: anywhere;
+}
+.prose-doc > * + * {
+  margin-top: 0.85em;
+}
+.prose-doc h1,
+.prose-doc h2,
+.prose-doc h3,
+.prose-doc h4 {
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-top: 1.6em;
+  text-wrap: balance;
+}
+.prose-doc h1 { font-size: 1.45em; }
+.prose-doc h2 { font-size: 1.22em; }
+.prose-doc h3 { font-size: 1.06em; }
+.prose-doc > :first-child { margin-top: 0; }
+.prose-doc h1 + *,
+.prose-doc h2 + *,
+.prose-doc h3 + * { margin-top: 0.4em; }
+.prose-doc a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; }
+.prose-doc strong { font-weight: 650; }
+.prose-doc ul { list-style: disc; padding-left: 1.3em; }
+.prose-doc ol { list-style: decimal; padding-left: 1.4em; }
+.prose-doc li + li { margin-top: 0.2em; }
+.prose-doc li::marker { color: var(--ink-3); }
+.prose-doc li:has(> input[type="checkbox"]) { list-style: none; margin-left: -1.3em; }
+.prose-doc input[type="checkbox"] { accent-color: var(--cloth); margin-right: 0.5em; translate: 0 1px; }
+.prose-doc blockquote { border-left: 1px solid var(--rule-strong); padding-left: 1em; color: var(--ink-2); }
+.prose-doc code { font-family: var(--font-mono); font-size: 0.86em; background: var(--paper-3); padding: 0.1em 0.35em; border-radius: 3px; }
+.prose-doc pre { background: var(--paper-3); padding: 0.9em 1em; border-radius: 6px; overflow-x: auto; font-size: 0.86em; line-height: 1.55; }
+.prose-doc pre code { background: none; padding: 0; font-size: 1em; }
+.prose-doc hr { border: 0; border-top: 1px solid var(--rule-strong); margin: 2em 0; }
+.prose-doc table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+.prose-doc th, .prose-doc td { border-bottom: 1px solid var(--rule); padding: 0.4em 0.6em 0.4em 0; text-align: left; }
+.prose-doc th { font-weight: 600; border-bottom-color: var(--rule-strong); }
+.prose-doc img { max-width: 100%; border-radius: 6px; }
