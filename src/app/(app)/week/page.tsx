@@ -71,6 +71,7 @@ export default async function WeekPage({
             />
           }
           className="px-0"
+          nowrap
         />
         <StatStrip
           items={[

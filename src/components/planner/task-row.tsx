@@ -5,7 +5,7 @@ import { Check, FileText, Repeat, Trash2 } from "lucide-react";
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import { Sheet, usePhone } from "@/components/ui/sheet";
 import type { PlannerTask } from "@/server/queries/tasks";
-import { formatClock, formatDuration, formatMinutes } from "@/lib/time";
+import { endClock, formatClock, formatDuration, formatMinutes } from "@/lib/time";
 import { dyeVars } from "@/lib/dyes";
 import { cx } from "@/lib/cx";
 import { usePlanner } from "./planner-context";
@@ -87,7 +87,14 @@ export function TaskRow({
                 {isRunning ? (
                   <span className="figures text-ribbon-ink">{formatClock(live)} loopt</span>
                 ) : (
-                  task.loggedSeconds > 0 && <span className="figures">{formatDuration(task.loggedSeconds)} gelogd</span>
+                  task.loggedSeconds > 0 && (
+                    <span className="figures">
+                      {formatDuration(task.loggedSeconds)} gelogd
+                      {task.plannedMinutes && task.loggedSeconds > task.plannedMinutes * 60 && (
+                        <span className="text-ribbon-ink">, {formatDuration(task.loggedSeconds - task.plannedMinutes * 60)} langer dan gepland</span>
+                      )}
+                    </span>
+                  )
                 )}
               </span>
             )}
@@ -106,7 +113,9 @@ export function TaskRow({
           )}
           {variant === "week" && (task.plannedStart || task.plannedMinutes) && (
             <span className="figures shrink-0 pt-px text-xs leading-5 text-ink-3">
-              {task.plannedStart ?? formatMinutes(task.plannedMinutes!)}
+              {task.plannedStart
+                ? `${task.plannedStart.slice(0, 5)}${task.plannedMinutes ? ` tot ${endClock(task.plannedStart, task.plannedMinutes)}` : ""}`
+                : formatMinutes(task.plannedMinutes!)}
             </span>
           )}
           {variant === "week" && (

@@ -10,6 +10,7 @@ export function PageHeader({
   actions,
   lead,
   className,
+  nowrap,
   as: Tag = "h1",
 }: {
   title: React.ReactNode;
@@ -20,19 +21,21 @@ export function PageHeader({
   lead?: React.ReactNode;
   className?: string;
   as?: "h1" | "h2";
+  /** Keep the actions next to the title even when space is tight (week arrows): the title gives way instead. */
+  nowrap?: boolean;
 }) {
   return (
     // When the actions don't fit next to the title, they wrap to their own row instead of squeezing it.
-    <header className={cx("flex flex-wrap items-start gap-x-3 gap-y-2 px-1", className)}>
+    <header className={cx("flex items-start gap-x-3 gap-y-2 px-1", nowrap ? "gap-x-1" : "flex-wrap", className)}>
       {lead}
-      <div className="min-w-[8.5rem] flex-1">
+      <div className={cx("flex-1", nowrap ? "min-w-0" : "min-w-[8.5rem]")}>
         <Tag
           className={cx(
             "flex items-center gap-1.5 font-bold leading-tight tracking-[-0.025em] text-ink [overflow-wrap:break-word]",
-            Tag === "h1" ? "text-2xl" : "text-lg lg:text-xl",
+            Tag === "h1" ? (nowrap ? "text-[1.75rem] sm:text-2xl" : "text-2xl") : "text-lg lg:text-xl",
           )}
         >
-          <span className="min-w-0 first-letter:uppercase">{title}</span>
+          <span className={cx("min-w-0 first-letter:uppercase", nowrap && "truncate")}>{title}</span>
           {info && <InfoButton topic={info} />}
         </Tag>
         {subtitle && <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm text-ink-2">{subtitle}</div>}

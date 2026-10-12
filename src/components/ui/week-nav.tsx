@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const arrow =
-  "grid size-10 place-items-center rounded-full text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink active:bg-paper-3 lg:size-8";
+  "grid size-9 place-items-center rounded-full text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink active:bg-paper-3 lg:size-8";
 
 /** Previous / calendar / back to now / next, the same on every page that pages through weeks. */
 export function WeekNav({
@@ -21,7 +21,7 @@ export function WeekNav({
   jump?: React.ReactNode;
 }) {
   return (
-    <nav aria-label="Weken" className="flex items-center">
+    <nav aria-label="Weken" className="flex shrink-0 items-center">
       <Link href={prev} aria-label="Vorige week" className={arrow}>
         <ChevronLeft className="size-5 lg:size-4" strokeWidth={1.75} />
       </Link>
@@ -29,9 +29,13 @@ export function WeekNav({
       {now && (
         <Link
           href={now}
-          className="inline-flex h-10 items-center rounded-full px-3 text-sm font-medium text-[var(--link)] transition-colors hover:bg-paper-3 lg:h-8"
+          className="inline-flex h-9 items-center whitespace-nowrap rounded-full px-2 text-sm font-medium text-[var(--link)] transition-colors hover:bg-paper-3 lg:h-8 lg:px-3"
         >
-          {nowLabel}
+          {/* A phone has no room for the full label next to the title, so it reads "Nu" there. */}
+          <span aria-hidden className="lg:hidden">
+            Nu
+          </span>
+          <span className="max-lg:sr-only">{nowLabel}</span>
         </Link>
       )}
       <Link href={next} aria-label="Volgende week" className={arrow}>

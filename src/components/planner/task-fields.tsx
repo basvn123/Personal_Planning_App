@@ -2,7 +2,8 @@
 
 import { CalendarRange, X } from "lucide-react";
 import { dyeVars } from "@/lib/dyes";
-import { formatDay, formatMinutes, shiftDay } from "@/lib/time";
+import { useEffect, useState } from "react";
+import { clockToMinutes, endClock, formatDay, formatMinutes, shiftDay } from "@/lib/time";
 import { cx } from "@/lib/cx";
 
 /**
@@ -174,39 +175,85 @@ export function DurationChips({
   );
 }
 
-/** A native time picker (the wheel on iOS) with a way back to "no fixed time". */
-export function TimeField({
-  value,
-  onChange,
+const timeInput =
+  "figures h-10 w-32 rounded-sm border border-rule-strong bg-paper px-2.5 text-base text-ink outline-none focus:border-cloth-3 disabled:opacity-40 lg:h-8";
+
+/**
+ * From and until, as two native time pickers (the wheel on iOS). The until time is
+ * not stored: it is the start plus the duration, so picking it sets the duration
+ * and picking a duration chip moves it. Clearing the start goes back to "no fixed time".
+ */
+export function TimeRangeField({
+  start,
+  minutes,
+  onStart,
+  onMinutes,
   disabled,
 }: {
-  value: string;
-  onChange: (time: string) => void;
+  start: string;
+  minutes: number | null;
+  onStart: (time: string) => void;
+  onMinutes: (minutes: number | null) => void;
   disabled?: boolean;
 }) {
+  const derived = start && minutes ? endClock(start, minutes) : "";
+  const [end, setEnd] = useState(derived);
+  const [late, setLate] = useState(false);
+  useEffect(() => {
+    setEnd(derived);
+    setLate(false);
+  }, [derived]);
+
+  function pickEnd(value: string) {
+    setEnd(value);
+    if (!value || !start) return;
+    const span = clockToMinutes(value) - clockToMinutes(start);
+    setLate(span <= 0);
+    if (span > 0) onMinutes(span);
+  }
+
   return (
-    <div className="flex items-center gap-1.5">
-      <input
-        type="time"
-        value={value}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.value)}
-        aria-label="Begintijd"
-        className="figures h-10 w-32 rounded-sm border border-rule-strong bg-paper px-2.5 text-base text-ink outline-none focus:border-cloth-3 disabled:opacity-40 lg:h-8"
-      />
-      {value ? (
-        <button
-          type="button"
-          onClick={() => onChange("")}
+    <div className="flex flex-col gap-1.5">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+        <input
+          type="time"
+          value={start}
           disabled={disabled}
-          className="inline-flex h-10 items-center gap-1 rounded-sm px-2.5 text-sm text-ink-2 hover:bg-paper-3 hover:text-ink lg:h-8 lg:text-xs"
-        >
-          <X className="size-3.5" strokeWidth={2} />
-          Geen tijd
-        </button>
-      ) : (
-        <span className="text-xs text-ink-3">Geen vaste tijd</span>
-      )}
+          onChange={(e) => onStart(e.target.value)}
+          aria-label="Van"
+          className={timeInput}
+        />
+        <span className="text-sm text-ink-3">tot</span>
+        <input
+          type="time"
+          value={end}
+          disabled={disabled || !start}
+          onChange={(e) => pickEnd(e.target.value)}
+          aria-label="Tot"
+          aria-invalid={late || undefined}
+          className={cx(timeInput, late && "border-danger")}
+        />
+        {start && (
+          <button
+            type="button"
+            onClick={() => onStart("")}
+            disabled={disabled}
+            className="inline-flex h-10 items-center gap-1 rounded-sm px-2.5 text-sm text-ink-2 hover:bg-paper-3 hover:text-ink lg:h-8 lg:text-xs"
+          >
+            <X className="size-3.5" strokeWidth={2} />
+            Geen tijd
+          </button>
+        )}
+      </div>
+      <span className={cx("text-xs", late ? "text-danger" : "text-ink-3")} aria-live="polite">
+        {late
+          ? "De eindtijd moet na de begintijd liggen."
+          : !start
+            ? "Geen vaste tijd. Kies een begintijd om ook een eindtijd te zetten."
+            : minutes
+              ? `${start} tot ${derived}, ${formatMinutes(minutes)}`
+              : "Kies een eindtijd of een duur."}
+      </span>
     </div>
   );
 }

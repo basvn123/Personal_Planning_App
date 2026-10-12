@@ -14,6 +14,8 @@ import { WeekNav } from "@/components/ui/week-nav";
 import { WeekJump } from "@/components/ui/week-jump";
 import { pageBody } from "@/components/ui/page-body";
 import { XpMeter } from "@/components/progress/xp-meter";
+import { NowDoing } from "@/components/timer/now-doing";
+import { getTasksInRange } from "@/server/queries/tasks";
 import { getXp } from "@/server/queries/xp";
 import { getSections, getSettings } from "@/server/queries/core";
 import {
@@ -38,7 +40,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const [from, to] = [days[0], days[6]];
   const heatFrom = weekDays(shiftDay(today, -7 * 15), 1)[0];
 
-  const [series, prevSeries, planned, bySection, byTask, heat, streak, projects, xp] = await Promise.all([
+  const [series, prevSeries, planned, bySection, byTask, heat, streak, projects, xp, todayTasks] = await Promise.all([
     getDailySeries(from, to),
     getDailySeries(shiftDay(from, -7), shiftDay(to, -7)),
     getPlannedByDay(from, to),
@@ -48,6 +50,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     getStreak(today),
     getProjects(),
     getXp(),
+    getTasksInRange(today, today),
   ]);
 
   const total = series.reduce((s, d) => s + d.seconds, 0);
@@ -73,6 +76,13 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           />
         }
         className="pt-2"
+        nowrap
+      />
+
+      <NowDoing
+        tasks={todayTasks}
+        sections={sections.map(({ id, name, slug, color }) => ({ id, name, slug, color }))}
+        today={today}
       />
 
       <Card icon={Trophy} title="Level en XP" bodyClassName="flex flex-col gap-2">

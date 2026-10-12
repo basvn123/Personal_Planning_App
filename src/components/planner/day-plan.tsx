@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { CalendarClock, ChevronLeft, ChevronRight, Clock, ListTodo, Plus } from "lucide-react";
 import { IconButton } from "@/components/ui/button";
-import { formatDay, formatDuration, formatMinutes, shiftDay } from "@/lib/time";
+import { clockToMinutes, formatDay, formatDuration, formatMinutes, minutesToClock, shiftDay } from "@/lib/time";
 import { useUi } from "@/lib/ui-store";
 import { cx } from "@/lib/cx";
 import { InlineAdd } from "./inline-add";
@@ -19,18 +19,11 @@ import { PageHeader } from "@/components/ui/page-header";
 import { pageBody } from "@/components/ui/page-body";
 import { XpLine } from "@/components/progress/xp-meter";
 import { WeekJump } from "@/components/ui/week-jump";
+import { NowDoing } from "@/components/timer/now-doing";
 import type { XpSummary } from "@/server/queries/xp";
 import type { LogEntry } from "@/server/queries/time";
 import type { PlannerTask } from "@/server/queries/tasks";
 
-function toMinutes(clock: string) {
-  const [h, m] = clock.split(":").map(Number);
-  return h * 60 + m;
-}
-
-function clockOf(minutes: number) {
-  return `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
-}
 
 /** Minutes since local midnight, refreshed every half minute. */
 function useMinuteOfDay() {
@@ -66,6 +59,13 @@ export function DayPlan({
   const timed = dayTasks.filter((t) => t.plannedStart);
   const anytime = dayTasks.filter((t) => !t.plannedStart);
   const planned = dayTasks.reduce((s, t) => s + (t.plannedMinutes ?? 0) * 60, 0);
+  // From the first timed start to the last timed end: how long the day runs.
+  const span = timed.length
+    ? {
+        from: Math.min(...timed.map((t) => clockToMinutes(t.plannedStart!))),
+        until: Math.max(...timed.map((t) => clockToMinutes(t.plannedStart!) + (t.plannedMinutes ?? 0))),
+      }
+    : null;
   const done = dayTasks.filter((t) => t.status === "done").length;
   const now = useMinuteOfDay();
 
@@ -106,6 +106,11 @@ export function DayPlan({
                 </span>
               )}
               {planned > 0 && <span className="figures">{formatDuration(planned)} gepland</span>}
+              {span && span.until > span.from && (
+                <span className="figures">
+                  {minutesToClock(span.from)} tot {minutesToClock(span.until)}
+                </span>
+              )}
               <span className="figures">{formatDuration(logged[day] ?? 0)} gelogd</span>
             </>
           }
@@ -151,6 +156,8 @@ export function DayPlan({
         )}
         <XpLine xp={xp} />
       </Card>
+
+      {day === today && <NowDoing tasks={dayTasks} sections={sections} today={today} />}
 
       {error && (
         <p role="alert" className="rounded-xl bg-danger-wash px-4 py-3 text-sm text-danger">
@@ -215,14 +222,14 @@ export function DayPlan({
  * between blocks is printed, and on today a "now" mark sits where the clock is.
  */
 function Agenda({ tasks, now }: { tasks: PlannerTask[]; now: number | null }) {
-  const nowIndex = now === null ? -1 : tasks.findIndex((t) => toMinutes(t.plannedStart!) > now);
+  const nowIndex = now === null ? -1 : tasks.findIndex((t) => clockToMinutes(t.plannedStart!) > now);
   const nowAt = now === null ? -1 : nowIndex === -1 ? tasks.length : nowIndex;
   return (
     <ul>
       {tasks.map((t, i) => {
-        const start = toMinutes(t.plannedStart!);
+        const start = clockToMinutes(t.plannedStart!);
         const prev = tasks[i - 1];
-        const prevEnd = prev ? toMinutes(prev.plannedStart!) + (prev.plannedMinutes ?? 0) : null;
+        const prevEnd = prev ? clockToMinutes(prev.plannedStart!) + (prev.plannedMinutes ?? 0) : null;
         const free = prevEnd !== null ? start - prevEnd : 0;
         const overlap = prevEnd !== null && start < prevEnd;
         return (
@@ -250,8 +257,8 @@ function Agenda({ tasks, now }: { tasks: PlannerTask[]; now: number | null }) {
 
 function NowMark({ now }: { now: number }) {
   return (
-    <li aria-label={`Nu ${clockOf(now)}`} className="relative flex items-center gap-2 py-1">
-      <span className="figures w-11 shrink-0 text-2xs font-medium text-ribbon-ink">{clockOf(now)}</span>
+    <li aria-label={`Nu ${minutesToClock(now)}`} className="relative flex items-center gap-2 py-1">
+      <span className="figures w-11 shrink-0 text-2xs font-medium text-ribbon-ink">{minutesToClock(now)}</span>
       <span className="size-2 shrink-0 rounded-full bg-ribbon" />
       <span className="h-[2px] flex-1 rounded-full bg-ribbon" />
     </li>
@@ -260,7 +267,7 @@ function NowMark({ now }: { now: number }) {
 
 /** Start time, end time, and a bar in the section's color that grows with the duration. */
 function TimeLead({ task, overlap }: { task: PlannerTask; overlap: boolean }) {
-  const start = toMinutes(task.plannedStart!);
+  const start = clockToMinutes(task.plannedStart!);
   const minutes = task.plannedMinutes ?? 0;
   const bar = Math.min(84, Math.max(14, minutes * 0.6));
   return (
@@ -271,7 +278,7 @@ function TimeLead({ task, overlap }: { task: PlannerTask; overlap: boolean }) {
       {minutes > 0 && (
         <>
           <span aria-hidden className="ml-1 mt-0.5 w-[3px] rounded-full bg-[var(--dye)]" style={{ height: bar }} />
-          <span className="figures mt-0.5 text-2xs leading-4 text-ink-3">{clockOf((start + minutes) % 1440)}</span>
+          <span className="figures mt-0.5 text-2xs leading-4 text-ink-3">{minutesToClock(start + minutes)}</span>
         </>
       )}
     </span>

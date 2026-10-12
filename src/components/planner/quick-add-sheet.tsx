@@ -8,9 +8,9 @@ import { createTask, createTasks } from "@/server/actions/tasks";
 import { MonthCalendar } from "@/components/ui/month-calendar";
 import { useUi, type NewTask } from "@/lib/ui-store";
 import { parseQuickAdd } from "@/lib/quick-add";
-import { formatDay, formatMinutes, shiftDay, weekDays } from "@/lib/time";
+import { endClock, formatDay, formatMinutes, shiftDay, weekDays } from "@/lib/time";
 import { dyeVars } from "@/lib/dyes";
-import { Chip, DayChips, DurationChips, FieldGroup, SectionChips, TimeField } from "./task-fields";
+import { Chip, DayChips, DurationChips, FieldGroup, SectionChips, TimeRangeField } from "./task-fields";
 
 type Section = { id: string; name: string; slug: string; color: string };
 
@@ -206,11 +206,11 @@ export function QuickAddSheet({
 
       {planned && (
         <>
+          <FieldGroup label="Van, tot">
+            <TimeRangeField start={time} minutes={minutes} onStart={setTime} onMinutes={setMinutes} />
+          </FieldGroup>
           <FieldGroup label="Duur">
             <DurationChips value={minutes} onChange={setMinutes} />
-          </FieldGroup>
-          <FieldGroup label="Om">
-            <TimeField value={time} onChange={setTime} />
           </FieldGroup>
         </>
       )}
@@ -235,8 +235,8 @@ export function QuickAddSheet({
                 ? "vandaag"
                 : formatDay(day, "EEEEEE d")
               : "to-do"}
-          {planned && time ? ` ${time}` : ""}
-          {planned && minutes ? ` · ${formatMinutes(minutes)}` : ""}
+          {planned && time ? ` ${time}${minutes ? ` tot ${endClock(time, minutes)}` : ""}` : ""}
+          {planned && minutes && !time ? ` · ${formatMinutes(minutes)}` : ""}
         </span>
       </button>
     </form>
