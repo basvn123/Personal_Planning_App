@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarRange, ChartColumn, Command, FileUp, Repeat, Settings } from "lucide-react";
+import { CalendarRange, ChartColumn, Command, FileUp, LibraryBig, Repeat, Settings } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { TimerChip } from "@/components/timer/timer-chip";
 import { useUi } from "@/lib/ui-store";
@@ -10,6 +10,7 @@ import { cx } from "@/lib/cx";
 
 const NAV = [
   { href: "/week", label: "Week", icon: CalendarRange },
+  { href: "/sections", label: "Secties", icon: LibraryBig },
   { href: "/dashboard", label: "Dashboard", icon: ChartColumn },
   { href: "/schedules", label: "Schedules", icon: Repeat },
   { href: "/import", label: "Import", icon: FileUp },
@@ -19,7 +20,8 @@ const SETTINGS = { href: "/settings", label: "Settings", icon: Settings };
 
 function NavItem({ href, label, icon: Icon }: { href: string; label: string; icon: typeof CalendarRange }) {
   const pathname = usePathname();
-  const active = pathname === href || pathname.startsWith(href + "/");
+  const active =
+    pathname === href || pathname.startsWith(href + "/") || (href === "/sections" && pathname.startsWith("/s/"));
   return (
     <Link
       href={href}

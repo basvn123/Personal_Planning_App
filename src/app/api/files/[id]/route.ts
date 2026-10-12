@@ -31,7 +31,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       "content-length": String(file.size),
       "content-disposition": `${inline ? "inline" : "attachment"}; filename*=UTF-8''${encoded}`,
       "x-content-type-options": "nosniff",
-      "content-security-policy": "sandbox",
+      // Inline types never run script; the sandbox would also stop the browser's PDF viewer.
+      ...(inline ? {} : { "content-security-policy": "sandbox" }),
       "cache-control": "private, max-age=3600",
     },
   });

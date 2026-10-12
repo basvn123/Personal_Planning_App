@@ -35,7 +35,7 @@ export function TimerChip({ orientation }: { orientation: "vertical" | "horizont
   }
 
   return (
-    <div className="flex h-10 min-w-0 max-w-[55%] items-center gap-2 rounded-sm bg-ribbon pl-3 pr-1 text-on-ribbon">
+    <div className="flex h-10 min-w-0 max-w-[40%] items-center gap-2 rounded-sm bg-ribbon pl-3 pr-1 text-on-ribbon">
       <span className="min-w-0 truncate text-xs font-medium">{label}</span>
       <span className="figures shrink-0 text-xs">{formatClock(elapsed)}</span>
       <StopButton onStop={stop} />

@@ -7,6 +7,7 @@ import { formatDay, formatMinutes } from "@/lib/time";
 import { dyeVars } from "@/lib/dyes";
 import { cx } from "@/lib/cx";
 import { usePlanner } from "./planner-context";
+import { BacklogPicker } from "./backlog-picker";
 
 function rememberedSection(ids: string[]) {
   try {
@@ -76,10 +77,14 @@ export function InlineAdd({
       style={section ? dyeVars(section.color) : undefined}
       className={cx("group flex items-center gap-2.5", compact ? "py-[3px]" : "py-2.5")}
     >
-      <Plus
-        className={cx("shrink-0 text-ink-3 transition-colors group-focus-within:text-ink-2", compact ? "size-3.5" : "size-4")}
-        strokeWidth={1.75}
-      />
+      {day ? (
+        <BacklogPicker day={day} compact={compact} />
+      ) : (
+        <Plus
+          className={cx("shrink-0 text-ink-3 transition-colors group-focus-within:text-ink-2", compact ? "size-3.5" : "size-4")}
+          strokeWidth={1.75}
+        />
+      )}
       <input
         ref={ref}
         value={value}

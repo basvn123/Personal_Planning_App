@@ -2,12 +2,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { format } from "date-fns";
+import { nl } from "date-fns/locale";
 import { Spread } from "@/components/shell/spread";
 import { SectionSettings } from "@/components/sections/section-settings";
 import { NewSectionPopover } from "@/components/sections/new-subsection";
 import { NewDocButton } from "@/components/docs/new-doc-button";
 import { DocList } from "@/components/docs/doc-list";
-import { getChildSections, getSectionBySlug, getSectionDocuments } from "@/server/queries/sections";
+import { getChildSections, getSectionBySlug, getSectionDocuments, getSectionFiles } from "@/server/queries/sections";
+import { FileDrop, UploadButton } from "@/components/files/file-uploader";
+import { FileList } from "@/components/files/file-list";
+import { storageMode } from "@/server/storage";
+import { requireUserId } from "@/server/auth";
 import { getProjectOptions, getSections, getSettings } from "@/server/queries/core";
 import { getProjects } from "@/server/queries/dashboard";
 import { ProjectCard } from "@/components/projects/project-card";
@@ -32,7 +37,8 @@ export default async function SectionLayout({
 
   const settings = await getSettings();
   const today = localDate(new Date(), settings.timezone);
-  const [children_, docs, options, all, backlog, upcoming, projectOptions, projects] = await Promise.all([
+  const userId = await requireUserId();
+  const [children_, docs, options, all, backlog, upcoming, projectOptions, projects, sectionFiles] = await Promise.all([
     getChildSections(section.id),
     getSectionDocuments(section.id),
     listSectionOptions(),
@@ -41,6 +47,7 @@ export default async function SectionLayout({
     getSectionUpcoming(section.id, today),
     getProjectOptions(),
     getProjects(section.id),
+    getSectionFiles(section.id),
   ]);
 
   // Breadcrumb of ancestors.
@@ -92,26 +99,46 @@ export default async function SectionLayout({
 
       <SectionTasks sectionId={section.id} />
 
-      <Block
-        title="Documents"
-        action={<NewDocButton sectionId={section.id} slug={section.slug} />}
-      >
-        {docs.length === 0 ? (
-          <div className="py-5">
-            <NewDocButton sectionId={section.id} slug={section.slug} variant="button" />
-          </div>
-        ) : (
-          <DocList
-            slug={section.slug}
-            docs={docs.map((d) => ({
-              id: d.id,
-              title: d.title,
-              pinned: d.pinned,
-              updated: format(d.updatedAt, "d MMM"),
-            }))}
-          />
-        )}
-      </Block>
+      <FileDrop sectionId={section.id} mode={storageMode} prefix={`u/${userId}/${section.id}/`}>
+        <Block
+          title="Documenten"
+          action={
+            <span className="flex items-center gap-0.5">
+              <UploadButton />
+              <NewDocButton sectionId={section.id} slug={section.slug} />
+            </span>
+          }
+        >
+          {docs.length === 0 && sectionFiles.length === 0 ? (
+            <div className="flex flex-wrap items-center gap-3 py-5">
+              <NewDocButton sectionId={section.id} slug={section.slug} variant="button" />
+              <span className="text-sm text-ink-3">of sleep bestanden hierheen</span>
+            </div>
+          ) : (
+            <>
+              <DocList
+                slug={section.slug}
+                docs={docs.map((d) => ({
+                  id: d.id,
+                  title: d.title,
+                  pinned: d.pinned,
+                  updated: format(d.updatedAt, "d MMM", { locale: nl }),
+                }))}
+              />
+              <FileList
+                slug={section.slug}
+                files={sectionFiles.map((f) => ({
+                  id: f.id,
+                  name: f.name,
+                  contentType: f.contentType,
+                  size: f.size,
+                  added: format(f.createdAt, "d MMM", { locale: nl }),
+                }))}
+              />
+            </>
+          )}
+        </Block>
+      </FileDrop>
 
       <Block title="Subsections" action={<NewSectionPopover parentId={section.id} />}>
         {children_.length > 0 && (
@@ -142,7 +169,7 @@ export default async function SectionLayout({
       today={today}
       initialDay={today}
     >
-      <Spread left={left} right={children} leftLabel={section.name} rightLabel="Page" rightPathPattern="/d/" />
+      <Spread left={left} right={children} leftLabel={section.name} rightLabel="Page" rightPathPattern="/(d|f)/" />
     </PlannerProvider>
   );
 }
