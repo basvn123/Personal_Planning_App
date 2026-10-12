@@ -16,9 +16,10 @@ const figures = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Planner", template: "%s" },
+  title: { default: "Planning", template: "%s · Planning" },
+  applicationName: "Planning",
   robots: { index: false, follow: false },
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Planner" },
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Planning" },
 };
 
 export const viewport: Viewport = {

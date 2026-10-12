@@ -57,7 +57,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ toke
       updated: new Date(r.updated_at),
     })),
     settings.timezone,
-    "Planner",
+    "Planning",
   );
 
   const download = url.searchParams.get("download") === "1";
