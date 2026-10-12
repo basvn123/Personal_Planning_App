@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Archive, FileText, Link2, Trash2, X } from "lucide-react";
+import { Archive, FileText, Link2, Repeat, Trash2, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button, IconButton, inputClass } from "@/components/ui/button";
 import { linkDocumentTask } from "@/server/actions/documents";
@@ -16,7 +16,8 @@ const DURATIONS = [15, 30, 45, 60, 90, 120, 180];
 
 /** Edit form for one task. Every field saves on change or blur. */
 export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () => void }) {
-  const { sections, projects, patch, remove } = usePlanner();
+  const { sections, projects, patch, remove, removeSeries } = usePlanner();
+  const [confirmSeries, setConfirmSeries] = useState(false);
   const sectionProjects = projects.filter((pr) => pr.sectionId === task.section.id);
   const project = projects.find((pr) => pr.id === task.projectId);
   const [units, setUnits] = useState(task.units === null ? "" : String(task.units));
@@ -52,7 +53,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
   }
 
   return (
-    <div className="flex w-[min(22rem,calc(100vw-1.5rem))] flex-col gap-3">
+    <div className="flex w-full flex-col gap-3 lg:w-[min(22rem,calc(100vw-1.5rem))]">
       <textarea
         value={title}
         rows={1}
@@ -226,9 +227,53 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
         </div>
       </Field>
 
+      {task.scheduleId && (
+        <div className="flex flex-col gap-1.5 border-t border-rule pt-2.5">
+          <span className="flex items-center gap-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">
+            <Repeat className="size-3" strokeWidth={1.75} />
+            Uit vaste planning
+          </span>
+          <div className="flex flex-wrap items-center gap-1">
+            <Link
+              href={`/schedules?id=${task.scheduleId}`}
+              onClick={onClose}
+              className="inline-flex h-8 items-center rounded-sm px-3 text-sm font-medium text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink max-lg:h-10"
+            >
+              Reeks bewerken
+            </Link>
+            {confirmSeries ? (
+              <Button
+                variant="danger"
+                className="ml-auto max-lg:h-10"
+                onClick={() => {
+                  removeSeries(task.scheduleId!, task.id);
+                  onClose();
+                }}
+              >
+                Hele reeks verwijderen
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                className="ml-auto text-danger hover:text-danger max-lg:h-10"
+                onClick={() => setConfirmSeries(true)}
+              >
+                Reeks verwijderen
+              </Button>
+            )}
+          </div>
+          {confirmSeries && (
+            <p className="text-xs text-ink-3">
+              Haalt alle komende keren uit je planning. Afgeronde en gelogde keren blijven staan.
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center gap-1 border-t border-rule pt-2.5">
         <Button
           variant="ghost"
+          className="max-lg:h-10"
           disabled={temp || task.plannedDate === null}
           onClick={() => {
             patch(task.id, { plannedDate: null, plannedStart: null });
@@ -240,7 +285,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
         </Button>
         <Button
           variant="ghost"
-          className="ml-auto text-danger hover:text-danger"
+          className="ml-auto text-danger hover:text-danger max-lg:h-10"
           disabled={temp}
           onClick={() => {
             remove(task.id);
@@ -248,7 +293,7 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
           }}
         >
           <Trash2 className="size-3.5" strokeWidth={1.75} />
-          Verwijderen
+          {task.scheduleId ? "Alleen deze" : "Verwijderen"}
         </Button>
       </div>
     </div>

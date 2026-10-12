@@ -243,6 +243,24 @@
   html {
     background: var(--cloth-2);
     -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    /* The shell never bounces or pulls to refresh; only the pages inside it scroll. */
+    overscroll-behavior: none;
+  }
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    overscroll-behavior: none;
+  }
+  /* App chrome: no text selection or callout menu on a long press. */
+  nav,
+  [role="tablist"] {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
   body {
     color: var(--ink);
@@ -328,6 +346,11 @@
   from {
     opacity: 0;
     transform: translate(-50%, 6px) scale(0.985);
+  }
+}
+@keyframes sheet {
+  from {
+    transform: translateY(100%);
   }
 }
 @keyframes pop {

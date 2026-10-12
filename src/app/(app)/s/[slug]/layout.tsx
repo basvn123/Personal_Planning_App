@@ -116,7 +116,7 @@ export default async function SectionLayout({
           {docs.length === 0 && sectionFiles.length === 0 ? (
             <div className="flex flex-wrap items-center gap-3 py-5">
               <NewDocButton sectionId={section.id} slug={section.slug} variant="button" />
-              <span className="text-sm text-ink-3">of sleep bestanden hierheen</span>
+              <span className="text-sm text-ink-3 max-lg:hidden">of sleep bestanden hierheen</span>
             </div>
           ) : (
             <>

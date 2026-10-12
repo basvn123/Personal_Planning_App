@@ -53,15 +53,19 @@ export async function materializeSchedules(userId: string, today: string, until:
   }
 }
 
-/** Removes upcoming, untouched occurrences so a changed rule can regenerate them. */
-export async function clearFutureOccurrences(scheduleId: string, today: string) {
+/**
+ * Removes upcoming, untouched occurrences so a changed rule can regenerate them.
+ * With `includeEdited` (deleting the whole schedule) moved or retimed ones go too;
+ * started and finished ones always stay.
+ */
+export async function clearFutureOccurrences(scheduleId: string, today: string, includeEdited = false) {
   await db
     .delete(tasks)
     .where(
       and(
         eq(tasks.scheduleId, scheduleId),
         gte(tasks.plannedDate, today),
-        eq(tasks.isDetached, false),
+        includeEdited ? undefined : eq(tasks.isDetached, false),
         eq(tasks.status, "todo"),
         sql`not exists (select 1 from time_entries te where te.task_id = ${tasks.id})`,
       ),

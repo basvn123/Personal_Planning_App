@@ -8,6 +8,7 @@ import { db } from "@/db/client";
 import { loginAttempts, users } from "@/db/schema";
 import { verifyPassword } from "@/lib/password";
 import { setSessionCookie } from "@/server/auth";
+import { safeNext } from "./safe-next";
 
 const WINDOW_MINUTES = 15;
 const MAX_PER_IP = 20;
@@ -60,11 +61,6 @@ async function findUser(email: string, password: string): Promise<{ id: string; 
     if (owner) return owner;
   }
   return null;
-}
-
-function safeNext(raw: string) {
-  // Same-site paths only: no "//host", no "/\host".
-  return /^\/(?![/\\])/.test(raw) && !raw.includes("\\") ? raw : "/";
 }
 
 export async function unlock(_: { error?: string } | undefined, form: FormData) {

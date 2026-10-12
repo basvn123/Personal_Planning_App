@@ -112,7 +112,14 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
         className="flex cursor-pointer flex-col items-center gap-2 rounded-md border border-dashed border-rule-strong bg-paper/70 px-6 py-8 text-center transition-colors hover:border-cloth-3 hover:bg-paper"
       >
         <FileUp className="size-5 text-ink-2" strokeWidth={1.75} />
-        <span className="text-base text-ink">{file ? file.name : "Sleep een CSV- of JSON-bestand hierheen, of klik om te kiezen"}</span>
+        <span className="text-base text-ink">{file ? (
+            file.name
+          ) : (
+            <>
+              <span className="max-lg:hidden">Sleep een CSV- of JSON-bestand hierheen, of klik om te kiezen</span>
+              <span className="lg:hidden">Tik om een CSV- of JSON-bestand te kiezen</span>
+            </>
+          )}</span>
         <span className="text-xs text-ink-3">
           {file ? `${records.length} regels` : "Met datums, of met weeknummer en weekdag."}
         </span>

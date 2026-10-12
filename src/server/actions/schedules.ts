@@ -107,7 +107,7 @@ export async function deleteSchedule(id: string) {
   const userId = await requireUserId();
   z.uuid().parse(id);
   await ownSchedules(userId, id);
-  await clearFutureOccurrences(id, await today());
+  await clearFutureOccurrences(id, await today(), true);
   await db.delete(schedules).where(eq(schedules.id, id));
   revalidatePath("/", "layout");
 }

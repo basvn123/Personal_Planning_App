@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 import { db } from "@/db/client";
 import { users } from "@/db/schema";
-import { createSessionToken, readSessionClaims, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/session";
+import { createSessionToken, readSessionClaims, SESSION_COOKIE, sessionCookieOptions } from "@/lib/session";
 
 /** The signed-in person for this request. Cached so every query in a render shares one lookup. */
 export const currentUser = cache(async () => {
@@ -33,13 +33,7 @@ export async function sessionUserId(): Promise<string | null> {
 }
 
 export async function setSessionCookie(userId: string, version: number) {
-  (await cookies()).set(SESSION_COOKIE, await createSessionToken(userId, version), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: SESSION_MAX_AGE,
-  });
+  (await cookies()).set(SESSION_COOKIE, await createSessionToken(userId, version), sessionCookieOptions);
 }
 
 /**

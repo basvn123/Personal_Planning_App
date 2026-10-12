@@ -149,48 +149,51 @@ export function DocEditor({
           </Popover>
         </div>
 
-        <InfoButton topic="document" align="end" />
-        <SaveIndicator state={state} />
-        <div role="group" aria-label="Weergave" className="ml-1 flex rounded-sm bg-paper-3 p-0.5">
-          <ModeButton active={mode === "write"} onClick={() => switchMode("write")} label="Schrijven">
-            <PenLine className="size-3.5" strokeWidth={1.75} />
-          </ModeButton>
-          <ModeButton active={mode === "read"} onClick={() => switchMode("read")} label="Lezen">
-            <BookOpen className="size-3.5" strokeWidth={1.75} />
-          </ModeButton>
+        {/* The tools stay together; on a narrow page they wrap as one row under the sections. */}
+        <div className="ml-auto flex items-center gap-1">
+          <InfoButton topic="document" align="end" />
+          <SaveIndicator state={state} />
+          <div role="group" aria-label="Weergave" className="ml-1 flex rounded-sm bg-paper-3 p-0.5">
+            <ModeButton active={mode === "write"} onClick={() => switchMode("write")} label="Schrijven">
+              <PenLine className="size-3.5" strokeWidth={1.75} />
+            </ModeButton>
+            <ModeButton active={mode === "read"} onClick={() => switchMode("read")} label="Lezen">
+              <BookOpen className="size-3.5" strokeWidth={1.75} />
+            </ModeButton>
+          </div>
+          <IconButton
+            label={pinned ? "Losmaken" : "Vastzetten"}
+            aria-pressed={pinned}
+            onClick={() => {
+              setPinned(!pinned);
+              start(() => setDocumentPinned(doc.id, !pinned));
+            }}
+            className={cx(pinned && "text-ribbon-ink")}
+          >
+            <Pin className="size-4" strokeWidth={1.75} fill={pinned ? "currentColor" : "none"} />
+          </IconButton>
+          <Popover open={confirmDelete} onOpenChange={setConfirmDelete}>
+            <PopoverTrigger asChild>
+              <IconButton label="Document verwijderen">
+                <Trash2 className="size-4" strokeWidth={1.75} />
+              </IconButton>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="flex w-56 flex-col gap-2">
+              <p className="text-sm">Dit document verwijderen?</p>
+              <Button
+                variant="danger"
+                onClick={() =>
+                  start(async () => {
+                    await deleteDocument(doc.id);
+                    router.push(`/s/${currentSlug}`);
+                  })
+                }
+              >
+                Verwijderen
+              </Button>
+            </PopoverContent>
+          </Popover>
         </div>
-        <IconButton
-          label={pinned ? "Losmaken" : "Vastzetten"}
-          aria-pressed={pinned}
-          onClick={() => {
-            setPinned(!pinned);
-            start(() => setDocumentPinned(doc.id, !pinned));
-          }}
-          className={cx(pinned && "text-ribbon-ink")}
-        >
-          <Pin className="size-4" strokeWidth={1.75} fill={pinned ? "currentColor" : "none"} />
-        </IconButton>
-        <Popover open={confirmDelete} onOpenChange={setConfirmDelete}>
-          <PopoverTrigger asChild>
-            <IconButton label="Document verwijderen">
-              <Trash2 className="size-4" strokeWidth={1.75} />
-            </IconButton>
-          </PopoverTrigger>
-          <PopoverContent align="end" className="flex w-56 flex-col gap-2">
-            <p className="text-sm">Dit document verwijderen?</p>
-            <Button
-              variant="danger"
-              onClick={() =>
-                start(async () => {
-                  await deleteDocument(doc.id);
-                  router.push(`/s/${currentSlug}`);
-                })
-              }
-            >
-              Verwijderen
-            </Button>
-          </PopoverContent>
-        </Popover>
       </div>
 
       <textarea
