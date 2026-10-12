@@ -67,7 +67,7 @@ export function ForeEdge({ sections, activeRoot }: { sections: TabSection[]; act
   return (
     <nav
       aria-label="Sections"
-      className="hidden h-dvh w-10 shrink-0 flex-col gap-1 overflow-y-auto py-6 [scrollbar-width:none] lg:flex"
+      className="hidden h-dvh w-12 shrink-0 flex-col gap-1 overflow-y-auto py-6 pr-1 [scrollbar-width:none] lg:flex"
     >
       <DndContext id="fore-edge" sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
@@ -133,14 +133,14 @@ function Tab({
       className={cx(
         "relative shrink-0 select-none font-medium text-ink transition-[background-color,translate] duration-200 ease-out",
         orientation === "vertical"
-          ? "-ml-1 flex min-h-16 items-center justify-center rounded-r-sm py-3.5 pl-1 text-xs tracking-[0.01em] [writing-mode:vertical-rl]"
+          ? "-ml-1 flex min-h-16 items-center justify-center rounded-r-sm py-3 pl-2.5 pr-2 text-xs tracking-[0.01em] [writing-mode:vertical-rl]"
           : "rounded-t-sm px-3 py-1.5 text-xs",
         active
           ? orientation === "vertical"
-            ? "translate-x-0 bg-[var(--dye)] font-semibold shadow-[2px_1px_4px_oklch(0.15_0.04_163/0.35)]"
+            ? "translate-x-0 bg-[var(--dye)] font-semibold shadow-[-3px_0_6px_-2px_oklch(0.15_0.04_163/0.45)]"
             : "bg-[var(--dye)] font-semibold"
           : orientation === "vertical"
-            ? "-translate-x-1.5 bg-[color-mix(in_oklch,var(--dye)_82%,var(--cloth))] hover:-translate-x-0.5"
+            ? "-translate-x-2 bg-[color-mix(in_oklch,var(--dye)_80%,var(--cloth))] hover:-translate-x-1"
             : "translate-y-0.5 bg-[color-mix(in_oklch,var(--dye)_86%,var(--cloth))]",
         isDragging && "z-10 shadow-lift",
       )}

@@ -8,19 +8,21 @@ import { cx } from "@/lib/cx";
 
 
 export function SettingsForm({
+  origin: serverOrigin,
   timezone,
   weekStart,
   icsToken,
   weekFrom,
   weekTo,
 }: {
+  origin: string;
   timezone: string;
   weekStart: number;
   icsToken: string;
   weekFrom: string;
   weekTo: string;
 }) {
-  const [origin, setOrigin] = useState("");
+  const [origin, setOrigin] = useState(serverOrigin);
   const [copied, setCopied] = useState(false);
   const [confirmRotate, setConfirmRotate] = useState(false);
   const [pending, run] = useTransition();
