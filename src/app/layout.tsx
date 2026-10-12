@@ -40,11 +40,18 @@ export const viewport: Viewport = {
 // Applies a stored theme before first paint so there is no flash.
 const themeScript = `try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`;
 
+// Some iOS versions end a home-screen app's viewport above the home indicator
+// while still reporting the safe-area inset, which leaves an empty strip under
+// the bottom bar. Measure the strip so the shell can reach the real screen edge.
+// A gap over 60px is the keyboard, not the strip.
+const screenGapScript = `(function(){function f(){try{var s=navigator.standalone||matchMedia("(display-mode: standalone)").matches;var p=innerHeight>innerWidth;var g=s?(p?screen.height:screen.width)-innerHeight:0;document.documentElement.style.setProperty("--screen-gap",(g>0&&g<=60?g:0)+"px")}catch(e){}}f();addEventListener("resize",f);addEventListener("orientationchange",function(){setTimeout(f,300)})})()`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="nl" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: screenGapScript }} />
         {/* Next only emits the generic tag; iOS still reads this one to open the home-screen icon as an app. */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
