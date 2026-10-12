@@ -11,16 +11,20 @@ import { ownDocuments, ownSections, ownTasks } from "@/server/own";
 
 const uuid = z.uuid();
 
-export async function createDocument(sectionId: string) {
+/** A new document in a section, or a general note in no section at all (`null`). */
+export async function createDocument(sectionId: string | null) {
   const userId = await requireUserId();
-  uuid.parse(sectionId);
-  await ownSections(userId, sectionId);
+  if (sectionId !== null) {
+    uuid.parse(sectionId);
+    await ownSections(userId, sectionId);
+  }
   const id = await db.transaction(async (tx) => {
     const [doc] = await tx.insert(documents).values({ userId }).returning({ id: documents.id });
-    await tx.insert(documentSections).values({ documentId: doc.id, sectionId });
+    if (sectionId !== null) await tx.insert(documentSections).values({ documentId: doc.id, sectionId });
     return doc.id;
   });
   revalidatePath("/s", "layout");
+  revalidatePath("/notes");
   return id;
 }
 
@@ -31,7 +35,10 @@ export async function saveDocument(id: string, patch: { title?: string; contentM
     .select({ updatedAt: documents.updatedAt })
     .from(documents)
     .where(and(eq(documents.id, id), eq(documents.userId, userId)));
-  if (patch.title !== undefined) revalidatePath("/s", "layout");
+  if (patch.title !== undefined) {
+    revalidatePath("/s", "layout");
+    revalidatePath("/notes");
+  }
   return { updatedAt: row?.updatedAt.toISOString() ?? null };
 }
 
@@ -42,12 +49,14 @@ export async function setDocumentPinned(id: string, pinned: boolean) {
     .set({ pinned })
     .where(and(eq(documents.id, uuid.parse(id)), eq(documents.userId, userId)));
   revalidatePath("/s", "layout");
+  revalidatePath("/notes");
 }
 
 export async function deleteDocument(id: string) {
   const userId = await requireUserId();
   await db.delete(documents).where(and(eq(documents.id, uuid.parse(id)), eq(documents.userId, userId)));
   revalidatePath("/s", "layout");
+  revalidatePath("/notes");
 }
 
 export async function linkDocumentSection(documentId: string, sectionId: string, linked: boolean) {
@@ -59,17 +68,13 @@ export async function linkDocumentSection(documentId: string, sectionId: string,
   if (linked) {
     await db.insert(documentSections).values({ documentId, sectionId }).onConflictDoNothing();
   } else {
-    // A document always keeps at least one section.
-    const [{ count }] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(documentSections)
-      .where(eq(documentSections.documentId, documentId));
-    if (count <= 1) throw new Error("Een document hoort bij minstens één sectie.");
+    // Without any section a document is a general note; it stays under Notities.
     await db
       .delete(documentSections)
       .where(and(eq(documentSections.documentId, documentId), eq(documentSections.sectionId, sectionId)));
   }
   revalidatePath("/s", "layout");
+  revalidatePath("/notes");
 }
 
 export async function linkDocumentTask(documentId: string, taskId: string, linked: boolean) {
