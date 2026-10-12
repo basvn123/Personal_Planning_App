@@ -7,7 +7,7 @@ import { startTimer, stopTimer } from "@/server/actions/time";
 
 type TimerCtx = {
   running: RunningTimer | null;
-  start: (target: { task?: { id: string; title: string }; section: RunningTimer["section"] }) => void;
+  start: (target: { task?: NonNullable<RunningTimer["task"]>; section: RunningTimer["section"] }) => void;
   stop: () => void;
   pending: boolean;
 };

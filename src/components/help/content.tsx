@@ -37,6 +37,7 @@ export const HELP = {
       "Een rode begintijd betekent dat de taak overlapt met de vorige.",
       "Zonder tijd: taken zonder uur, met hun duur ervoor.",
       "Vink een taak af met het vakje. Tik op de naam om dag, begin- en eindtijd, duur, sectie, notities en documenten aan te passen.",
+      "Vandaag staat Nu bezig bovenaan: in één tik een timer op wat je nu doet, ook als je langer bezig bent dan gepland.",
       "De afspeelknop start een timer op die taak. Er loopt altijd maar één timer; je ziet hem links, of op je telefoon als gele balk boven de knoppen.",
       "To-do toont open to-do's van al je secties (tik op het pijltje om ze te zien). Sleep ze naar een dag of gebruik de kalenderknop.",
       "Elke kaart heeft rechtsboven een plus om er meteen iets aan toe te voegen.",
@@ -99,6 +100,9 @@ export const HELP = {
     title: "Voortgang",
     lead: "Je level, waar je tijd naartoe ging en hoe je projecten vorderen.",
     points: [
+      "Nu bezig, bovenaan: tik op een taak van vandaag om de timer te starten, of typ iets nieuws. Taken die nu gepland staan komen eerst.",
+      "Loopt een taak langer dan gepland, dan telt de timer gewoon door en zie je hoeveel langer. Met Planning aanpassen schuift de planning mee.",
+      "Iets anders schakelt over: de vorige timer stopt en de nieuwe start meteen. Er loopt altijd maar één timer, ook over meerdere toestellen.",
       "Level en XP: elke afgevinkte taak is 10 XP, elk uur gelogde tijd ook 10 XP, en elke dag van je reeks geeft 5 XP extra (tot 30 dagen).",
       "Gelogd: totale tijd deze week, met het verschil tegenover vorige week.",
       "Reeks: hoeveel dagen op rij je tijd logde.",

@@ -17,11 +17,33 @@ function refresh() {
   revalidatePath("/", "layout");
 }
 
-/** Starts a timer on a task (or a bare section). Any running timer stops first. */
+/**
+ * Starts a timer on a task (or a bare section). Any running timer stops first, so
+ * switching is one call. Two devices starting at the same moment can race on the
+ * one-running-timer index; the loser simply tries again and takes over.
+ */
 export async function startTimer(input: { taskId?: string; sectionId?: string }) {
   const userId = await requireUserId();
   const taskId = input.taskId ? z.uuid().parse(input.taskId) : null;
-  let sectionId = input.sectionId ? z.uuid().parse(input.sectionId) : null;
+  const sectionId = input.sectionId ? z.uuid().parse(input.sectionId) : null;
+  try {
+    await startOnce(userId, taskId, sectionId);
+  } catch (e) {
+    if (!isUniqueViolation(e)) throw e;
+    await startOnce(userId, taskId, sectionId);
+  }
+  refresh();
+}
+
+function isUniqueViolation(e: unknown): boolean {
+  for (let cur = e; cur && typeof cur === "object"; cur = (cur as { cause?: unknown }).cause) {
+    if ((cur as { code?: string }).code === "23505") return true;
+  }
+  return false;
+}
+
+async function startOnce(userId: string, taskId: string | null, sectionIdIn: string | null) {
+  let sectionId = sectionIdIn;
   const now = new Date();
   await db.transaction(async (tx) => {
     if (taskId) {
@@ -41,7 +63,6 @@ export async function startTimer(input: { taskId?: string; sectionId?: string })
       .where(and(eq(timeEntries.userId, userId), isNull(timeEntries.endedAt)));
     await tx.insert(timeEntries).values({ userId, taskId, sectionId, startedAt: now, source: "timer" });
   });
-  refresh();
 }
 
 export async function stopTimer() {

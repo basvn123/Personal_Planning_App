@@ -20,7 +20,12 @@ export type LogEntry = {
 export type RunningTimer = {
   id: string;
   startedAt: string;
-  task: { id: string; title: string } | null;
+  /**
+   * The task, with what is needed to compare against the plan: planned minutes and
+   * the time logged on it before this run. Optional so a just-started timer can show
+   * before the server has answered.
+   */
+  task: { id: string; title: string; plannedMinutes?: number | null; loggedBefore?: number } | null;
   section: { id: string; name: string; slug: string; color: string };
 };
 
@@ -31,12 +36,16 @@ export async function getRunningTimer(): Promise<RunningTimer | null> {
     started_at: Date;
     task_id: string | null;
     task_title: string | null;
+    planned_minutes: number | null;
+    logged_before: string | null;
     section_id: string;
     section_name: string;
     section_slug: string;
     section_color: string;
   }>(sql`
-    select te.id, te.started_at, t.id as task_id, t.title as task_title,
+    select te.id, te.started_at, t.id as task_id, t.title as task_title, t.planned_minutes,
+      (select sum(extract(epoch from (done.ended_at - done.started_at)))::bigint
+         from time_entries done where done.task_id = t.id and done.ended_at is not null) as logged_before,
       s.id as section_id, s.name as section_name, s.slug as section_slug, s.color as section_color
     from time_entries te
     join sections s on s.id = te.section_id
@@ -49,7 +58,9 @@ export async function getRunningTimer(): Promise<RunningTimer | null> {
   return {
     id: r.id,
     startedAt: new Date(r.started_at).toISOString(),
-    task: r.task_id ? { id: r.task_id, title: r.task_title! } : null,
+    task: r.task_id
+      ? { id: r.task_id, title: r.task_title!, plannedMinutes: r.planned_minutes, loggedBefore: Number(r.logged_before ?? 0) }
+      : null,
     section: { id: r.section_id, name: r.section_name, slug: r.section_slug, color: r.section_color },
   };
 }
@@ -68,6 +79,8 @@ export async function getEntriesInRange(from: string, to: string): Promise<LogEn
     note: string | null;
     task_id: string | null;
     task_title: string | null;
+    planned_minutes: number | null;
+    logged_before: string | null;
     section_id: string;
     section_name: string;
     section_color: string;
@@ -94,7 +107,9 @@ export async function getEntriesInRange(from: string, to: string): Promise<LogEn
     seconds: Number(r.seconds),
     source: r.source,
     note: r.note,
-    task: r.task_id ? { id: r.task_id, title: r.task_title! } : null,
+    task: r.task_id
+      ? { id: r.task_id, title: r.task_title!, plannedMinutes: r.planned_minutes, loggedBefore: Number(r.logged_before ?? 0) }
+      : null,
     section: { id: r.section_id, name: r.section_name, color: r.section_color },
   }));
 }

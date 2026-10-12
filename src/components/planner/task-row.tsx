@@ -87,7 +87,14 @@ export function TaskRow({
                 {isRunning ? (
                   <span className="figures text-ribbon-ink">{formatClock(live)} loopt</span>
                 ) : (
-                  task.loggedSeconds > 0 && <span className="figures">{formatDuration(task.loggedSeconds)} gelogd</span>
+                  task.loggedSeconds > 0 && (
+                    <span className="figures">
+                      {formatDuration(task.loggedSeconds)} gelogd
+                      {task.plannedMinutes && task.loggedSeconds > task.plannedMinutes * 60 && (
+                        <span className="text-ribbon-ink">, {formatDuration(task.loggedSeconds - task.plannedMinutes * 60)} langer dan gepland</span>
+                      )}
+                    </span>
+                  )
                 )}
               </span>
             )}

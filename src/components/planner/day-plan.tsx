@@ -19,6 +19,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { pageBody } from "@/components/ui/page-body";
 import { XpLine } from "@/components/progress/xp-meter";
 import { WeekJump } from "@/components/ui/week-jump";
+import { NowDoing } from "@/components/timer/now-doing";
 import type { XpSummary } from "@/server/queries/xp";
 import type { LogEntry } from "@/server/queries/time";
 import type { PlannerTask } from "@/server/queries/tasks";
@@ -155,6 +156,8 @@ export function DayPlan({
         )}
         <XpLine xp={xp} />
       </Card>
+
+      {day === today && <NowDoing tasks={dayTasks} sections={sections} today={today} />}
 
       {error && (
         <p role="alert" className="rounded-xl bg-danger-wash px-4 py-3 text-sm text-danger">
