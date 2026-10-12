@@ -117,7 +117,7 @@ export function SpineBar() {
       <TimerChip orientation="horizontal" />
       <nav
         aria-label="Navigatie"
-        className="grid grid-cols-5 items-center bg-cloth px-1 pt-1 pb-[max(0.375rem,calc(env(safe-area-inset-bottom)-1.5rem))]"
+        className="grid grid-cols-5 items-center bg-cloth px-1 pt-2.5 pb-[max(0.75rem,calc(env(safe-area-inset-bottom)-0.75rem))]"
       >
         <BarItem {...PLANNER} />
         <BarItem {...SECTIONS} />
