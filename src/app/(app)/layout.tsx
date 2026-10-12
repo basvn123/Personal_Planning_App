@@ -6,6 +6,8 @@ import { localDate } from "@/lib/time";
 import { getRunningTimer } from "@/server/queries/time";
 import { TimerProvider } from "@/components/timer/timer-context";
 import { QuickAddSheet } from "@/components/planner/quick-add-sheet";
+import { StartSheet } from "@/components/timer/start-sheet";
+import { getTasksInRange } from "@/server/queries/tasks";
 import { Toaster } from "@/components/shell/toaster";
 import { Suspense } from "react";
 
@@ -18,6 +20,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     getSettings(),
     getRunningTimer(),
   ]);
+  const today = localDate(new Date(), settings.timezone);
+  // Today's tasks for the start button, which every page offers.
+  const todayTasks = await getTasksInRange(today, today);
   const byId = new Map(all.map((s) => [s.id, s]));
   // Tabs show top-level sections; a nested section lights up its root tab.
   const activeRoot: Record<string, string> = {};
@@ -49,6 +54,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <Suspense>
         <QuickAddSheet sections={sections} today={localDate(new Date(), settings.timezone)} weekStart={settings.weekStart === 0 ? 0 : 1} />
       </Suspense>
+      <StartSheet tasks={todayTasks} sections={sections} today={today} />
       <Toaster />
     </div>
     </TimerProvider>

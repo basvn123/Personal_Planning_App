@@ -34,3 +34,13 @@ export function matchesNote(query: string, title: string, markdown: string): boo
   const hay = fold(`${title}\n${markdown}`);
   return words.every((w) => hay.includes(w));
 }
+
+/** The Notities page for a folder ("all", "general" or a section slug), optionally with a note open. */
+export function notesHref(folder: string, noteId?: string, isNew?: boolean) {
+  const q = new URLSearchParams();
+  if (folder !== "all") q.set("f", folder);
+  if (noteId) q.set("n", noteId);
+  if (isNew) q.set("new", "1");
+  const s = q.toString();
+  return s ? `/notes?${s}` : "/notes";
+}

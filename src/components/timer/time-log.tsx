@@ -72,7 +72,7 @@ function EntryRow({ entry }: { entry: LogEntry }) {
     <li style={dyeVars(entry.section.color)}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger className="flex min-h-11 w-full items-center gap-3 text-left text-sm transition-colors hover:bg-paper-3/60">
-          <span className="figures w-[6.5rem] shrink-0 text-ink-2">
+          <span className="figures min-w-[7rem] shrink-0 whitespace-nowrap text-ink-2">
             {entry.startClock}
             <span className="text-ink-3">{" tot "}</span>
             {entry.endClock ?? "nu"}
@@ -83,7 +83,7 @@ function EntryRow({ entry }: { entry: LogEntry }) {
             {running ? formatClock(seconds) : formatDuration(seconds)}
           </span>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-64">
+        <PopoverContent align="end" className="w-[min(18rem,calc(100vw-1.5rem))]">
           <form
             className="flex flex-col gap-3"
             onSubmit={(e) => {
@@ -99,7 +99,7 @@ function EntryRow({ entry }: { entry: LogEntry }) {
               });
             }}
           >
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               <TimeField label="Van" value={start} onChange={setStart} />
               <TimeField label="Tot" value={end} onChange={setEnd} required={!running} />
             </div>
@@ -144,7 +144,7 @@ function AddEntry({
 
   return (
     <form
-      className="grid grid-cols-2 gap-2 border-b border-rule py-3 sm:grid-cols-[1fr_6rem_6rem_auto] sm:items-end"
+      className="grid grid-cols-2 gap-2 border-b border-rule py-3 sm:grid-cols-[minmax(0,1fr)_7.5rem_7.5rem_auto] sm:items-end"
       onSubmit={(e) => {
         e.preventDefault();
         if (!target || !start || !end) return;
@@ -210,14 +210,15 @@ function TimeField({
   required?: boolean;
 }) {
   return (
-    <label className="flex flex-col gap-1">
+    // min-w-0 everywhere: a native time input is wider than a narrow grid column by default and spills over its neighbour.
+    <label className="flex min-w-0 flex-col gap-1">
       <span className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">{label}</span>
       <input
         type="time"
         value={value}
         required={required}
         onChange={(e) => onChange(e.target.value)}
-        className={cx(inputClass, "figures")}
+        className={cx(inputClass, "figures min-w-0 px-2 [&::-webkit-date-and-time-value]:text-left")}
       />
     </label>
   );

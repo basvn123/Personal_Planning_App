@@ -12,6 +12,7 @@ import {
   LibraryBig,
   LogOut,
   Moon,
+  NotebookPen,
   Plus,
   Repeat,
   Search,
@@ -22,6 +23,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { TimerChip } from "@/components/timer/timer-chip";
+import { StartButton, StartStrip } from "@/components/timer/start-sheet";
 import { Sheet } from "@/components/ui/sheet";
 import { Segmented } from "@/components/ui/segmented";
 import { CardIcon } from "@/components/ui/card";
@@ -33,6 +35,7 @@ import { cx } from "@/lib/cx";
 const PLANNER = { href: "/week", label: "Planner", icon: CalendarRange };
 const SECTIONS = { href: "/sections", label: "Secties", icon: LibraryBig };
 const PROGRESS = { href: "/dashboard", label: "Voortgang", icon: Trophy };
+const NOTES = { href: "/notes", label: "Notities", icon: NotebookPen };
 const SCHEDULES = { href: "/schedules", label: "Vaste planning", icon: Repeat };
 const IMPORT = { href: "/import", label: "Importeren", icon: FileUp };
 const SETTINGS = { href: "/settings", label: "Instellingen", icon: Settings };
@@ -73,7 +76,7 @@ export function Spine() {
       <Link href="/week" aria-label="Start" className="mb-3 grid size-10 place-items-center">
         <Mark />
       </Link>
-      {[PLANNER, SECTIONS, PROGRESS, SCHEDULES, IMPORT].map((item) => (
+      {[PLANNER, SECTIONS, NOTES, PROGRESS, SCHEDULES, IMPORT].map((item) => (
         <NavItem key={item.href} {...item} />
       ))}
       <button
@@ -93,6 +96,7 @@ export function Spine() {
       >
         <Plus className="size-5" strokeWidth={2.25} />
       </button>
+      <StartButton className="mt-1" />
       <div className="mt-auto flex flex-col items-center gap-3">
         <TimerChip orientation="vertical" />
         <ThemeToggle />
@@ -111,9 +115,10 @@ export function SpineBar() {
   const openAdd = useUi((s) => s.openAdd);
   const [more, setMore] = useState(false);
   const pathname = usePathname();
-  const moreActive = [SCHEDULES.href, IMPORT.href, SETTINGS.href].some((h) => pathname.startsWith(h));
+  const moreActive = [NOTES.href, SCHEDULES.href, IMPORT.href, SETTINGS.href].some((h) => pathname.startsWith(h));
   return (
     <div className="shrink-0 lg:hidden">
+      <StartStrip />
       <TimerChip orientation="horizontal" />
       <nav
         aria-label="Navigatie"
@@ -209,6 +214,7 @@ function MoreSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (open:
         openPalette();
       },
     },
+    { label: NOTES.label, sub: "Algemene notities en die van elke sectie", icon: NotebookPen, onClick: () => go(NOTES.href) },
     { label: SCHEDULES.label, sub: "Lessen, trainingen en andere vaste afspraken", icon: Repeat, onClick: () => go(SCHEDULES.href) },
     { label: "Schema importeren", sub: "Een CSV- of JSON-schema in je planning zetten", icon: FileUp, onClick: () => go(IMPORT.href) },
     { label: SETTINGS.label, sub: "Account, tijdzone, agenda op je telefoon", icon: Settings, onClick: () => go(SETTINGS.href) },

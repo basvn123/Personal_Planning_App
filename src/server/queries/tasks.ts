@@ -104,13 +104,17 @@ export async function getSectionUpcoming(sectionId: string, from: string) {
   return rows.map(shape);
 }
 
-/** Open backlog tasks across all active sections, for routing into days. */
+/**
+ * Backlog tasks across all active sections, for routing into days: the open ones,
+ * plus the ones finished in the last two weeks so a tick can be found and undone.
+ */
 export async function getOpenBacklog() {
   const userId = await requireUserId();
   const rows = await db.execute<Row>(sql`
     ${SELECT}
-    where t.user_id = ${userId} and t.planned_date is null and t.status <> 'done' and s.archived_at is null
-    order by s.rank, t.rank
+    where t.user_id = ${userId} and t.planned_date is null and s.archived_at is null
+      and (t.status <> 'done' or t.completed_at > now() - interval '14 days')
+    order by s.rank, t.status = 'done', t.rank
     limit 300
   `);
   return rows.map(shape);

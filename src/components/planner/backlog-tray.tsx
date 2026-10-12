@@ -14,6 +14,7 @@ export function BacklogTray() {
   const { tasks, sections } = usePlanner();
   const [open, setOpen] = useState(false);
   const backlog = tasks.filter((t) => t.plannedDate === null && t.status !== "done");
+  const done = tasks.filter((t) => t.plannedDate === null && t.status === "done");
   const groups = sections
     .map((s) => ({ section: s, items: backlog.filter((t) => t.section.id === s.id) }))
     .filter((g) => g.items.length > 0);
@@ -56,6 +57,19 @@ export function BacklogTray() {
             ))}
           </div>
         ))}
+      {open && done.length > 0 && (
+        // Ticked to-dos stay findable here, and unticking brings them back.
+        <details className="mt-2 border-t border-rule pt-1">
+          <summary className="flex h-10 cursor-pointer list-none items-center text-xs text-ink-3 hover:text-ink-2 lg:h-8">
+            {done.length} klaar, tik om terug te zetten
+          </summary>
+          <ul className="pl-3.5">
+            {done.map((t) => (
+              <TaskRow key={t.id} task={t} variant="week" />
+            ))}
+          </ul>
+        </details>
+      )}
     </Card>
   );
 }

@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { format, isSameDay, isSameYear, differenceInCalendarDays } from "date-fns";
 import { nl } from "date-fns/locale";
 import { NotebookPen, Pin, Plus, Search, X } from "lucide-react";
 import { createDocument } from "@/server/actions/documents";
-import { matchesNote, notePreview, noteTitle } from "@/lib/notes";
+import { matchesNote, notePreview, notesHref, noteTitle } from "@/lib/notes";
 import { dyeVars } from "@/lib/dyes";
 import { useUi } from "@/lib/ui-store";
 import { cx } from "@/lib/cx";
@@ -17,7 +17,7 @@ import type { NoteItem } from "@/server/queries/sections";
 type Section = { id: string; name: string; slug: string; color: string };
 
 /** "all", "general" (notes in no section) or a section slug. */
-export type Folder = string;
+type Folder = string;
 
 function when(iso: string) {
   const d = new Date(iso);
@@ -27,14 +27,6 @@ function when(iso: string) {
   return format(d, isSameYear(d, now) ? "d MMM" : "d MMM yyyy", { locale: nl });
 }
 
-export function notesHref(folder: Folder, noteId?: string, isNew?: boolean) {
-  const q = new URLSearchParams();
-  if (folder !== "all") q.set("f", folder);
-  if (noteId) q.set("n", noteId);
-  if (isNew) q.set("new", "1");
-  const s = q.toString();
-  return s ? `/notes?${s}` : "/notes";
-}
 
 /**
  * Notes like a notes app: folders on top (all, general, one per section), a search
@@ -55,6 +47,9 @@ export function NotesList({
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [creating, startCreate] = useTransition();
+  // Times are shown in the browser's own timezone, so only once mounted (the server may sit elsewhere).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const section = sections.find((s) => s.slug === folder) ?? null;
   const inFolder = useMemo(
@@ -184,7 +179,7 @@ export function NotesList({
                       <span className="min-w-0 flex-1 truncate text-base font-semibold text-ink">{noteTitle(n.title, n.snippet)}</span>
                     </span>
                     <span className="flex min-w-0 items-center gap-2 text-sm">
-                      <span className="figures shrink-0 text-ink-2 first-letter:uppercase">{when(n.updatedAt)}</span>
+                      <span className="figures shrink-0 text-ink-2 first-letter:uppercase">{mounted ? when(n.updatedAt) : ""}</span>
                       <span className="min-w-0 truncate text-ink-3">{preview || "Geen extra tekst"}</span>
                     </span>
                     {folder === "all" || n.sections.length > 1 ? (
