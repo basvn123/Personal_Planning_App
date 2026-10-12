@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FileText, Repeat } from "lucide-react";
+import { Check, FileText, Repeat, Trash2 } from "lucide-react";
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import { Sheet, usePhone } from "@/components/ui/sheet";
 import type { PlannerTask } from "@/server/queries/tasks";
@@ -26,7 +26,7 @@ export function TaskRow({
   variant: "week" | "day";
   lead?: React.ReactNode;
 }) {
-  const { toggle } = usePlanner();
+  const { toggle, remove } = usePlanner();
   const [open, setOpen] = useState(false);
   const done = task.status === "done";
   const temp = task.id.startsWith("temp-");
@@ -118,7 +118,43 @@ export function TaskRow({
         </li>
       </PopoverAnchor>
       {phone ? (
-        <Sheet open={open} onOpenChange={setOpen} title={task.title}>
+        <Sheet
+          open={open}
+          onOpenChange={setOpen}
+          title={task.title}
+          actions={
+            !temp && (
+              <>
+                <button
+                  type="button"
+                  aria-pressed={done}
+                  onClick={() => {
+                    toggle(task.id);
+                    if (!done) setOpen(false);
+                  }}
+                  className={cx(
+                    "inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm font-semibold transition-colors",
+                    done ? "bg-paper-3 text-ink-2" : "bg-cloth text-cloth-ink",
+                  )}
+                >
+                  <Check className="size-4" strokeWidth={2.5} />
+                  {done ? "Heropenen" : "Klaar"}
+                </button>
+                <button
+                  type="button"
+                  aria-label="Verwijderen"
+                  onClick={() => {
+                    remove(task.id);
+                    setOpen(false);
+                  }}
+                  className="grid size-9 place-items-center rounded-full text-danger hover:bg-danger-wash"
+                >
+                  <Trash2 className="size-4" strokeWidth={1.75} />
+                </button>
+              </>
+            )
+          }
+        >
           <TaskEditor task={task} onClose={() => setOpen(false)} />
         </Sheet>
       ) : (

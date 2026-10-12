@@ -26,7 +26,7 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
             key={day}
             day={day}
             className={cx(
-              "group/day relative grid min-h-[4.75rem] flex-1 grid-cols-[3.25rem_1fr_3.25rem] gap-x-3 border-b border-rule px-5 py-2.5 pr-11 lg:px-8 lg:pr-14",
+              "group/day relative grid min-h-[4.75rem] flex-1 grid-cols-[2.5rem_1fr_2.75rem] gap-x-2 border-b border-rule py-2.5 pl-4 pr-8 sm:grid-cols-[3.25rem_1fr_3.25rem] sm:gap-x-3 sm:px-5 sm:pr-11 lg:px-8 lg:pr-14",
               i >= 5 && "bg-paper-2/50",
               isToday && "bg-ribbon-wash/55",
             )}

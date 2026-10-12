@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarRange, ChartColumn, Command, FileUp, LibraryBig, Repeat, Settings } from "lucide-react";
+import { CalendarRange, ChartColumn, Command, FileUp, LibraryBig, Plus, Repeat, Search, Settings } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { TimerChip } from "@/components/timer/timer-chip";
 import { useUi } from "@/lib/ui-store";
@@ -71,29 +71,65 @@ export function Spine() {
   );
 }
 
-/** Phone: the same cloth, as a bar along the bottom edge. */
+/**
+ * Phone: the same cloth, as a bar along the bottom edge. It runs under the
+ * home indicator in one color, with the icons sitting low, close to the edge.
+ */
 export function SpineBar() {
   const openPalette = useUi((s) => s.openPalette);
+  const setAddOpen = useUi((s) => s.setAddOpen);
+  const [week, sections, dashboard, schedules] = NAV;
   return (
     <nav
       aria-label="Navigatie"
-      className="flex h-14 shrink-0 items-center justify-around border-t border-cloth-3/50 bg-cloth px-2 pb-[env(safe-area-inset-bottom)] lg:hidden"
-      style={{ boxSizing: "content-box" }}
+      className="flex shrink-0 items-center justify-around gap-1 bg-cloth px-2 pt-1.5 pb-[max(0.375rem,calc(env(safe-area-inset-bottom)-1.25rem))] lg:hidden"
     >
-      {NAV.filter((item) => item.href !== "/import").map((item) => (
-        <NavItem key={item.href} {...item} />
-      ))}
+      <BarItem {...week} />
+      <BarItem {...sections} />
+      <BarItem {...dashboard} />
+      <button
+        type="button"
+        onClick={() => setAddOpen(true)}
+        aria-label="Activiteit toevoegen"
+        className="grid size-12 shrink-0 place-items-center rounded-full bg-cloth-ink text-cloth shadow-[0_2px_8px_oklch(0.1_0.03_163/0.45)] transition-transform active:scale-95"
+      >
+        <Plus className="size-6" strokeWidth={2.25} />
+      </button>
+      <BarItem {...schedules} />
+      <TimerChip orientation="horizontal" />
       <button
         type="button"
         onClick={openPalette}
         aria-label="Zoeken en opdrachten"
-        className="grid size-10 place-items-center rounded-md text-cloth-ink-2 hover:text-cloth-ink"
+        className="flex h-12 min-w-0 max-w-16 flex-1 flex-col items-center justify-center gap-0.5 rounded-md text-cloth-ink-2 active:bg-cloth-3/60"
       >
-        <Command className="size-[18px]" strokeWidth={1.75} />
+        <Search className="size-[22px]" strokeWidth={1.75} />
+        <span className="text-[0.625rem] leading-none">Zoek</span>
       </button>
-      <TimerChip orientation="horizontal" />
-      <NavItem {...SETTINGS} />
+      <BarItem {...SETTINGS} short="Meer" />
     </nav>
+  );
+}
+
+const SHORT: Record<string, string> = { "/dashboard": "Stats", "/schedules": "Vast" };
+
+function BarItem({ href, label, icon: Icon, short }: { href: string; label: string; icon: typeof CalendarRange; short?: string }) {
+  const pathname = usePathname();
+  const active =
+    pathname === href || pathname.startsWith(href + "/") || (href === "/sections" && pathname.startsWith("/s/"));
+  return (
+    <Link
+      href={href}
+      aria-label={label}
+      aria-current={active ? "page" : undefined}
+      className={cx(
+        "flex h-12 min-w-0 max-w-16 flex-1 flex-col items-center justify-center gap-0.5 rounded-md px-0.5 transition-colors",
+        active ? "bg-cloth-3 text-cloth-ink" : "text-cloth-ink-2 active:bg-cloth-3/60",
+      )}
+    >
+      <Icon className="size-[22px]" strokeWidth={active ? 2 : 1.75} />
+      <span className="max-w-full truncate text-[0.625rem] leading-none">{short ?? SHORT[href] ?? label}</span>
+    </Link>
   );
 }
 

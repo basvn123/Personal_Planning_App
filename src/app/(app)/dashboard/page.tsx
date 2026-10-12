@@ -8,6 +8,8 @@ import { Heatmap } from "@/components/charts/heatmap";
 import { ProjectCard } from "@/components/projects/project-card";
 import { NewProject } from "@/components/projects/new-project";
 import { InfoButton } from "@/components/help/info-button";
+import { XpMeter } from "@/components/progress/xp-meter";
+import { getXp } from "@/server/queries/xp";
 import { getSections, getSettings } from "@/server/queries/core";
 import {
   getDailySeries,
@@ -31,7 +33,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const [from, to] = [days[0], days[6]];
   const heatFrom = weekDays(shiftDay(today, -7 * 15), 1)[0];
 
-  const [series, prevSeries, planned, bySection, byTask, heat, streak, projects] = await Promise.all([
+  const [series, prevSeries, planned, bySection, byTask, heat, streak, projects, xp] = await Promise.all([
     getDailySeries(from, to),
     getDailySeries(shiftDay(from, -7), shiftDay(to, -7)),
     getPlannedByDay(from, to),
@@ -40,6 +42,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     getDailySeries(heatFrom, weekDays(today, 1)[6]),
     getStreak(today),
     getProjects(),
+    getXp(),
   ]);
 
   const total = series.reduce((s, d) => s + d.seconds, 0);
@@ -76,7 +79,9 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       </header>
 
-      <dl className="mt-6 grid grid-cols-3 border-y border-rule-strong">
+      <XpMeter xp={xp} className="mt-5" />
+
+      <dl className="mt-5 grid grid-cols-3 border-y border-rule-strong">
         <Figure label="Gelogd">
           {formatDuration(total)}
           {(prevTotal > 0 || total > 0) && (

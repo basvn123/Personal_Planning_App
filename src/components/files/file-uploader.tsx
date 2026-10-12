@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
+import { upload, uploadPresigned } from "@vercel/blob/client";
 import { Upload } from "lucide-react";
 import { registerBlobFile } from "@/server/actions/files";
 import { MAX_FILE_BYTES, formatBytes, safeFileName } from "@/lib/files";
@@ -18,7 +18,7 @@ export function FileDrop({
   children,
 }: {
   sectionId: string;
-  mode: "blob" | "local";
+  mode: "blob" | "blob-oidc" | "local";
   prefix: string;
   children: React.ReactNode;
 }) {
@@ -37,6 +37,15 @@ export function FileDrop({
     try {
       if (mode === "blob") {
         const blob = await upload(prefix + safeFileName(file.name), file, {
+          access: "private",
+          handleUploadUrl: "/api/files/upload",
+          clientPayload: JSON.stringify({ sectionId }),
+          contentType: file.type || undefined,
+        });
+        await registerBlobFile({ sectionId, pathname: blob.pathname, name: file.name });
+      } else if (mode === "blob-oidc") {
+        // A presigned URL covers one exact path, so the path itself carries the unique part.
+        const blob = await uploadPresigned(`${prefix}${key.slice(0, 8)}-${safeFileName(file.name)}`, file, {
           access: "private",
           handleUploadUrl: "/api/files/upload",
           clientPayload: JSON.stringify({ sectionId }),

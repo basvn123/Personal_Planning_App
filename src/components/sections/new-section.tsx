@@ -66,7 +66,7 @@ export function NewSectionTab({ orientation }: { orientation: "vertical" | "hori
         className={
           orientation === "vertical"
             ? "-ml-1 grid h-10 shrink-0 place-items-center rounded-r-sm pl-1 text-cloth-ink-2 transition-colors hover:bg-cloth-3/60 hover:text-cloth-ink"
-            : "grid h-8 shrink-0 place-items-center rounded-t-sm px-3 text-cloth-ink-2 hover:text-cloth-ink"
+            : "grid h-11 shrink-0 place-items-center rounded-t-md px-4 text-cloth-ink-2 hover:text-cloth-ink"
         }
       >
         <Plus className="size-4" strokeWidth={1.75} />

@@ -10,6 +10,8 @@ import { DayPlan } from "@/components/planner/day-plan";
 import { getDailyTotals, getProjectOptions, getSections, getSettings } from "@/server/queries/core";
 import { getOpenBacklog, getTasksInRange } from "@/server/queries/tasks";
 import { getEntriesInRange } from "@/server/queries/time";
+import { getXp } from "@/server/queries/xp";
+import { XpMeter } from "@/components/progress/xp-meter";
 import { HORIZON_DAYS, materializeSchedules } from "@/server/materialize";
 import { formatDay, formatDuration, isoWeekNumber, localDate, shiftDay, weekDays } from "@/lib/time";
 
@@ -34,11 +36,12 @@ export default async function WeekPage({
   // Strict schedules: make sure every viewed week (and the next eight) is generated.
   const horizon = shiftDay(today, HORIZON_DAYS);
   await materializeSchedules(settings.userId, today, days[6] > horizon ? days[6] : horizon);
-  const [logged, weekTasks, entries, backlog] = await Promise.all([
+  const [logged, weekTasks, entries, backlog, xp] = await Promise.all([
     getDailyTotals(days[0], days[6]),
     getTasksInRange(days[0], days[6]),
     getEntriesInRange(days[0], days[6]),
     getOpenBacklog(),
+    getXp(),
   ]);
   const tasks = [...weekTasks, ...backlog];
   const weekLogged = days.reduce((sum, x) => sum + (logged[x] ?? 0), 0);
@@ -76,6 +79,8 @@ export default async function WeekPage({
           </WeekNav>
         </div>
       </header>
+
+      <XpMeter xp={xp} className="px-5 pb-4 pr-11 lg:px-8 lg:pr-14" />
 
       <WeekList days={days} logged={logged} />
 

@@ -15,7 +15,9 @@ export const HELP = {
         <K>14:00</K> <K>45m</K>.
       </>,
       "Het lijstje voor die regel haalt open to-do's uit je secties en plant ze op die dag.",
-      "Sleep een taak naar een andere dag om ze te verplaatsen.",
+      "Sleep een taak naar een andere dag om ze te verplaatsen. Op de telefoon: houd een taak even vast en sleep.",
+      "Op de telefoon voegt de ronde plusknop onderaan overal een activiteit toe. Tik op een taak voor Klaar, Verwijderen en alle details.",
+      "Afvinken levert XP op; de balk bovenaan laat zien hoe ver je van het volgende level bent.",
       "In de marge zie je per dag: gelogde tijd, geplande tijd en een balkje dat vult.",
       "Het gele lint markeert vandaag.",
     ],
@@ -92,6 +94,7 @@ export const HELP = {
     title: "Dashboard",
     lead: "Waar je tijd naartoe ging en hoe je projecten vorderen.",
     points: [
+      "Level en XP: elke afgevinkte taak is 10 XP, elk uur gelogde tijd ook 10 XP, en elke dag van je reeks geeft 5 XP extra (tot 30 dagen).",
       "Gelogd: totale tijd deze week, met het verschil tegenover vorige week.",
       "Reeks: hoeveel dagen op rij je tijd logde.",
       "Per dag: de volle balk is gelogd, het stippellijnkader is wat je plande. Ga erover voor details.",

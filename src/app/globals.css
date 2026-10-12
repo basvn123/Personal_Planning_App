@@ -241,7 +241,8 @@
 
 @layer base {
   html {
-    background: var(--cloth-2);
+    /* The same cloth as the bars, so nothing darker shows at the screen edges. */
+    background: var(--cloth);
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
     /* The shell never bounces or pulls to refresh; only the pages inside it scroll. */
@@ -346,6 +347,21 @@
   from {
     opacity: 0;
     transform: translate(-50%, 6px) scale(0.985);
+  }
+}
+@keyframes toast {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  12%,
+  80% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
   }
 }
 @keyframes sheet {
