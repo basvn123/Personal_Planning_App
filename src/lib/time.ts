@@ -53,3 +53,11 @@ export function formatClock(seconds: number): string {
   const sec = s % 60;
   return `${h}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
 }
+
+/** 45 -> "45m", 60 -> "1h", 90 -> "1h30". */
+export function formatMinutes(minutes: number): string {
+  if (minutes < 60) return `${minutes}m`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m ? `${h}h${String(m).padStart(2, "0")}` : `${h}h`;
+}

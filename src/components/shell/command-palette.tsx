@@ -3,8 +3,11 @@
 import { Command } from "cmdk";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { CalendarRange, CornerDownLeft, FileText } from "lucide-react";
+import { useEffect, useMemo, useState, useTransition } from "react";
+import { createTask } from "@/server/actions/tasks";
+import { parseQuickAdd } from "@/lib/quick-add";
+import { formatDay, formatMinutes } from "@/lib/time";
+import { CalendarRange, CornerDownLeft, FileText, Plus } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { dyeVars } from "@/lib/dyes";
 import type { TabSection } from "./fore-edge";
@@ -12,10 +15,16 @@ import type { TabSection } from "./fore-edge";
 export function CommandPalette({
   sections,
   docs,
+  today,
 }: {
   sections: TabSection[];
   docs: { id: string; title: string; slug: string }[];
+  today: string;
 }) {
+  const [search, setSearch] = useState("");
+  const [, start] = useTransition();
+  const parsed = useMemo(() => parseQuickAdd(search, today, sections), [search, today, sections]);
+  const quickSection = sections.find((s) => s.id === parsed.sectionId);
   const open = useUi((s) => s.paletteOpen);
   const setOpen = useUi((s) => s.setPaletteOpen);
   const router = useRouter();
@@ -30,6 +39,26 @@ export function CommandPalette({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [setOpen]);
+
+  useEffect(() => {
+    if (!open) setSearch("");
+  }, [open]);
+
+  function addTask() {
+    if (!parsed.title || !quickSection) return;
+    const date = parsed.plannedDate === undefined ? today : parsed.plannedDate;
+    setOpen(false);
+    start(async () => {
+      await createTask({
+        title: parsed.title,
+        sectionId: quickSection.id,
+        plannedDate: date,
+        plannedStart: parsed.plannedStart,
+        plannedMinutes: parsed.plannedMinutes,
+      });
+      router.refresh();
+    });
+  }
 
   function go(href: string) {
     setOpen(false);
@@ -48,13 +77,33 @@ export function CommandPalette({
           <Command loop className="flex flex-col">
             <Command.Input
               autoFocus
-              placeholder="Jump to a section or document"
+              value={search}
+              onValueChange={setSearch}
+              placeholder="Jump somewhere, or add a task with #section"
               className="h-12 border-b border-rule bg-transparent px-4 text-md outline-none"
             />
             <Command.List className="max-h-[min(24rem,60vh)] overflow-y-auto p-1.5">
               <Command.Empty className="px-3 py-6 text-center text-sm text-ink-3">
                 No match.
               </Command.Empty>
+              {parsed.title && quickSection && (
+                <Command.Group heading="Add task" className={groupClass} forceMount>
+                  <Item value={`__add ${search}`} onSelect={addTask} forceMount>
+                    <Plus className="size-4 text-ink-3" strokeWidth={1.75} />
+                    <span className="min-w-0 flex-1 truncate text-ink">{parsed.title}</span>
+                    <span className="flex shrink-0 items-center gap-2 text-xs text-ink-3">
+                      <span style={dyeVars(quickSection.color)} className="rounded-xs bg-[var(--dye)] px-1.5 py-px text-ink">
+                        {quickSection.name}
+                      </span>
+                      <span className="figures">
+                        {parsed.plannedDate === null ? "Backlog" : formatDay(parsed.plannedDate ?? today, "EEE d")}
+                      </span>
+                      {parsed.plannedStart && <span className="figures">{parsed.plannedStart}</span>}
+                      {parsed.plannedMinutes && <span className="figures">{formatMinutes(parsed.plannedMinutes)}</span>}
+                    </span>
+                  </Item>
+                </Command.Group>
+              )}
               <Command.Group heading="Go to" className={groupClass}>
                 <Item onSelect={() => go("/week")}>
                   <CalendarRange className="size-4 text-ink-3" strokeWidth={1.75} />
@@ -95,19 +144,22 @@ function Item({
   children,
   onSelect,
   value,
+  forceMount,
 }: {
   children: React.ReactNode;
   onSelect: () => void;
   value?: string;
+  forceMount?: boolean;
 }) {
   return (
     <Command.Item
       value={value}
+      forceMount={forceMount}
       onSelect={onSelect}
       className="group flex h-9 cursor-pointer items-center gap-2.5 rounded-sm px-2.5 text-base text-ink-2 data-[selected=true]:bg-ribbon-wash data-[selected=true]:text-ink"
     >
       {children}
-      <CornerDownLeft className="ml-auto size-3.5 text-ink-3 opacity-0 group-data-[selected=true]:opacity-100" />
+      <CornerDownLeft className="ml-auto size-3.5 shrink-0 text-ink-3 opacity-0 group-data-[selected=true]:opacity-100" />
     </Command.Item>
   );
 }

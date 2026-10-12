@@ -35,6 +35,15 @@ export function Spread({
     if (wantRight) el.scrollLeft = el.scrollWidth;
   }, [initial, rightPathPattern, pathname]);
 
+  useEffect(() => {
+    function onShow(e: Event) {
+      const side = (e as CustomEvent<"left" | "right">).detail;
+      if (window.matchMedia("(max-width: 1023px)").matches) show(side);
+    }
+    window.addEventListener("spread:show", onShow);
+    return () => window.removeEventListener("spread:show", onShow);
+  }, []);
+
   function onScroll() {
     const el = scroller.current;
     if (!el) return;
