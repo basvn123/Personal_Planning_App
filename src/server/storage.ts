@@ -5,8 +5,20 @@ import { dirname, join, resolve } from "node:path";
 import { Readable } from "node:stream";
 import { del, get } from "@vercel/blob";
 
-/** Vercel Blob (private) when a store is connected, otherwise a local folder for development. */
-export const storageMode: "blob" | "local" = process.env.BLOB_READ_WRITE_TOKEN ? "blob" : "local";
+/**
+ * How files are stored and uploaded:
+ * - "blob": Vercel Blob with a read-write token (stores connected the older way).
+ * - "blob-oidc": Vercel Blob through the project's OIDC login. Newer stores only
+ *   inject BLOB_STORE_ID, so the browser uploads to a presigned URL instead.
+ * - "local": a folder on disk, for development.
+ */
+export type StorageMode = "blob" | "blob-oidc" | "local";
+
+export const storageMode: StorageMode = process.env.BLOB_READ_WRITE_TOKEN
+  ? "blob"
+  : process.env.BLOB_STORE_ID
+    ? "blob-oidc"
+    : "local";
 
 const LOCAL_ROOT = resolve(process.cwd(), ".uploads");
 

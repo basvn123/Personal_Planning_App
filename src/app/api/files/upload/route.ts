@@ -1,4 +1,10 @@
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { issueSignedToken } from "@vercel/blob";
+import {
+  handleUpload,
+  handleUploadPresigned,
+  type HandleUploadBody,
+  type HandleUploadPresignedBody,
+} from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 import { db } from "@/db/client";
 import { files } from "@/db/schema";
@@ -8,13 +14,40 @@ import { ownSections } from "@/server/own";
 import { localKey, saveLocal, storageMode } from "@/server/storage";
 
 /**
- * Blob mode: hands the browser a short-lived token to upload straight to a
- * private Vercel Blob path under its own account. Local mode: receives the
- * file itself and keeps it in a folder on disk.
+ * Blob modes: hands the browser a short-lived token (or, with OIDC, a presigned
+ * URL) to upload straight to a private Vercel Blob path under its own account.
+ * Local mode: receives the file itself and keeps it in a folder on disk.
  */
 export async function POST(request: Request) {
   const userId = await sessionUserId();
   if (!userId) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
+
+  if (storageMode === "blob-oidc") {
+    try {
+      const body = (await request.json()) as HandleUploadPresignedBody;
+      const result = await handleUploadPresigned({
+        body,
+        request,
+        getSignedToken: async (pathname, clientPayload) => {
+          const { sectionId } = JSON.parse(clientPayload ?? "{}") as { sectionId?: string };
+          if (!sectionId) throw new Error("No section");
+          await ownSections(userId, sectionId);
+          if (!pathname.startsWith(`u/${userId}/${sectionId}/`)) throw new Error("Wrong path");
+          // Scoped to this one path, write only, for ten minutes.
+          const token = await issueSignedToken({
+            pathname,
+            operations: ["put"],
+            maximumSizeInBytes: MAX_FILE_BYTES,
+            validUntil: Date.now() + 10 * 60_000,
+          });
+          return { token, urlOptions: { maximumSizeInBytes: MAX_FILE_BYTES } };
+        },
+      });
+      return NextResponse.json(result);
+    } catch (e) {
+      return NextResponse.json({ error: e instanceof Error ? e.message : "Upload refused" }, { status: 400 });
+    }
+  }
 
   if (storageMode === "blob") {
     try {

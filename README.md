@@ -25,7 +25,7 @@ Schema changes: edit `src/db/schema.ts`, then `npm run db:generate` and commit t
 1. Import the repo in Vercel.
 2. Add a Postgres database. Easiest: Storage → Create Database → Neon. It injects `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct), which the app reads as is. Supabase also works (it injects `POSTGRES_URL` and `POSTGRES_URL_NON_POOLING`, also read automatically), as does any Postgres 13+ where you set `DATABASE_URL` yourself.
 3. Add `APP_PASSCODE`, `SESSION_SECRET` (32+ random characters) and `CRON_SECRET` (any random string; Vercel Cron sends it to keep recurring schedules filled ahead).
-4. For file uploads: Storage → Create → Blob, connect it to the project. It injects `BLOB_READ_WRITE_TOKEN`; files are stored as private blobs and only served through the app to their owner. Without it, uploads go to a local `.uploads/` folder (development only).
+4. For file uploads: Storage → Create → Blob, connect it to the project. Newer stores inject `BLOB_STORE_ID` (and `BLOB_WEBHOOK_PUBLIC_KEY`) and sign in through the project's OIDC token; older ones inject `BLOB_READ_WRITE_TOKEN`. Both work. Files are stored as private blobs and only served through the app to their owner. Without it, uploads go to a local `.uploads/` folder (development only).
 5. Deploy. The `vercel-build` script runs migrations and the idempotent seed before `next build`.
 
 ## Accounts
