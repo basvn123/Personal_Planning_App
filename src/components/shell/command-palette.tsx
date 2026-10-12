@@ -4,12 +4,18 @@ import { Command } from "cmdk";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { CalendarRange, CornerDownLeft } from "lucide-react";
+import { CalendarRange, CornerDownLeft, FileText } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { dyeVars } from "@/lib/dyes";
 import type { TabSection } from "./fore-edge";
 
-export function CommandPalette({ sections }: { sections: TabSection[] }) {
+export function CommandPalette({
+  sections,
+  docs,
+}: {
+  sections: TabSection[];
+  docs: { id: string; title: string; slug: string }[];
+}) {
   const open = useUi((s) => s.paletteOpen);
   const setOpen = useUi((s) => s.setPaletteOpen);
   const router = useRouter();
@@ -42,7 +48,7 @@ export function CommandPalette({ sections }: { sections: TabSection[] }) {
           <Command loop className="flex flex-col">
             <Command.Input
               autoFocus
-              placeholder="Jump to…"
+              placeholder="Jump to a section or document"
               className="h-12 border-b border-rule bg-transparent px-4 text-md outline-none"
             />
             <Command.List className="max-h-[min(24rem,60vh)] overflow-y-auto p-1.5">
@@ -64,6 +70,16 @@ export function CommandPalette({ sections }: { sections: TabSection[] }) {
                   </Item>
                 ))}
               </Command.Group>
+              {docs.length > 0 && (
+                <Command.Group heading="Documents" className={groupClass}>
+                  {docs.map((d) => (
+                    <Item key={d.id} value={`doc ${d.title || "Untitled"} ${d.id}`} onSelect={() => go(`/s/${d.slug}/d/${d.id}`)}>
+                      <FileText className="size-4 text-ink-3" strokeWidth={1.75} />
+                      <span className="truncate">{d.title || "Untitled"}</span>
+                    </Item>
+                  ))}
+                </Command.Group>
+              )}
             </Command.List>
           </Command>
         </Dialog.Content>

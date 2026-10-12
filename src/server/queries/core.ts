@@ -35,3 +35,15 @@ export async function getDailyTotals(from: string, to: string) {
   for (const r of rows) out[r.day] = Number(r.seconds);
   return out;
 }
+
+/** Recent documents for the command palette, each with one section to open it in. */
+export const getDocIndex = cache(async () => {
+  const rows = await db.execute<{ id: string; title: string; slug: string }>(sql`
+    select distinct on (d.id) d.id, d.title, s.slug
+    from documents d
+    join document_sections ds on ds.document_id = d.id
+    join sections s on s.id = ds.section_id
+    order by d.id, s.archived_at nulls first
+  `);
+  return [...rows];
+});

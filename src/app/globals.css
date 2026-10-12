@@ -298,3 +298,55 @@
     transform: translate(-50%, 6px) scale(0.985);
   }
 }
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-3px) scale(0.98);
+  }
+}
+
+/* Rendered markdown. */
+.prose-doc {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  max-width: 68ch;
+  overflow-wrap: anywhere;
+}
+.prose-doc > * + * {
+  margin-top: 0.85em;
+}
+.prose-doc h1,
+.prose-doc h2,
+.prose-doc h3,
+.prose-doc h4 {
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-top: 1.6em;
+  text-wrap: balance;
+}
+.prose-doc h1 { font-size: 1.45em; }
+.prose-doc h2 { font-size: 1.22em; }
+.prose-doc h3 { font-size: 1.06em; }
+.prose-doc > :first-child { margin-top: 0; }
+.prose-doc h1 + *,
+.prose-doc h2 + *,
+.prose-doc h3 + * { margin-top: 0.4em; }
+.prose-doc a { color: var(--cloth-3); text-decoration: underline; text-decoration-thickness: 1px; }
+:root[data-theme="dark"] .prose-doc a { color: var(--dye-teal-deep); }
+.prose-doc strong { font-weight: 650; }
+.prose-doc ul { list-style: disc; padding-left: 1.3em; }
+.prose-doc ol { list-style: decimal; padding-left: 1.4em; }
+.prose-doc li + li { margin-top: 0.2em; }
+.prose-doc li::marker { color: var(--ink-3); }
+.prose-doc li:has(> input[type="checkbox"]) { list-style: none; margin-left: -1.3em; }
+.prose-doc input[type="checkbox"] { accent-color: var(--cloth); margin-right: 0.5em; translate: 0 1px; }
+.prose-doc blockquote { border-left: 1px solid var(--rule-strong); padding-left: 1em; color: var(--ink-2); }
+.prose-doc code { font-family: var(--font-mono); font-size: 0.86em; background: var(--paper-3); padding: 0.1em 0.35em; border-radius: 3px; }
+.prose-doc pre { background: var(--paper-3); padding: 0.9em 1em; border-radius: 6px; overflow-x: auto; font-size: 0.86em; line-height: 1.55; }
+.prose-doc pre code { background: none; padding: 0; font-size: 1em; }
+.prose-doc hr { border: 0; border-top: 1px solid var(--rule-strong); margin: 2em 0; }
+.prose-doc table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+.prose-doc th, .prose-doc td { border-bottom: 1px solid var(--rule); padding: 0.4em 0.6em 0.4em 0; text-align: left; }
+.prose-doc th { font-weight: 600; border-bottom-color: var(--rule-strong); }
+.prose-doc img { max-width: 100%; border-radius: 6px; }
