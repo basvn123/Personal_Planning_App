@@ -53,8 +53,9 @@ export function FileDrop({
       set({ state: "done" });
       router.refresh();
       setTimeout(() => setJobs((js) => js.filter((j) => j.key !== key)), 2500);
-    } catch {
-      set({ state: "error", note: "uploaden mislukt" });
+    } catch (e) {
+      const msg = e instanceof Error && /Blob/.test(e.message) ? e.message : "uploaden mislukt";
+      set({ state: "error", note: msg });
     }
   }
 

@@ -36,6 +36,11 @@ export async function POST(request: Request) {
     }
   }
 
+  // Vercel's disk is temporary: without a Blob store, uploads would vanish.
+  if (process.env.VERCEL) {
+    return NextResponse.json({ error: "Koppel eerst een Vercel Blob-opslag (Storage, Blob)." }, { status: 503 });
+  }
+
   try {
     const form = await request.formData();
     const sectionId = String(form.get("sectionId") ?? "");

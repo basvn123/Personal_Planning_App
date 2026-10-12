@@ -12,7 +12,7 @@ Delegated, with hard constraints from the user: hosted on Vercel, backed by a pe
 
 ## Users
 
-The owner, plus people the owner invites; each has a private planner. A student and working professional who juggles study courses, work, side projects (for example "Carta", "Cloud Skills"), language learning (Italian), sport (triathlon training) and personal lists (gift ideas). Uses it every day on both desktop and phone, with equal weight: planning the week at a desk, checking today, starting and stopping timers, and capturing tasks on the go.
+The owner, plus people the owner invites; each has a private planner. A student and working professional who juggles study courses, work, side projects (for example "Carta", "Claude Skills", about Anthropic's AI tool), language learning (Italian), sport (triathlon training) and personal lists (gift ideas). Uses it every day on both desktop and phone, with equal weight: planning the week at a desk, checking today, starting and stopping timers, and capturing tasks on the go.
 
 ## Product Purpose
 
@@ -49,7 +49,7 @@ Everything hangs off user-created sections. A section is at once a workspace, a 
 
 ## Evidence on Hand
 
-No real data yet. Section names from the brief (Work, Study, Carta, Cloud Skills, Italian, Gift Ideas) may seed a demo dataset, labeled as sample data.
+No real data yet. Section names from the brief (Work, Study, Carta, Claude Skills, Italian, Gift Ideas) may seed a demo dataset, labeled as sample data.
 
 ## Product Principles
 
