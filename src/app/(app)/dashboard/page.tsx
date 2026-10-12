@@ -73,6 +73,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           />
         }
         className="pt-2"
+        nowrap
       />
 
       <Card icon={Trophy} title="Level en XP" bodyClassName="flex flex-col gap-2">

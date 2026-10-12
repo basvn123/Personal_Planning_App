@@ -63,6 +63,23 @@ export function formatMinutes(minutes: number): string {
   return m ? `${h}h${String(m).padStart(2, "0")}` : `${h}h`;
 }
 
+/** "09:30" (or "09:30:00") -> 570, minutes since midnight. */
+export function clockToMinutes(clock: string): number {
+  const [h, m] = clock.split(":").map(Number);
+  return h * 60 + m;
+}
+
+/** 570 -> "09:30". Wraps past midnight, so 1470 -> "00:30". */
+export function minutesToClock(minutes: number): string {
+  const m = ((minutes % 1440) + 1440) % 1440;
+  return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+}
+
+/** The end of a block that starts at `start` and lasts `minutes`: ("09:30", 90) -> "11:00". */
+export function endClock(start: string, minutes: number): string {
+  return minutesToClock(clockToMinutes(start) + minutes);
+}
+
 /** The first day of `day`'s month, moved `months` months (YYYY-MM-01). */
 export function shiftMonth(day: string, months: number): string {
   const [y, m] = day.split("-").map(Number);

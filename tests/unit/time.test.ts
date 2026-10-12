@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatClock, formatDuration, localDate, shiftDay, weekDays } from "@/lib/time";
+import { clockToMinutes, endClock, formatClock, formatDuration, localDate, minutesToClock, shiftDay, weekDays } from "@/lib/time";
 import { rankBetween, ranksAfter } from "@/lib/rank";
 import { slugify } from "@/lib/slug";
 
@@ -8,6 +8,16 @@ describe("time", () => {
     expect(formatDuration(0)).toBe("0:00");
     expect(formatDuration(5400)).toBe("1:30");
     expect(formatDuration(36000 + 59)).toBe("10:01");
+  });
+  it("converts between clock times and minutes", () => {
+    expect(clockToMinutes("09:30")).toBe(570);
+    expect(clockToMinutes("09:30:00")).toBe(570);
+    expect(minutesToClock(570)).toBe("09:30");
+    expect(minutesToClock(1470)).toBe("00:30");
+  });
+  it("finds the end of a timed block", () => {
+    expect(endClock("14:00", 90)).toBe("15:30");
+    expect(endClock("23:30", 60)).toBe("00:30");
   });
   it("formats a running clock", () => {
     expect(formatClock(3725)).toBe("1:02:05");

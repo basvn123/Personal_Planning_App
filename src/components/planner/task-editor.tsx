@@ -9,7 +9,7 @@ import { linkDocumentTask } from "@/server/actions/documents";
 import { listSectionDocuments } from "@/server/actions/tasks";
 import type { PlannerTask } from "@/server/queries/tasks";
 import { usePlanner } from "./planner-context";
-import { DayChips, DurationChips, FieldGroup as Field, SectionChips, TimeField } from "./task-fields";
+import { DayChips, DurationChips, FieldGroup as Field, SectionChips, TimeRangeField } from "./task-fields";
 import { cx } from "@/lib/cx";
 
 /** Edit form for one task. Every field saves on change or blur. */
@@ -27,19 +27,26 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
 
   useEffect(() => setDocs(task.docs), [task.docs]);
 
-  // The time wheel fires on every turn; save once it settles.
+  // The time wheels fire on every turn; save once they settle. The until wheel sets the duration.
   const [time, setTime] = useState(task.plannedStart?.slice(0, 5) ?? "");
+  const [minutes, setMinutes] = useState(task.plannedMinutes);
   const patchRef = useRef(patch);
   useEffect(() => {
     patchRef.current = patch;
   });
   useEffect(() => setTime(task.plannedStart?.slice(0, 5) ?? ""), [task.plannedStart]);
+  useEffect(() => setMinutes(task.plannedMinutes), [task.plannedMinutes]);
   useEffect(() => {
     const current = task.plannedStart?.slice(0, 5) ?? "";
     if (time === current) return;
     const t = setTimeout(() => patchRef.current(task.id, { plannedStart: time || null }), 600);
     return () => clearTimeout(t);
   }, [time, task.id, task.plannedStart]);
+  useEffect(() => {
+    if (minutes === task.plannedMinutes) return;
+    const t = setTimeout(() => patchRef.current(task.id, { plannedMinutes: minutes }), 600);
+    return () => clearTimeout(t);
+  }, [minutes, task.id, task.plannedMinutes]);
   useEffect(() => setUnits(task.units === null ? "" : String(task.units)), [task.units]);
 
   function saveTitle() {
@@ -94,15 +101,18 @@ export function TaskEditor({ task, onClose }: { task: PlannerTask; onClose: () =
 
       {task.plannedDate !== null && (
         <>
+          <Field label="Van, tot">
+            <TimeRangeField start={time} minutes={minutes} disabled={temp} onStart={setTime} onMinutes={setMinutes} />
+          </Field>
           <Field label="Duur">
             <DurationChips
-              value={task.plannedMinutes}
+              value={minutes}
               disabled={temp}
-              onChange={(m) => patch(task.id, { plannedMinutes: m })}
+              onChange={(m) => {
+                setMinutes(m);
+                patch(task.id, { plannedMinutes: m });
+              }}
             />
-          </Field>
-          <Field label="Om">
-            <TimeField value={time} disabled={temp} onChange={setTime} />
           </Field>
         </>
       )}

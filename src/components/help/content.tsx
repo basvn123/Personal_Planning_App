@@ -10,9 +10,9 @@ export const HELP = {
     lead: "Je hele week op één blad: wat er gepland staat en hoeveel tijd je er echt aan besteedde.",
     points: [
       "Elke kaart is een dag. Tik op de datum om die dag te openen; op de telefoon opent de planner meteen op vandaag.",
-      "Toevoegen: de plusknop (onderaan, links op de computer, of de toets N) of Toevoegen onder een dag. Je kiest meteen de dag, duur, tijd en sectie.",
+      "Toevoegen: de plusknop (onderaan, links op de computer, of de toets N) of Toevoegen onder een dag. Je kiest meteen de dag, van hoe laat tot hoe laat (of alleen een duur) en de sectie.",
       "Meerdere dagen: kies bij Wanneer voor Meerdere dagen en tik de dagen aan in de kalender, of neem Werkdagen, Hele week of 7 dagen. Elke dag krijgt dezelfde taak.",
-      "Verder vooruit of terug: tik op het kalendericoon naast de pijltjes, blader naar een maand en tik op een dag.",
+      "Verder vooruit of terug: tik op het kalendericoon naast de pijltjes, blader naar een maand en tik op een dag. In een andere week brengt Nu (Vandaag op de computer) je terug.",
       <>
         Snel typen kan ook: <K>#italian</K> <K>morgen</K> <K>vr</K> <K>14:00</K> <K>45m</K> in de naam vult de rest in.
       </>,
@@ -33,10 +33,10 @@ export const HELP = {
     lead: "Alles voor één dag als tijdlijn, plus het logboek van je tijd.",
     points: [
       "Op de telefoon staat de week bovenaan: elk bolletje is een taak, gevuld als ze klaar is. Tik op een dag om te wisselen, of op het kalendericoon voor een dag in een andere week of maand.",
-      "Op tijd: een tijdlijn. Hoe langer een taak duurt, hoe langer haar balkje. Vrije tijd ertussen staat erbij, en de gele lijn is nu.",
+      "Bovenaan: hoeveel tijd er gepland staat en van wanneer tot wanneer je dag loopt. Op tijd: een tijdlijn. Hoe langer een taak duurt, hoe langer haar balkje. Vrije tijd ertussen staat erbij, en de gele lijn is nu.",
       "Een rode begintijd betekent dat de taak overlapt met de vorige.",
       "Zonder tijd: taken zonder uur, met hun duur ervoor.",
-      "Vink een taak af met het vakje. Tik op de naam om dag, duur, tijd, sectie, notities en documenten aan te passen.",
+      "Vink een taak af met het vakje. Tik op de naam om dag, begin- en eindtijd, duur, sectie, notities en documenten aan te passen.",
       "De afspeelknop start een timer op die taak. Er loopt altijd maar één timer; je ziet hem links, of op je telefoon als gele balk boven de knoppen.",
       "To-do toont open to-do's van al je secties (tik op het pijltje om ze te zien). Sleep ze naar een dag of gebruik de kalenderknop.",
       "Elke kaart heeft rechtsboven een plus om er meteen iets aan toe te voegen.",
