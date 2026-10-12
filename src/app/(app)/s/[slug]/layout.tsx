@@ -8,7 +8,11 @@ import { NewSectionPopover } from "@/components/sections/new-subsection";
 import { NewDocButton } from "@/components/docs/new-doc-button";
 import { DocList } from "@/components/docs/doc-list";
 import { getChildSections, getSectionBySlug, getSectionDocuments } from "@/server/queries/sections";
-import { getSections } from "@/server/queries/core";
+import { getSections, getSettings } from "@/server/queries/core";
+import { getBacklog, getSectionUpcoming } from "@/server/queries/tasks";
+import { PlannerProvider } from "@/components/planner/planner-context";
+import { SectionTasks } from "@/components/sections/section-tasks";
+import { localDate } from "@/lib/time";
 import { listSectionOptions } from "@/server/actions/sections";
 import { dyeVars } from "@/lib/dyes";
 
@@ -23,11 +27,15 @@ export default async function SectionLayout({
   const section = await getSectionBySlug(decodeURIComponent(slug));
   if (!section) notFound();
 
-  const [children_, docs, options, all] = await Promise.all([
+  const settings = await getSettings();
+  const today = localDate(new Date(), settings.timezone);
+  const [children_, docs, options, all, backlog, upcoming] = await Promise.all([
     getChildSections(section.id),
     getSectionDocuments(section.id),
     listSectionOptions(),
     getSections(),
+    getBacklog(section.id),
+    getSectionUpcoming(section.id, today),
   ]);
 
   // Breadcrumb of ancestors.
@@ -70,6 +78,8 @@ export default async function SectionLayout({
           options={options}
         />
       </header>
+
+      <SectionTasks sectionId={section.id} />
 
       <Block
         title="Documents"
@@ -114,7 +124,14 @@ export default async function SectionLayout({
   );
 
   return (
-    <Spread left={left} right={children} leftLabel={section.name} rightLabel="Page" rightPathPattern="/d/" />
+    <PlannerProvider
+      initialTasks={[...backlog, ...upcoming]}
+      sections={all.map(({ id, name, slug, color }) => ({ id, name, slug, color }))}
+      today={today}
+      initialDay={today}
+    >
+      <Spread left={left} right={children} leftLabel={section.name} rightLabel="Page" rightPathPattern="/d/" />
+    </PlannerProvider>
   );
 }
 

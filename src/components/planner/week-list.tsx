@@ -1,5 +1,6 @@
 "use client";
 
+import { useDroppable } from "@dnd-kit/core";
 import { formatDay, formatDuration } from "@/lib/time";
 import { cx } from "@/lib/cx";
 import { Ribbon } from "./ribbon";
@@ -21,14 +22,15 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
         const planned = dayTasks.reduce((s, t) => s + (t.plannedMinutes ?? 0) * 60, 0);
         const spent = logged[day] ?? 0;
         return (
-          <li
+          <DayRow
             key={day}
-            aria-current={isToday ? "date" : undefined}
+            day={day}
             className={cx(
               "group/day relative grid min-h-[4.75rem] flex-1 grid-cols-[3.25rem_1fr_3.25rem] gap-x-3 border-b border-rule px-5 py-2.5 pr-11 lg:px-8 lg:pr-14",
               i >= 5 && "bg-paper-2/50",
               isToday && "bg-ribbon-wash/55",
             )}
+            isToday={isToday}
           >
             {isThisWeek && i < todayIndex && <Ribbon kind="through" />}
             {isToday && <Ribbon kind="tail" />}
@@ -70,7 +72,7 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
               </li>
             </ul>
             <DayMeter planned={planned} logged={spent} />
-          </li>
+          </DayRow>
         );
       })}
     </ol>
@@ -95,5 +97,28 @@ function DayMeter({ planned, logged }: { planned: number; logged: number }) {
         </>
       )}
     </div>
+  );
+}
+
+function DayRow({
+  day,
+  isToday,
+  className,
+  children,
+}: {
+  day: string;
+  isToday: boolean;
+  className: string;
+  children: React.ReactNode;
+}) {
+  const { setNodeRef, isOver } = useDroppable({ id: `day:${day}` });
+  return (
+    <li
+      ref={setNodeRef}
+      aria-current={isToday ? "date" : undefined}
+      className={cx(className, isOver && "bg-ribbon-wash shadow-[inset_0_0_0_1.5px_var(--ribbon-2)]")}
+    >
+      {children}
+    </li>
   );
 }

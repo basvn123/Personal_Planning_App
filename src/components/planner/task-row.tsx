@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FileText } from "lucide-react";
+import { FileText, Repeat } from "lucide-react";
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import type { PlannerTask } from "@/server/queries/tasks";
 import { formatClock, formatDuration, formatMinutes } from "@/lib/time";
@@ -12,6 +12,8 @@ import { TaskCheck } from "./task-check";
 import { TaskEditor } from "./task-editor";
 import { PlayButton } from "@/components/timer/play-button";
 import { useElapsed, useTimer } from "@/components/timer/timer-context";
+import { useDraggable } from "@dnd-kit/core";
+import { RouteButton } from "./route-button";
 
 /** One task line. Compact in the week list, roomier in the day plan. */
 export function TaskRow({
@@ -30,16 +32,20 @@ export function TaskRow({
   const { running } = useTimer();
   const isRunning = running?.task?.id === task.id;
   const live = useElapsed(isRunning ? running!.startedAt : null);
+  const { setNodeRef, listeners, isDragging } = useDraggable({ id: task.id, disabled: temp || open });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverAnchor asChild>
         <li
+          ref={setNodeRef}
+          {...listeners}
           style={dyeVars(task.section.color)}
           className={cx(
             "group relative flex items-start gap-2.5",
             variant === "week" ? "py-[3px]" : "border-b border-rule py-2.5",
             temp && "opacity-60",
+            isDragging && "opacity-35",
             isRunning && variant === "day" && "bg-ribbon-wash/70 -mx-2 px-2",
           )}
         >
@@ -69,6 +75,7 @@ export function TaskRow({
                   <span className="size-2 rounded-[2px] bg-[var(--dye)] ring-1 ring-[color-mix(in_oklch,var(--dye-deep)_35%,transparent)]" />
                   {task.section.name}
                 </span>
+                {task.scheduleId && <Repeat className="size-3" strokeWidth={1.75} aria-label="From a schedule" />}
                 {task.docs.length > 0 && (
                   <span className="inline-flex items-center gap-1">
                     <FileText className="size-3" strokeWidth={1.75} />
@@ -83,6 +90,7 @@ export function TaskRow({
               </span>
             )}
           </button>
+          {!temp && !done && !task.plannedDate && <RouteButton taskId={task.id} title={task.title} className="-my-1" />}
           {!temp && !done && (
             <PlayButton
               task={{ id: task.id, title: task.title }}

@@ -8,6 +8,7 @@ import { InlineAdd } from "./inline-add";
 import { sortDay, usePlanner } from "./planner-context";
 import { TaskRow } from "./task-row";
 import { TimeLog } from "@/components/timer/time-log";
+import { BacklogTray } from "./backlog-tray";
 import type { LogEntry } from "@/server/queries/time";
 
 export function DayPlan({
@@ -106,6 +107,8 @@ export function DayPlan({
           <InlineAdd day={day} placeholder="Add a task, e.g. Read ch. 3 #italian 14:00 45m" />
         </div>
       </section>
+
+      <BacklogTray />
 
       <TimeLog day={day} entries={entries.filter((e) => e.day === day)} tasks={dayTasks} sections={sections} />
     </div>

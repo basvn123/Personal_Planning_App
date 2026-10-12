@@ -2,15 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarRange, Command } from "lucide-react";
+import { CalendarRange, Command, Repeat } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { TimerChip } from "@/components/timer/timer-chip";
 import { useUi } from "@/lib/ui-store";
 import { cx } from "@/lib/cx";
 
-const NAV = [{ href: "/week", label: "Week", icon: CalendarRange }] as const;
+const NAV = [
+  { href: "/week", label: "Week", icon: CalendarRange },
+  { href: "/schedules", label: "Schedules", icon: Repeat },
+] as const;
 
-function NavItem({ href, label, icon: Icon }: (typeof NAV)[number]) {
+function NavItem({ href, label, icon: Icon }: { href: string; label: string; icon: typeof CalendarRange }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(href + "/");
   return (

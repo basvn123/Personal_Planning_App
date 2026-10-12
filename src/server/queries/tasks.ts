@@ -99,3 +99,14 @@ export async function getSectionUpcoming(sectionId: string, from: string) {
   `);
   return rows.map(shape);
 }
+
+/** Open backlog tasks across all active sections, for routing into days. */
+export async function getOpenBacklog() {
+  const rows = await db.execute<Row>(sql`
+    ${SELECT}
+    where t.planned_date is null and t.status <> 'done' and s.archived_at is null
+    order by s.rank, t.rank
+    limit 300
+  `);
+  return rows.map(shape);
+}

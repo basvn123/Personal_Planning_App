@@ -1,7 +1,18 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useTransition } from "react";
+import {
+  DndContext,
+  DragOverlay,
+  type DragEndEvent,
+  type DragStartEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import type { PlannerTask } from "@/server/queries/tasks";
+import { dyeVars } from "@/lib/dyes";
 import { createTask, deleteTask, setTaskStatus, updateTask, type TaskPatch } from "@/server/actions/tasks";
 
 export type PlannerSection = { id: string; name: string; slug: string; color: string };
@@ -146,7 +157,60 @@ export function PlannerProvider({
     [tasks, sections, today, selectedDay, selectDay, pending, error, run],
   );
 
-  return <PlannerCtx.Provider value={value}>{children}</PlannerCtx.Provider>;
+  return (
+    <PlannerCtx.Provider value={value}>
+      <PlannerDnd tasks={tasks} onDrop={(id, day) => value.patch(id, { plannedDate: day })}>
+        {children}
+      </PlannerDnd>
+    </PlannerCtx.Provider>
+  );
+}
+
+/** Drag a task onto any day row ("day:YYYY-MM-DD") to plan it there. */
+function PlannerDnd({
+  tasks,
+  onDrop,
+  children,
+}: {
+  tasks: PlannerTask[];
+  onDrop: (taskId: string, day: string) => void;
+  children: React.ReactNode;
+}) {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 280, tolerance: 6 } }),
+  );
+  const active = tasks.find((t) => t.id === activeId);
+
+  function onDragStart(e: DragStartEvent) {
+    setActiveId(String(e.active.id));
+  }
+  function onDragEnd(e: DragEndEvent) {
+    setActiveId(null);
+    const over = e.over?.id ? String(e.over.id) : "";
+    if (!over.startsWith("day:")) return;
+    const day = over.slice(4);
+    const task = tasks.find((t) => t.id === e.active.id);
+    if (task && task.plannedDate !== day) onDrop(task.id, day);
+  }
+
+  return (
+    <DndContext id="planner" sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragCancel={() => setActiveId(null)}>
+      {children}
+      <DragOverlay dropAnimation={{ duration: 160, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}>
+        {active && (
+          <div
+            style={dyeVars(active.section.color)}
+            className="flex max-w-72 items-center gap-2 rounded-sm border border-rule bg-paper px-2.5 py-1.5 text-sm text-ink shadow-lift"
+          >
+            <span className="size-2.5 shrink-0 rounded-[2px] bg-[var(--dye)]" />
+            <span className="truncate">{active.title}</span>
+          </div>
+        )}
+      </DragOverlay>
+    </DndContext>
+  );
 }
 
 /** Sort for one day: timed tasks by start, then the rest by rank. */
