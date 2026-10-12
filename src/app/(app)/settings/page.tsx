@@ -5,6 +5,7 @@ import { Spread } from "@/components/shell/spread";
 import { SettingsAside, SettingsForm } from "@/components/settings/settings-form";
 import { AccountForm, PeopleManager } from "@/components/settings/account-forms";
 import { InfoButton } from "@/components/help/info-button";
+import { PhoneExtras } from "@/components/settings/phone-extras";
 import { getSettings } from "@/server/queries/core";
 import { currentUser } from "@/server/auth";
 import { listPeople } from "@/server/actions/settings";
@@ -36,6 +37,7 @@ export default async function SettingsPage() {
             <AccountForm name={me.name} email={me.email} hasPassword={me.hasPassword} />
           </section>
           <SettingsForm origin={origin} timezone={s.timezone} weekStart={s.weekStart} icsToken={s.icsToken} weekFrom={days[0]} weekTo={days[6]} />
+          <PhoneExtras />
         </div>
       }
       right={

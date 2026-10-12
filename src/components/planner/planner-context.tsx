@@ -14,6 +14,7 @@ import {
 import type { PlannerTask } from "@/server/queries/tasks";
 import { dyeVars } from "@/lib/dyes";
 import { createTask, deleteTask, setTaskStatus, updateTask, type TaskPatch } from "@/server/actions/tasks";
+import { deleteSchedule } from "@/server/actions/schedules";
 
 export type PlannerSection = { id: string; name: string; slug: string; color: string };
 export type PlannerProject = { id: string; name: string; sectionId: string; unitLabel: string };
@@ -35,6 +36,8 @@ type Ctx = {
   patch: (id: string, patch: TaskPatch) => void;
   toggle: (id: string) => void;
   remove: (id: string) => void;
+  /** Deletes a whole schedule: its upcoming open occurrences leave the planner. */
+  removeSeries: (scheduleId: string, fromTaskId: string) => void;
   error: string | null;
   pending: boolean;
 };
@@ -157,6 +160,21 @@ export function PlannerProvider({
       },
       remove: (id) => {
         run((ts) => ts.filter((t) => t.id !== id), () => deleteTask(id));
+      },
+      removeSeries: (scheduleId, fromTaskId) => {
+        const open = (t: PlannerTask) => t.status !== "done" && t.loggedSeconds === 0;
+        const upcoming = (t: PlannerTask) =>
+          t.scheduleId === scheduleId && t.status === "todo" && t.loggedSeconds === 0 && t.plannedDate !== null && t.plannedDate >= today;
+        const from = tasks.find((t) => t.id === fromTaskId);
+        // The tapped occurrence goes too when it is still open, even if it lies in the past.
+        const dropFrom = Boolean(from && open(from) && !upcoming(from));
+        run(
+          (ts) => ts.filter((t) => !upcoming(t) && !(dropFrom && t.id === fromTaskId)),
+          async () => {
+            await deleteSchedule(scheduleId);
+            if (dropFrom) await deleteTask(fromTaskId);
+          },
+        );
       },
     }),
     [tasks, sections, projects, today, selectedDay, selectDay, pending, error, run],

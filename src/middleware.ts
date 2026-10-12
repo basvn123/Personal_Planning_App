@@ -1,9 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { readSession, SESSION_COOKIE } from "@/lib/session";
+import { checkSession, SESSION_COOKIE, sessionCookieOptions } from "@/lib/session";
 
 export async function middleware(request: NextRequest) {
-  const ok = Boolean(await readSession(request.cookies.get(SESSION_COOKIE)?.value));
-  if (ok) return NextResponse.next();
+  const session = await checkSession(request.cookies.get(SESSION_COOKIE)?.value);
+  if (session) {
+    const res = NextResponse.next();
+    // Sliding expiry: every visit pushes the year forward, so the home-screen app stays signed in.
+    if (session.renewed) res.cookies.set(SESSION_COOKIE, session.renewed, sessionCookieOptions);
+    return res;
+  }
 
   const url = request.nextUrl.clone();
   const next = request.nextUrl.pathname + request.nextUrl.search;

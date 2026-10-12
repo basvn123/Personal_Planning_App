@@ -143,12 +143,13 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
       <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">
         Een gewone week
       </h2>
-      <div className="mt-3 grid grid-cols-7 gap-1.5">
+      {/* Phone: one row per day. Desktop: seven columns. */}
+      <div className="mt-3 flex flex-col lg:grid lg:grid-cols-7 lg:gap-1.5">
         {WEEKDAY_CODES.map((d) => (
-          <div key={d} className="flex min-w-0 flex-col gap-1">
+          <div key={d} className="flex min-w-0 flex-wrap items-start gap-1 border-b border-rule py-2 lg:flex-col lg:flex-nowrap lg:border-0 lg:py-0">
             <span
               className={cx(
-                "pb-1 text-center text-2xs font-medium uppercase tracking-[0.06em]",
+                "w-8 shrink-0 pt-1 text-2xs font-medium uppercase tracking-[0.06em] lg:w-auto lg:self-stretch lg:pb-1 lg:pt-0 lg:text-center",
                 d === todayCode ? "text-ribbon-ink" : "text-ink-3",
               )}
             >
@@ -162,7 +163,7 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
                   href={`/schedules?id=${r.id}`}
                   style={dyeVars(r.sectionColor)}
                   title={`${r.title}, ${r.startTime.slice(0, 5)}`}
-                  className="flex min-w-0 flex-col rounded-[3px] bg-[color-mix(in_oklch,var(--dye)_55%,var(--paper))] px-1.5 py-1 transition-colors hover:bg-[var(--dye)]"
+                  className="flex min-w-0 max-w-full flex-col rounded-[3px] bg-[color-mix(in_oklch,var(--dye)_55%,var(--paper))] px-1.5 py-1 transition-colors hover:bg-[var(--dye)] max-lg:px-2"
                   aria-label={`${DAY_SHORT[d]}: ${r.title} om ${r.startTime.slice(0, 5)}`}
                 >
                   <span className="figures text-[0.625rem] leading-3 text-ink-2">{r.startTime.slice(0, 5)}</span>

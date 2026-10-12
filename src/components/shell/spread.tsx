@@ -33,6 +33,8 @@ export function Spread({
     if (!el || !window.matchMedia("(max-width: 1023px)").matches) return;
     const wantRight = initial === "right" || (rightPathPattern && new RegExp(rightPathPattern).test(pathname));
     if (wantRight) el.scrollLeft = el.scrollWidth;
+    // Back on a page that opens on the left (say, after saving a form): flip back.
+    else if (initial === "left" && !rightPathPattern) el.scrollLeft = 0;
   }, [initial, rightPathPattern, pathname]);
 
   useEffect(() => {

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FileText, Repeat } from "lucide-react";
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
+import { Sheet, usePhone } from "@/components/ui/sheet";
 import type { PlannerTask } from "@/server/queries/tasks";
 import { formatClock, formatDuration, formatMinutes } from "@/lib/time";
 import { dyeVars } from "@/lib/dyes";
@@ -33,9 +34,10 @@ export function TaskRow({
   const isRunning = running?.task?.id === task.id;
   const live = useElapsed(isRunning ? running!.startedAt : null);
   const { setNodeRef, listeners, isDragging } = useDraggable({ id: task.id, disabled: temp || open });
+  const phone = usePhone();
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open && !phone} onOpenChange={setOpen}>
       <PopoverAnchor asChild>
         <li
           ref={setNodeRef}
@@ -115,9 +117,15 @@ export function TaskRow({
           )}
         </li>
       </PopoverAnchor>
-      <PopoverContent align="start" side="bottom" onOpenAutoFocus={(e) => e.preventDefault()}>
-        <TaskEditor task={task} onClose={() => setOpen(false)} />
-      </PopoverContent>
+      {phone ? (
+        <Sheet open={open} onOpenChange={setOpen} title={task.title}>
+          <TaskEditor task={task} onClose={() => setOpen(false)} />
+        </Sheet>
+      ) : (
+        <PopoverContent align="start" side="bottom" onOpenAutoFocus={(e) => e.preventDefault()}>
+          <TaskEditor task={task} onClose={() => setOpen(false)} />
+        </PopoverContent>
+      )}
     </Popover>
   );
 }

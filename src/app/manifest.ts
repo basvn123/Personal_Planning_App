@@ -3,12 +3,14 @@ import type { MetadataRoute } from "next";
 /** Lets phones install the app with its own name and icon. */
 export default function manifest(): MetadataRoute.Manifest {
   return {
+    id: "/",
     name: "Planning",
     short_name: "Planning",
     lang: "nl",
     start_url: "/week",
     scope: "/",
     display: "standalone",
+    orientation: "portrait",
     background_color: "#1f4a3b",
     theme_color: "#1f4a3b",
     icons: [
