@@ -7,6 +7,7 @@ import { RankedBars } from "@/components/charts/ranked-bars";
 import { Heatmap } from "@/components/charts/heatmap";
 import { ProjectCard } from "@/components/projects/project-card";
 import { NewProject } from "@/components/projects/new-project";
+import { InfoButton } from "@/components/help/info-button";
 import { getSections, getSettings } from "@/server/queries/core";
 import {
   getDailySeries,
@@ -52,28 +53,31 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     <div className="flex min-h-full flex-col px-5 pb-12 pt-6 lg:px-8">
       <header className="flex items-end gap-3">
         <div className="min-w-0">
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">Week {isoWeekNumber(from)}</h1>
+          <h1 className="flex items-center gap-1.5 text-xl font-semibold tracking-[-0.02em]">
+            Week {isoWeekNumber(from)}
+            <InfoButton topic="dashboard" />
+          </h1>
           <p className="text-sm text-ink-2">
-            {formatDay(from, "d MMM")} to {formatDay(to, "d MMM yyyy")}
+            {formatDay(from, "d MMM")} tot {formatDay(to, "d MMM yyyy")}
           </p>
         </div>
         <div className="ml-auto flex items-center gap-1">
-          <NavLink href={`/dashboard?w=${shiftDay(from, -7)}`} label="Previous week">
+          <NavLink href={`/dashboard?w=${shiftDay(from, -7)}`} label="Vorige week">
             <ChevronLeft className="size-4" strokeWidth={1.75} />
           </NavLink>
           {!isThisWeek && (
             <Link href="/dashboard" className="h-8 rounded-sm px-2.5 text-sm leading-8 text-ink-2 hover:bg-paper-3 hover:text-ink">
-              This week
+              Deze week
             </Link>
           )}
-          <NavLink href={`/dashboard?w=${shiftDay(from, 7)}`} label="Next week">
+          <NavLink href={`/dashboard?w=${shiftDay(from, 7)}`} label="Volgende week">
             <ChevronRight className="size-4" strokeWidth={1.75} />
           </NavLink>
         </div>
       </header>
 
       <dl className="mt-6 grid grid-cols-3 border-y border-rule-strong">
-        <Figure label="Logged">
+        <Figure label="Gelogd">
           {formatDuration(total)}
           {(prevTotal > 0 || total > 0) && (
             <span
@@ -81,25 +85,25 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 "ml-2 inline-flex items-center text-xs font-normal",
                 delta >= 0 ? "text-[var(--dye-moss-deep)]" : "text-ink-3",
               )}
-              title="Against the week before"
+              title="Tegenover de week ervoor"
             >
               {delta >= 0 ? <ArrowUpRight className="size-3" strokeWidth={2} /> : <ArrowDownRight className="size-3" strokeWidth={2} />}
               {formatDuration(Math.abs(delta))}
             </span>
           )}
         </Figure>
-        <Figure label="Tasks done">
+        <Figure label="Taken klaar">
           {tasksDone}
           <span className="text-sm font-normal text-ink-3">/{tasksTotal}</span>
         </Figure>
-        <Figure label="Streak">
+        <Figure label="Reeks">
           {streak.current}
-          <span className="ml-1 text-sm font-normal text-ink-3">{streak.current === 1 ? "day" : "days"}</span>
-          {streak.best > streak.current && <span className="ml-2 text-xs font-normal text-ink-3">best {streak.best}</span>}
+          <span className="ml-1 text-sm font-normal text-ink-3">{streak.current === 1 ? "dag" : "dagen"}</span>
+          {streak.best > streak.current && <span className="ml-2 text-xs font-normal text-ink-3">record {streak.best}</span>}
         </Figure>
       </dl>
 
-      <Block title="Per day">
+      <Block title="Per dag">
         <div className="pt-8">
           <DailyBars
             today={today}
@@ -114,7 +118,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       </Block>
 
-      <Block title="Per section">
+      <Block title="Per sectie">
         {bySection.length === 0 ? (
           <Empty />
         ) : (
@@ -125,7 +129,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         )}
       </Block>
 
-      <Block title="Per task">
+      <Block title="Per taak">
         {byTask.length === 0 ? (
           <Empty />
         ) : (
@@ -141,16 +145,16 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const right = (
     <div className="flex min-h-full flex-col px-5 pb-12 pt-6 lg:px-10">
       <div className="flex h-8 items-center justify-between border-b border-rule-strong">
-        <h2 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Projects</h2>
+        <h2 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Projecten</h2>
         <NewProject sections={sections.map(({ id, name }) => ({ id, name }))} />
       </div>
       {projects.length === 0 ? (
-        <p className="py-5 text-sm text-ink-3">Set a target, like 200 Italian lessons, and watch it fill.</p>
+        <p className="py-5 text-sm text-ink-3">Nog geen projecten.</p>
       ) : (
         projects.map((p) => <ProjectCard key={p.id} project={p} today={today} />)
       )}
 
-      <Block title="Sixteen weeks">
+      <Block title="Zestien weken">
         <div className="pt-3">
           <Heatmap days={heat} today={today} />
         </div>
@@ -158,7 +162,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     </div>
   );
 
-  return <Spread left={left} right={right} leftLabel={`Week ${isoWeekNumber(from)}`} rightLabel="Projects" />;
+  return <Spread left={left} right={right} leftLabel={`Week ${isoWeekNumber(from)}`} rightLabel="Projecten" />;
 }
 
 function Figure({ label, children }: { label: string; children: React.ReactNode }) {
@@ -180,7 +184,7 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
 }
 
 function Empty() {
-  return <p className="py-4 text-sm text-ink-3">Nothing logged this week.</p>;
+  return <p className="py-4 text-sm text-ink-3">Deze week nog niets gelogd.</p>;
 }
 
 function NavLink({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {

@@ -12,7 +12,7 @@ Delegated, with hard constraints from the user: hosted on Vercel, backed by a pe
 
 ## Users
 
-One person, the owner. A student and working professional who juggles study courses, work, side projects (for example "Carta", "Cloud Skills"), language learning (Italian), sport (triathlon training) and personal lists (gift ideas). Uses it every day on both desktop and phone, with equal weight: planning the week at a desk, checking today, starting and stopping timers, and capturing tasks on the go.
+The owner, plus people the owner invites; each has a private planner. A student and working professional who juggles study courses, work, side projects (for example "Carta", "Claude Skills", about Anthropic's AI tool), language learning (Italian), sport (triathlon training) and personal lists (gift ideas). Uses it every day on both desktop and phone, with equal weight: planning the week at a desk, checking today, starting and stopping timers, and capturing tasks on the go.
 
 ## Product Purpose
 
@@ -36,19 +36,20 @@ Everything hangs off user-created sections. A section is at once a workspace, a 
 - Markdown documents live in sections and link to tasks.
 - Timer with play/stop, plus manual entries; totals roll up per day, week, task and section.
 - Projects carry a target in units (for example "Italian: 200 lessons") and show progress and momentum.
-- Single user. No accounts, onboarding or permissions; one passcode gate on the deployed URL.
-- UI language: English.
+- Invite-only accounts with email and password; the owner invites and manages people. No public sign-up. Data is private per account.
+- UI language: Dutch, including dates and quick-add day words.
+- Sections hold uploaded files (private storage) next to markdown documents.
 
 ## Brand Commitments
 
 - No visible product name in the UI; at most a small mark. The app speaks for itself.
 - Custom colors only; no default framework palettes.
-- Minimal, high-density, professional. Very little explanatory text.
+- Minimal, high-density, professional. Very little explanatory text on the page itself; each page has an info button that explains it on demand.
 - No AI-sounding language and no em dashes anywhere in the UI copy.
 
 ## Evidence on Hand
 
-No real data yet. Section names from the brief (Work, Study, Carta, Cloud Skills, Italian, Gift Ideas) may seed a demo dataset, labeled as sample data.
+No real data yet. Section names from the brief (Work, Study, Carta, Claude Skills, Italian, Gift Ideas) may seed a demo dataset, labeled as sample data.
 
 ## Product Principles
 

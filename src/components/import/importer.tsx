@@ -13,23 +13,23 @@ import { cx } from "@/lib/cx";
 type Section = { id: string; name: string };
 
 const FIELDS: { key: keyof Mapping; label: string }[] = [
-  { key: "title", label: "Title" },
-  { key: "date", label: "Date" },
-  { key: "week", label: "Week number" },
-  { key: "weekday", label: "Weekday" },
-  { key: "start", label: "Start time" },
-  { key: "duration", label: "Duration" },
-  { key: "section", label: "Section" },
-  { key: "notes", label: "Notes" },
+  { key: "title", label: "Titel" },
+  { key: "date", label: "Datum" },
+  { key: "week", label: "Weeknummer" },
+  { key: "weekday", label: "Weekdag" },
+  { key: "start", label: "Begintijd" },
+  { key: "duration", label: "Duur" },
+  { key: "section", label: "Sectie" },
+  { key: "notes", label: "Notities" },
 ];
 
 const TEMPLATE =
-  "week,day,title,start,duration,section,notes\n1,Mon,Swim technique,07:00,45,Triathlon,4x100 drills\n1,Wed,Tempo run,18:30,50,Triathlon,\n1,Sun,Long ride,09:00,2h30,Triathlon,Zone 2\n";
+  "week,dag,titel,start,duur,sectie,notities\n1,ma,Zwemtechniek,07:00,45,Triathlon,4x100 drills\n1,wo,Tempoloop,18:30,50,Triathlon,\n1,zo,Lange rit,09:00,2h30,Triathlon,Zone 2\n";
 
 function recordsFromJson(text: string): Record<string, string>[] {
   const data = JSON.parse(text);
   const list = Array.isArray(data) ? data : Object.values(data).find(Array.isArray);
-  if (!Array.isArray(list)) throw new Error("No list of items found in the JSON.");
+  if (!Array.isArray(list)) throw new Error("Geen lijst gevonden in de JSON.");
   return list
     .filter((x) => x && typeof x === "object")
     .map((x) => Object.fromEntries(Object.entries(x).map(([k, v]) => [k, v == null ? "" : String(v)])));
@@ -60,14 +60,14 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
         const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: "greedy", transformHeader: (h) => h.trim() });
         recs = parsed.data;
       }
-      if (recs.length === 0) throw new Error("The file has no rows.");
+      if (recs.length === 0) throw new Error("Het bestand heeft geen regels.");
       const hs = [...new Set(recs.flatMap((r) => Object.keys(r)))].filter(Boolean);
       setFile({ name: f.name, kind });
       setRecords(recs);
       setHeaders(hs);
       setMapping(guessMapping(hs));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not read that file.");
+      setError(e instanceof Error ? e.message : "Dat bestand kon niet gelezen worden.");
     }
   }
 
@@ -95,7 +95,7 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
         setRecords([]);
         setMapping(null);
       } catch {
-        setError("Import failed. Nothing was added.");
+        setError("Importeren mislukt. Er is niets toegevoegd.");
       }
     });
   }
@@ -112,9 +112,9 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
         className="flex cursor-pointer flex-col items-center gap-2 rounded-md border border-dashed border-rule-strong bg-paper/70 px-6 py-8 text-center transition-colors hover:border-cloth-3 hover:bg-paper"
       >
         <FileUp className="size-5 text-ink-2" strokeWidth={1.75} />
-        <span className="text-base text-ink">{file ? file.name : "Drop a CSV or JSON file, or click to choose"}</span>
+        <span className="text-base text-ink">{file ? file.name : "Sleep een CSV- of JSON-bestand hierheen, of klik om te kiezen"}</span>
         <span className="text-xs text-ink-3">
-          {file ? `${records.length} rows` : "Dates, or week number plus weekday, are both fine."}
+          {file ? `${records.length} regels` : "Met datums, of met weeknummer en weekdag."}
         </span>
         <input
           type="file"
@@ -130,9 +130,9 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
 
       {done && (
         <p role="status" className="rounded-sm bg-ribbon-wash px-3 py-2.5 text-sm text-ink">
-          Added {done.count} tasks.{" "}
+          {done.count} taken toegevoegd.{" "}
           <Link href={`/week?d=${done.firstDate}`} className="font-medium underline">
-            Open the first week
+            Open de eerste week
           </Link>
         </p>
       )}
@@ -140,8 +140,8 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
 
       {mapping && (
         <>
-          <section aria-label="Columns" className="flex flex-col gap-3">
-            <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Columns</h2>
+          <section aria-label="Kolommen" className="flex flex-col gap-3">
+            <h2 className="border-b border-rule-strong pb-1.5 text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Kolommen</h2>
             <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 sm:grid-cols-4">
               {FIELDS.map(({ key, label }) => (
                 <label key={key} className="flex flex-col gap-1">
@@ -151,7 +151,7 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
                     onChange={(e) => setMapping({ ...mapping, [key]: e.target.value || null })}
                     className={cx(inputClass, "h-8 text-sm", !mapping[key] && "text-ink-3")}
                   >
-                    <option value="">None</option>
+                    <option value="">Geen</option>
                     {headers.map((h) => (
                       <option key={h} value={h}>
                         {h}
@@ -164,20 +164,20 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
             <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 sm:grid-cols-4">
               {usesWeeks ? (
                 <label className="flex flex-col gap-1">
-                  <span className="text-xs text-ink-2">Week 1 starts</span>
+                  <span className="text-xs text-ink-2">Week 1 begint op</span>
                   <input type="date" value={planStart} onChange={(e) => setPlanStart(e.target.value)} className={cx(inputClass, "figures h-8 text-sm")} />
                 </label>
               ) : (
                 <label className="flex flex-col gap-1">
-                  <span className="text-xs text-ink-2">Date order</span>
+                  <span className="text-xs text-ink-2">Datumvolgorde</span>
                   <select value={dateOrder} onChange={(e) => setDateOrder(e.target.value as "dmy" | "mdy")} className={cx(inputClass, "h-8 text-sm")}>
-                    <option value="dmy">Day first</option>
-                    <option value="mdy">Month first</option>
+                    <option value="dmy">Dag eerst</option>
+                    <option value="mdy">Maand eerst</option>
                   </select>
                 </label>
               )}
               <label className="flex flex-col gap-1">
-                <span className="text-xs text-ink-2">Default section</span>
+                <span className="text-xs text-ink-2">Standaardsectie</span>
                 <select value={defaultSectionId} onChange={(e) => setDefaultSectionId(e.target.value)} className={cx(inputClass, "h-8 text-sm")}>
                   {sections.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -189,17 +189,17 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
               {mapping.section && (
                 <label className="col-span-2 flex items-center gap-2 self-end pb-1.5 text-sm text-ink-2">
                   <input type="checkbox" checked={createSections} onChange={(e) => setCreateSections(e.target.checked)} className="accent-[var(--cloth)]" />
-                  Create sections that do not exist yet
+                  Ontbrekende secties aanmaken
                 </label>
               )}
             </div>
           </section>
 
-          <section aria-label="Preview" className="flex flex-col gap-2">
+          <section aria-label="Voorbeeld" className="flex flex-col gap-2">
             <div className="flex items-center border-b border-rule-strong pb-1.5">
-              <h2 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Preview</h2>
+              <h2 className="text-2xs font-medium uppercase tracking-[0.08em] text-ink-3">Voorbeeld</h2>
               <span className="figures ml-auto text-xs text-ink-3">
-                {result.rows.length} ready{result.issues.length > 0 && `, ${result.issues.length} notes`}
+                {result.rows.length} klaar{result.issues.length > 0 && `, ${result.issues.length} opmerkingen`}
               </span>
             </div>
             {result.issues.length > 0 && (
@@ -207,21 +207,21 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
                 {result.issues.slice(0, 6).map((iss, i) => (
                   <li key={i} className="flex items-center gap-1.5">
                     <TriangleAlert className="size-3 shrink-0 text-ribbon-ink" strokeWidth={2} />
-                    <span className="figures text-ink-3">Line {iss.line}</span> {iss.message}
+                    <span className="figures text-ink-3">Regel {iss.line}</span> {iss.message}
                   </li>
                 ))}
-                {result.issues.length > 6 && <li className="text-ink-3">and {result.issues.length - 6} more</li>}
+                {result.issues.length > 6 && <li className="text-ink-3">en nog {result.issues.length - 6}</li>}
               </ul>
             )}
             <div className="overflow-x-auto">
               <table className="w-full min-w-[32rem] text-sm">
                 <thead>
                   <tr className="text-left text-2xs uppercase tracking-[0.06em] text-ink-3">
-                    <th className="py-1.5 pr-3 font-medium">Day</th>
-                    <th className="py-1.5 pr-3 font-medium">At</th>
-                    <th className="py-1.5 pr-3 font-medium">For</th>
-                    <th className="py-1.5 pr-3 font-medium">Title</th>
-                    <th className="py-1.5 font-medium">Section</th>
+                    <th className="py-1.5 pr-3 font-medium">Dag</th>
+                    <th className="py-1.5 pr-3 font-medium">Om</th>
+                    <th className="py-1.5 pr-3 font-medium">Duur</th>
+                    <th className="py-1.5 pr-3 font-medium">Titel</th>
+                    <th className="py-1.5 font-medium">Sectie</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -230,14 +230,14 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
                     const isNew = r.sectionName && !known.has(r.sectionName.toLowerCase());
                     return (
                       <tr key={r.line} className="border-t border-rule">
-                        <td className="figures whitespace-nowrap py-1.5 pr-3 text-ink-2">{formatDay(r.date, "EEE d MMM")}</td>
+                        <td className="figures whitespace-nowrap py-1.5 pr-3 text-ink-2">{formatDay(r.date, "EEEEEE d MMM")}</td>
                         <td className="figures py-1.5 pr-3 text-ink-2">{r.start ?? ""}</td>
                         <td className="figures py-1.5 pr-3 text-ink-2">{r.minutes ? formatMinutes(r.minutes) : ""}</td>
                         <td className="py-1.5 pr-3 text-ink">{r.title}</td>
                         <td className="whitespace-nowrap py-1.5 text-ink-2">
                           {sectionLabel}
                           {isNew && (
-                            <span className="ml-1.5 text-2xs text-ribbon-ink">{createSections ? "new" : "default"}</span>
+                            <span className="ml-1.5 text-2xs text-ribbon-ink">{createSections ? "nieuw" : "standaard"}</span>
                           )}
                         </td>
                       </tr>
@@ -245,11 +245,11 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
                   })}
                 </tbody>
               </table>
-              {result.rows.length > 60 && <p className="pt-2 text-xs text-ink-3">and {result.rows.length - 60} more rows</p>}
+              {result.rows.length > 60 && <p className="pt-2 text-xs text-ink-3">en nog {result.rows.length - 60} regels</p>}
             </div>
             <div className="pt-3">
               <Button variant="primary" onClick={submit} disabled={pending || result.rows.length === 0}>
-                Add {result.rows.length} tasks
+                {result.rows.length} taken toevoegen
               </Button>
             </div>
           </section>
@@ -259,10 +259,10 @@ export function Importer({ sections, today }: { sections: Section[]; today: stri
       {!mapping && (
         <a
           href={`data:text/csv;charset=utf-8,${encodeURIComponent(TEMPLATE)}`}
-          download="planner-template.csv"
+          download="planner-voorbeeld.csv"
           className="self-start text-sm text-ink-2 underline decoration-rule-strong underline-offset-4 hover:text-ink"
         >
-          Download a template
+          Voorbeeldbestand downloaden
         </a>
       )}
     </div>

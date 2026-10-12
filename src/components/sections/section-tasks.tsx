@@ -15,17 +15,17 @@ export function SectionTasks({ sectionId }: { sectionId: string }) {
 
   return (
     <>
-      <Block title="Backlog" count={open.length}>
+      <Block title="To-do" count={open.length}>
         <ul>
           {open.map((t) => (
             <TaskRow key={t.id} task={t} variant="week" />
           ))}
         </ul>
-        <InlineAdd day={null} sectionId={sectionId} compact placeholder="Add to backlog" />
+        <InlineAdd day={null} sectionId={sectionId} compact placeholder="To-do toevoegen" />
         {done.length > 0 && (
           <details className="group mt-1">
             <summary className="cursor-pointer list-none py-1 text-xs text-ink-3 hover:text-ink-2">
-              {done.length} done
+              {done.length} klaar
             </summary>
             <ul>
               {done.map((t) => (
@@ -37,7 +37,7 @@ export function SectionTasks({ sectionId }: { sectionId: string }) {
       </Block>
 
       {planned.length > 0 && (
-        <Block title="Planned" count={planned.length}>
+        <Block title="Ingepland" count={planned.length}>
           <ul>
             {planned.map((t) => (
               <TaskRow
@@ -46,7 +46,7 @@ export function SectionTasks({ sectionId }: { sectionId: string }) {
                 variant="week"
                 lead={
                   <span className="figures w-14 shrink-0 text-xs leading-5 text-ink-3">
-                    {t.plannedDate === today ? "Today" : formatDay(t.plannedDate!, "EEE d")}
+                    {t.plannedDate === today ? "Vandaag" : formatDay(t.plannedDate!, "EEEEEE d")}
                   </span>
                 }
               />

@@ -1,26 +1,38 @@
 import "server-only";
 import { and, asc, desc, eq, isNotNull, isNull } from "drizzle-orm";
 import { db } from "@/db/client";
-import { documents, documentSections, documentTags, sections, tags } from "@/db/schema";
+import { documents, documentSections, documentTags, files, sections, tags } from "@/db/schema";
+import { requireUserId } from "@/server/auth";
 
 export async function getSectionBySlug(slug: string) {
-  const [row] = await db.select().from(sections).where(eq(sections.slug, slug));
+  const userId = await requireUserId();
+  const [row] = await db
+    .select()
+    .from(sections)
+    .where(and(eq(sections.userId, userId), eq(sections.slug, slug)));
   return row ?? null;
 }
 
 export async function getChildSections(parentId: string) {
+  const userId = await requireUserId();
   return db
     .select()
     .from(sections)
-    .where(and(eq(sections.parentId, parentId), isNull(sections.archivedAt)))
+    .where(and(eq(sections.userId, userId), eq(sections.parentId, parentId), isNull(sections.archivedAt)))
     .orderBy(asc(sections.rank));
 }
 
 export async function getArchivedSections() {
-  return db.select().from(sections).where(isNotNull(sections.archivedAt)).orderBy(asc(sections.name));
+  const userId = await requireUserId();
+  return db
+    .select()
+    .from(sections)
+    .where(and(eq(sections.userId, userId), isNotNull(sections.archivedAt)))
+    .orderBy(asc(sections.name));
 }
 
 export async function getSectionDocuments(sectionId: string) {
+  const userId = await requireUserId();
   return db
     .select({
       id: documents.id,
@@ -30,12 +42,25 @@ export async function getSectionDocuments(sectionId: string) {
     })
     .from(documents)
     .innerJoin(documentSections, eq(documentSections.documentId, documents.id))
-    .where(eq(documentSections.sectionId, sectionId))
+    .where(and(eq(documents.userId, userId), eq(documentSections.sectionId, sectionId)))
     .orderBy(desc(documents.pinned), desc(documents.updatedAt));
 }
 
+export async function getSectionFiles(sectionId: string) {
+  const userId = await requireUserId();
+  return db
+    .select()
+    .from(files)
+    .where(and(eq(files.userId, userId), eq(files.sectionId, sectionId)))
+    .orderBy(desc(files.createdAt));
+}
+
 export async function getDocument(id: string) {
-  const [doc] = await db.select().from(documents).where(eq(documents.id, id));
+  const userId = await requireUserId();
+  const [doc] = await db
+    .select()
+    .from(documents)
+    .where(and(eq(documents.userId, userId), eq(documents.id, id)));
   if (!doc) return null;
   const [sectionRows, tagRows] = await Promise.all([
     db
@@ -54,6 +79,7 @@ export async function getDocument(id: string) {
 }
 
 export async function getAllTagNames() {
-  const rows = await db.select({ name: tags.name }).from(tags).orderBy(asc(tags.name));
+  const userId = await requireUserId();
+  const rows = await db.select({ name: tags.name }).from(tags).where(eq(tags.userId, userId)).orderBy(asc(tags.name));
   return rows.map((r) => r.name);
 }

@@ -11,6 +11,8 @@ export type QuickAdd = {
 };
 
 const WEEKDAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+// Same order as WEEKDAYS (Sunday first): zo, ma, di, wo, do, vr, za and full names.
+const DUTCH_DAYS = [/^(zo|zondag)$/, /^(ma|maandag)$/, /^(di|dinsdag)$/, /^(wo|woensdag)$/, /^(do|donderdag)$/, /^(vr|vrijdag)$/, /^(za|zaterdag)$/];
 
 function dayOfWeek(day: string) {
   const [y, m, d] = day.split("-").map(Number);
@@ -18,8 +20,9 @@ function dayOfWeek(day: string) {
 }
 
 /**
- * Parses "Read chapter 3 #italian tomorrow 14:00 45m".
- * Tokens: #section, today/tomorrow/weekday/YYYY-MM-DD/d-m or d/m, "backlog",
+ * Parses "Read chapter 3 #italian tomorrow 14:00 45m" (English or Dutch day words).
+ * Tokens: #section, today/vandaag, tomorrow/morgen, overmorgen, weekdays (mon, ma, maandag),
+ * YYYY-MM-DD, d-m or d/m, "backlog"/"todo"/"later",
  * HH:MM or 9am/2pm, durations 45m, 2h, 1h30.
  */
 export function parseQuickAdd(input: string, today: string, sections: QuickAddSection[]): QuickAdd {
@@ -52,19 +55,24 @@ export function parseQuickAdd(input: string, today: string, sections: QuickAddSe
       continue;
     }
 
-    if (t === "today" || t === "tod") {
+    if (t === "today" || t === "tod" || t === "vandaag") {
       out.plannedDate = today;
       continue;
     }
-    if (t === "tomorrow" || t === "tmr" || t === "tom") {
+    if (t === "overmorgen") {
+      out.plannedDate = shiftDay(today, 2);
+      continue;
+    }
+    if (t === "tomorrow" || t === "tmr" || t === "tom" || t === "morgen") {
       out.plannedDate = shiftDay(today, 1);
       continue;
     }
-    if (t === "backlog" || t === "someday") {
+    if (t === "backlog" || t === "someday" || t === "todo" || t === "to-do" || t === "later") {
       out.plannedDate = null;
       continue;
     }
-    const wd = WEEKDAYS.findIndex((w) => t === w || (t.length >= 3 && w.startsWith(t.slice(0, 3)) && /^(mon|tue|tues|wed|thu|thur|thurs|fri|sat|sun)(day)?$/.test(t)));
+    let wd = WEEKDAYS.findIndex((w) => t === w || (t.length >= 3 && w.startsWith(t.slice(0, 3)) && /^(mon|tue|tues|wed|thu|thur|thurs|fri|sat|sun)(day)?$/.test(t)));
+    if (wd < 0) wd = DUTCH_DAYS.findIndex((re) => re.test(t));
     if (wd >= 0) {
       const diff = (wd - dayOfWeek(today) + 7) % 7 || 7;
       out.plannedDate = shiftDay(today, diff);

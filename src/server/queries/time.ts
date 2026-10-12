@@ -1,6 +1,7 @@
 import "server-only";
 import { sql } from "drizzle-orm";
 import { db } from "@/db/client";
+import { requireUserId } from "@/server/auth";
 
 export type LogEntry = {
   id: string;
@@ -24,6 +25,7 @@ export type RunningTimer = {
 };
 
 export async function getRunningTimer(): Promise<RunningTimer | null> {
+  const userId = await requireUserId();
   const rows = await db.execute<{
     id: string;
     started_at: Date;
@@ -39,7 +41,7 @@ export async function getRunningTimer(): Promise<RunningTimer | null> {
     from time_entries te
     join sections s on s.id = te.section_id
     left join tasks t on t.id = te.task_id
-    where te.ended_at is null
+    where te.user_id = ${userId} and te.ended_at is null
     limit 1
   `);
   const r = rows[0];
@@ -53,6 +55,7 @@ export async function getRunningTimer(): Promise<RunningTimer | null> {
 }
 
 export async function getEntriesInRange(from: string, to: string): Promise<LogEntry[]> {
+  const userId = await requireUserId();
   const rows = await db.execute<{
     id: string;
     day: string;
@@ -77,8 +80,8 @@ export async function getEntriesInRange(from: string, to: string): Promise<LogEn
     join time_entries te on te.id = v.id
     join sections s on s.id = v.section_id
     left join tasks t on t.id = v.task_id
-    cross join (select timezone from settings where id = 1) st
-    where v.day between ${from}::date and ${to}::date
+    join settings st on st.user_id = v.user_id
+    where v.user_id = ${userId} and v.day between ${from}::date and ${to}::date
     order by v.started_at
   `);
   return rows.map((r) => ({

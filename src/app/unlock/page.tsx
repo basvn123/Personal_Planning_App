@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { UnlockForm } from "./unlock-form";
 
-export const metadata: Metadata = { title: "Locked" };
+export const metadata: Metadata = { title: "Aanmelden" };
 
 export default async function UnlockPage({
   searchParams,

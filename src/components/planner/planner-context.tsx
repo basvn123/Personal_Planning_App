@@ -91,7 +91,7 @@ export function PlannerProvider({
         await action();
       } catch {
         setTasks(snapshot);
-        setError("Change not saved. Try again.");
+        setError("Niet opgeslagen. Probeer opnieuw.");
       }
     });
   }, []);

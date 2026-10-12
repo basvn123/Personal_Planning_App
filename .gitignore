@@ -46,3 +46,7 @@ next-env.d.ts
 .impeccable/config.local.json
 /test-results/
 /playwright-report/
+
+# local uploads (dev only)
+/.uploads/
+/.next-prod/

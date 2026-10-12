@@ -28,11 +28,11 @@ export function Heatmap({ days, today }: { days: { day: string; seconds: number 
         ))}
       </div>
       <div className="mt-2 flex items-center justify-end gap-1.5 text-2xs text-ink-3">
-        <span>Less</span>
+        <span>Minder</span>
         {[0, 1, 2, 3, 4].map((l) => (
           <span key={l} className="size-2.5 rounded-[2px]" style={{ background: `var(--heat-${l})` }} />
         ))}
-        <span>More</span>
+        <span>Meer</span>
       </div>
     </TipArea>
   );
@@ -41,7 +41,7 @@ export function Heatmap({ days, today }: { days: { day: string; seconds: number 
 function Cell({ d, isToday, future }: { d: { day: string; seconds: number }; isToday: boolean; future: boolean }) {
   const tip = useTip(
     <span className="figures">
-      {formatDay(d.day, "EEE d MMM")}: {formatDuration(d.seconds)}
+      {formatDay(d.day, "EEEEEE d MMM")}: {formatDuration(d.seconds)}
     </span>,
   );
   return (

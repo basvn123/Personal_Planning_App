@@ -32,7 +32,7 @@ export function NewSectionForm({
         onDone?.();
         router.push(`/s/${slug}`);
       } catch {
-        setError("Could not create the section.");
+        setError("Sectie maken mislukt.");
       }
     });
   }
@@ -43,15 +43,15 @@ export function NewSectionForm({
         autoFocus
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder={parentId ? "Subsection name" : "Section name"}
-        aria-label="Name"
+        placeholder={parentId ? "Naam subsectie" : "Naam sectie"}
+        aria-label="Naam"
         maxLength={80}
         className={inputClass}
       />
       <DyePicker value={color} onChange={setColor} />
       {error && <p className="text-sm text-danger">{error}</p>}
       <Button type="submit" variant="primary" disabled={pending || !name.trim()}>
-        Add
+        Toevoegen
       </Button>
     </form>
   );
@@ -62,7 +62,7 @@ export function NewSectionTab({ orientation }: { orientation: "vertical" | "hori
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
-        aria-label="New section"
+        aria-label="Nieuwe sectie"
         className={
           orientation === "vertical"
             ? "-ml-1 grid h-10 shrink-0 place-items-center rounded-r-sm pl-1 text-cloth-ink-2 transition-colors hover:bg-cloth-3/60 hover:text-cloth-ink"

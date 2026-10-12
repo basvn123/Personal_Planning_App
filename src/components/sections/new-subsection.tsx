@@ -10,8 +10,8 @@ export function NewSectionPopover({ parentId }: { parentId: string }) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
-        aria-label="New subsection"
-        title="New subsection"
+        aria-label="Nieuwe subsectie"
+        title="Nieuwe subsectie"
         className="grid size-7 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-paper-3 hover:text-ink"
       >
         <Plus className="size-4" strokeWidth={1.75} />

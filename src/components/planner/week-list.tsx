@@ -38,7 +38,7 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
               type="button"
               onClick={() => selectDay(day)}
               aria-pressed={isSelected}
-              aria-label={`Open ${formatDay(day, "EEEE d MMMM")}`}
+              aria-label={`${formatDay(day, "EEEE d MMMM")} openen`}
               className="-m-1 flex flex-col self-start rounded-xs p-1 text-left leading-none transition-colors hover:bg-paper-3/70"
             >
               <span
@@ -47,7 +47,7 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
                   isToday ? "text-ribbon-ink" : "text-ink-3",
                 )}
               >
-                {formatDay(day, "EEE")}
+                {formatDay(day, "EEEEEE")}
               </span>
               <span
                 className={cx(
@@ -69,7 +69,7 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
                   dayTasks.length > 0 && !isToday && "max-lg:hidden",
                 )}
               >
-                <InlineAdd day={day} compact placeholder="Add" />
+                <InlineAdd day={day} compact placeholder="Toevoegen" />
               </li>
             </ul>
             <DayMeter planned={planned} logged={spent} />
@@ -84,7 +84,7 @@ export function WeekList({ days, logged }: { days: string[]; logged: Record<stri
 function DayMeter({ planned, logged }: { planned: number; logged: number }) {
   const max = Math.max(planned, logged, 1);
   return (
-    <div className="flex flex-col items-end gap-1 pt-0.5" title={`Logged ${formatDuration(logged)} of ${formatDuration(planned)} planned`}>
+    <div className="flex flex-col items-end gap-1 pt-0.5" title={`${formatDuration(logged)} gelogd van ${formatDuration(planned)} gepland`}>
       <span className={cx("figures text-sm leading-none", logged > 0 ? "text-ink-2" : "text-ink-3")}>{formatDuration(logged)}</span>
       {planned > 0 && (
         <>

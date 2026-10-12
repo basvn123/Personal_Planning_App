@@ -18,7 +18,7 @@ describe("recurrence", () => {
     expect(occurrences(r, "2026-10-01", "2026-12-31")).toEqual(["2026-10-12", "2026-10-26", "2026-11-09"]);
   });
   it("describes rules", () => {
-    expect(describeRule(parseRule(rule))).toBe("Mon, Thu");
-    expect(describeRule({ start: "2026-01-01", until: null, interval: 1, days: ["MO", "TU", "WE", "TH", "FR"] })).toBe("Weekdays");
+    expect(describeRule(parseRule(rule))).toBe("ma, do");
+    expect(describeRule({ start: "2026-01-01", until: null, interval: 1, days: ["MO", "TU", "WE", "TH", "FR"] })).toBe("Weekdagen");
   });
 });

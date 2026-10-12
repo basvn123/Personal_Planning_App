@@ -17,6 +17,7 @@ import { cx } from "@/lib/cx";
 import { MarkdownView } from "./markdown-view";
 import { TagInput } from "./tag-input";
 import { useAutosave, type SaveState } from "./use-autosave";
+import { InfoButton } from "@/components/help/info-button";
 
 const MarkdownEditor = dynamic(() => import("./markdown-editor").then((m) => m.MarkdownEditor), {
   ssr: false,
@@ -117,7 +118,7 @@ export function DocEditor({
             ))}
           <Popover>
             <PopoverTrigger asChild>
-              <IconButton label="Sections" className="size-6">
+              <IconButton label="Secties" className="size-6">
                 <FolderInput className="size-3.5" strokeWidth={1.75} />
               </IconButton>
             </PopoverTrigger>
@@ -148,17 +149,18 @@ export function DocEditor({
           </Popover>
         </div>
 
+        <InfoButton topic="document" align="end" />
         <SaveIndicator state={state} />
-        <div role="group" aria-label="Mode" className="ml-1 flex rounded-sm bg-paper-3 p-0.5">
-          <ModeButton active={mode === "write"} onClick={() => switchMode("write")} label="Write">
+        <div role="group" aria-label="Weergave" className="ml-1 flex rounded-sm bg-paper-3 p-0.5">
+          <ModeButton active={mode === "write"} onClick={() => switchMode("write")} label="Schrijven">
             <PenLine className="size-3.5" strokeWidth={1.75} />
           </ModeButton>
-          <ModeButton active={mode === "read"} onClick={() => switchMode("read")} label="Read">
+          <ModeButton active={mode === "read"} onClick={() => switchMode("read")} label="Lezen">
             <BookOpen className="size-3.5" strokeWidth={1.75} />
           </ModeButton>
         </div>
         <IconButton
-          label={pinned ? "Unpin" : "Pin"}
+          label={pinned ? "Losmaken" : "Vastzetten"}
           aria-pressed={pinned}
           onClick={() => {
             setPinned(!pinned);
@@ -170,12 +172,12 @@ export function DocEditor({
         </IconButton>
         <Popover open={confirmDelete} onOpenChange={setConfirmDelete}>
           <PopoverTrigger asChild>
-            <IconButton label="Delete document">
+            <IconButton label="Document verwijderen">
               <Trash2 className="size-4" strokeWidth={1.75} />
             </IconButton>
           </PopoverTrigger>
           <PopoverContent align="end" className="flex w-56 flex-col gap-2">
-            <p className="text-sm">Delete this document?</p>
+            <p className="text-sm">Dit document verwijderen?</p>
             <Button
               variant="danger"
               onClick={() =>
@@ -185,7 +187,7 @@ export function DocEditor({
                 })
               }
             >
-              Delete
+              Verwijderen
             </Button>
           </PopoverContent>
         </Popover>
@@ -208,8 +210,8 @@ export function DocEditor({
             saveNow();
           }
         }}
-        placeholder="Untitled"
-        aria-label="Title"
+        placeholder="Zonder titel"
+        aria-label="Titel"
         maxLength={300}
         className="w-full resize-none overflow-hidden bg-transparent text-2xl font-semibold tracking-[-0.025em] text-ink outline-none placeholder:text-ink-3 [text-wrap:balance]"
       />
@@ -266,7 +268,7 @@ function ModeButton({
 }
 
 function SaveIndicator({ state }: { state: SaveState }) {
-  const label = { saved: "Saved", dirty: "Editing", saving: "Saving", error: "Not saved, retrying" }[state];
+  const label = { saved: "Opgeslagen", dirty: "Bezig", saving: "Opslaan", error: "Niet opgeslagen, opnieuw proberen" }[state];
   return (
     <span
       role="status"

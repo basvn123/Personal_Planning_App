@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarRange, ChartColumn, Command, FileUp, Repeat, Settings } from "lucide-react";
+import { CalendarRange, ChartColumn, Command, FileUp, LibraryBig, Repeat, Settings } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { TimerChip } from "@/components/timer/timer-chip";
 import { useUi } from "@/lib/ui-store";
@@ -10,16 +10,18 @@ import { cx } from "@/lib/cx";
 
 const NAV = [
   { href: "/week", label: "Week", icon: CalendarRange },
+  { href: "/sections", label: "Secties", icon: LibraryBig },
   { href: "/dashboard", label: "Dashboard", icon: ChartColumn },
-  { href: "/schedules", label: "Schedules", icon: Repeat },
-  { href: "/import", label: "Import", icon: FileUp },
+  { href: "/schedules", label: "Vaste planning", icon: Repeat },
+  { href: "/import", label: "Importeren", icon: FileUp },
 ] as const;
 
-const SETTINGS = { href: "/settings", label: "Settings", icon: Settings };
+const SETTINGS = { href: "/settings", label: "Instellingen", icon: Settings };
 
 function NavItem({ href, label, icon: Icon }: { href: string; label: string; icon: typeof CalendarRange }) {
   const pathname = usePathname();
-  const active = pathname === href || pathname.startsWith(href + "/");
+  const active =
+    pathname === href || pathname.startsWith(href + "/") || (href === "/sections" && pathname.startsWith("/s/"));
   return (
     <Link
       href={href}
@@ -43,10 +45,10 @@ export function Spine() {
   const openPalette = useUi((s) => s.openPalette);
   return (
     <nav
-      aria-label="Main"
+      aria-label="Navigatie"
       className="hidden h-dvh w-14 shrink-0 flex-col items-center gap-1 py-3 lg:flex"
     >
-      <Link href="/week" aria-label="Home" className="mb-3 grid size-10 place-items-center">
+      <Link href="/week" aria-label="Start" className="mb-3 grid size-10 place-items-center">
         <Mark />
       </Link>
       {NAV.map((item) => (
@@ -55,7 +57,7 @@ export function Spine() {
       <button
         type="button"
         onClick={openPalette}
-        aria-label="Search and commands"
+        aria-label="Zoeken en opdrachten"
         className="grid size-10 place-items-center rounded-md text-cloth-ink-2 transition-colors duration-150 hover:bg-cloth-3/60 hover:text-cloth-ink"
       >
         <Command className="size-[18px]" strokeWidth={1.75} />
@@ -74,7 +76,7 @@ export function SpineBar() {
   const openPalette = useUi((s) => s.openPalette);
   return (
     <nav
-      aria-label="Main"
+      aria-label="Navigatie"
       className="flex h-14 shrink-0 items-center justify-around border-t border-cloth-3/50 bg-cloth px-2 pb-[env(safe-area-inset-bottom)] lg:hidden"
       style={{ boxSizing: "content-box" }}
     >
@@ -84,7 +86,7 @@ export function SpineBar() {
       <button
         type="button"
         onClick={openPalette}
-        aria-label="Search and commands"
+        aria-label="Zoeken en opdrachten"
         className="grid size-10 place-items-center rounded-md text-cloth-ink-2 hover:text-cloth-ink"
       >
         <Command className="size-[18px]" strokeWidth={1.75} />

@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+import { readSession, SESSION_COOKIE } from "@/lib/session";
 
 export async function middleware(request: NextRequest) {
-  const ok = await verifySessionToken(request.cookies.get(SESSION_COOKIE)?.value);
+  const ok = Boolean(await readSession(request.cookies.get(SESSION_COOKIE)?.value));
   if (ok) return NextResponse.next();
 
   const url = request.nextUrl.clone();

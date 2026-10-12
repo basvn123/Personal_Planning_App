@@ -8,8 +8,8 @@ import { WEEKDAY_CODES, type Recurrence, type WeekdayCode } from "@/lib/recurren
 import { formatMinutes } from "@/lib/time";
 import { cx } from "@/lib/cx";
 
-const DAY_LABELS: Record<WeekdayCode, string> = { MO: "M", TU: "T", WE: "W", TH: "T", FR: "F", SA: "S", SU: "S" };
-const DAY_NAMES: Record<WeekdayCode, string> = { MO: "Monday", TU: "Tuesday", WE: "Wednesday", TH: "Thursday", FR: "Friday", SA: "Saturday", SU: "Sunday" };
+const DAY_LABELS: Record<WeekdayCode, string> = { MO: "M", TU: "D", WE: "W", TH: "D", FR: "V", SA: "Z", SU: "Z" };
+const DAY_NAMES: Record<WeekdayCode, string> = { MO: "maandag", TU: "dinsdag", WE: "woensdag", TH: "donderdag", FR: "vrijdag", SA: "zaterdag", SU: "zondag" };
 const DURATIONS = [15, 30, 45, 60, 75, 90, 120, 180];
 
 export type ScheduleDraft = {
@@ -49,7 +49,7 @@ export function ScheduleForm({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!title.trim() || days.length === 0) {
-      setError(days.length === 0 ? "Pick at least one day." : "Give it a name.");
+      setError(days.length === 0 ? "Kies minstens één dag." : "Geef het een naam.");
       return;
     }
     setError(null);
@@ -69,7 +69,7 @@ export function ScheduleForm({
         else await createSchedule(input);
         router.push("/schedules");
       } catch {
-        setError("Could not save the schedule.");
+        setError("Opslaan mislukt.");
       }
     });
   }
@@ -79,15 +79,15 @@ export function ScheduleForm({
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="What happens, e.g. Course X lecture"
-        aria-label="Title"
+        placeholder="Wat gebeurt er, bv. hoorcollege vak X"
+        aria-label="Titel"
         maxLength={200}
         autoFocus={!draft.id}
         className="w-full bg-transparent text-xl font-semibold tracking-[-0.02em] outline-none placeholder:text-ink-3"
       />
 
-      <Row label="Section">
-        <select value={sectionId} onChange={(e) => setSectionId(e.target.value)} className={inputClass} aria-label="Section">
+      <Row label="Sectie">
+        <select value={sectionId} onChange={(e) => setSectionId(e.target.value)} className={inputClass} aria-label="Sectie">
           {sections.map((s) => (
             <option key={s.id} value={s.id}>
               {s.name}
@@ -96,7 +96,7 @@ export function ScheduleForm({
         </select>
       </Row>
 
-      <Row label="Repeats on">
+      <Row label="Herhaalt op">
         <div className="flex gap-1">
           {WEEKDAY_CODES.map((d) => (
             <button
@@ -116,12 +116,12 @@ export function ScheduleForm({
           ))}
         </div>
         <label className="mt-2 flex items-center gap-2 text-sm text-ink-2">
-          Every
+          Elke
           <select
             value={interval}
             onChange={(e) => setInterval(Number(e.target.value))}
             className={cx(inputClass, "h-8 w-16")}
-            aria-label="Week interval"
+            aria-label="Om de hoeveel weken"
           >
             {[1, 2, 3, 4].map((n) => (
               <option key={n} value={n}>
@@ -129,16 +129,16 @@ export function ScheduleForm({
               </option>
             ))}
           </select>
-          {interval === 1 ? "week" : "weeks"}
+          {interval === 1 ? "week" : "weken"}
         </label>
       </Row>
 
       <div className="grid grid-cols-2 gap-3">
-        <Row label="At">
-          <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} required className={cx(inputClass, "figures")} aria-label="Start time" />
+        <Row label="Om">
+          <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} required className={cx(inputClass, "figures")} aria-label="Begintijd" />
         </Row>
-        <Row label="For">
-          <select value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={cx(inputClass, "figures")} aria-label="Duration">
+        <Row label="Duur">
+          <select value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={cx(inputClass, "figures")} aria-label="Duur">
             {[...new Set([...DURATIONS, duration])].sort((a, b) => a - b).map((m) => (
               <option key={m} value={m}>
                 {formatMinutes(m)}
@@ -146,11 +146,11 @@ export function ScheduleForm({
             ))}
           </select>
         </Row>
-        <Row label="From">
-          <input type="date" value={start} onChange={(e) => setStart(e.target.value)} required className={cx(inputClass, "figures")} aria-label="First day" />
+        <Row label="Vanaf">
+          <input type="date" value={start} onChange={(e) => setStart(e.target.value)} required className={cx(inputClass, "figures")} aria-label="Eerste dag" />
         </Row>
-        <Row label="Until">
-          <input type="date" value={until} min={start} onChange={(e) => setUntil(e.target.value)} className={cx(inputClass, "figures")} aria-label="Last day" />
+        <Row label="Tot en met">
+          <input type="date" value={until} min={start} onChange={(e) => setUntil(e.target.value)} className={cx(inputClass, "figures")} aria-label="Laatste dag" />
         </Row>
       </div>
 
@@ -158,7 +158,7 @@ export function ScheduleForm({
 
       <div className="flex items-center gap-2 border-t border-rule pt-4">
         <Button type="submit" variant="primary" disabled={pending}>
-          {draft.id ? "Save" : "Create schedule"}
+          {draft.id ? "Opslaan" : "Vaste planning maken"}
         </Button>
         {draft.id && (
           <>
@@ -167,7 +167,7 @@ export function ScheduleForm({
               disabled={pending}
               onClick={() => run(async () => setScheduleActive(draft.id!, !draft.active))}
             >
-              {draft.active ? "Pause" : "Resume"}
+              {draft.active ? "Pauzeren" : "Hervatten"}
             </Button>
             {confirmDelete ? (
               <Button
@@ -181,11 +181,11 @@ export function ScheduleForm({
                   })
                 }
               >
-                Delete schedule
+                Vaste planning verwijderen
               </Button>
             ) : (
               <Button variant="ghost" className="ml-auto text-danger hover:text-danger" onClick={() => setConfirmDelete(true)}>
-                Delete
+                Verwijderen
               </Button>
             )}
           </>
@@ -193,7 +193,7 @@ export function ScheduleForm({
       </div>
       {draft.id && (
         <p className="-mt-2 text-xs text-ink-3">
-          Saving rewrites upcoming occurrences you have not touched. Edited, started or finished ones stay.
+          Opslaan herschrijft komende keren die je niet aangepast hebt. Aangepaste, gestarte en afgeronde blijven staan.
         </p>
       )}
     </form>

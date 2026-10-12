@@ -24,8 +24,8 @@ export function DocList({ slug, docs }: { slug: string; docs: DocListItem[] }) {
                 active ? "bg-ribbon-wash text-ink" : "text-ink hover:bg-paper-3/70",
               )}
             >
-              {d.pinned && <Pin className="size-3 shrink-0 text-ribbon-ink" strokeWidth={2} aria-label="Pinned" />}
-              <span className={cx("min-w-0 flex-1 truncate", !d.title && "text-ink-3")}>{d.title || "Untitled"}</span>
+              {d.pinned && <Pin className="size-3 shrink-0 text-ribbon-ink" strokeWidth={2} aria-label="Vastgezet" />}
+              <span className={cx("min-w-0 flex-1 truncate", !d.title && "text-ink-3")}>{d.title || "Zonder titel"}</span>
               <span className="figures shrink-0 text-xs text-ink-3">{d.updated}</span>
             </Link>
           </li>

@@ -8,17 +8,19 @@ import { documents, documentSections, sections } from "@/db/schema";
 import { DYES } from "@/lib/dyes";
 import { rankBetween } from "@/lib/rank";
 import { slugify } from "@/lib/slug";
+import { requireUserId } from "@/server/auth";
 
 const nameSchema = z.string().trim().min(1).max(80);
 const dyeSchema = z.enum(DYES);
 
-async function uniqueSlug(name: string, exceptId?: string) {
+async function uniqueSlug(userId: string, name: string, exceptId?: string) {
   const base = slugify(name);
   const taken = await db
     .select({ slug: sections.slug })
     .from(sections)
     .where(
       and(
+        eq(sections.userId, userId),
         sql`${sections.slug} ~ ${`^${base}(-[0-9]+)?$`}`,
         exceptId ? ne(sections.id, exceptId) : undefined,
       ),
@@ -30,25 +32,37 @@ async function uniqueSlug(name: string, exceptId?: string) {
   return `${base}-${n}`;
 }
 
+/** Throws unless the section exists and belongs to this person. */
+async function assertOwnSection(userId: string, id: string) {
+  const [row] = await db
+    .select({ id: sections.id })
+    .from(sections)
+    .where(and(eq(sections.id, id), eq(sections.userId, userId)));
+  if (!row) throw new Error("Section not found");
+}
+
 export async function createSection(input: { name: string; color: string; parentId?: string | null }) {
+  const userId = await requireUserId();
   const name = nameSchema.parse(input.name);
   const color = dyeSchema.parse(input.color);
   const parentId = input.parentId ? z.uuid().parse(input.parentId) : null;
+  if (parentId) await assertOwnSection(userId, parentId);
 
   const [last] = await db
     .select({ rank: sections.rank })
     .from(sections)
-    .where(parentId ? eq(sections.parentId, parentId) : isNull(sections.parentId))
+    .where(and(eq(sections.userId, userId), parentId ? eq(sections.parentId, parentId) : isNull(sections.parentId)))
     .orderBy(desc(sections.rank))
     .limit(1);
 
   const [row] = await db
     .insert(sections)
     .values({
+      userId,
       name,
       color,
       parentId,
-      slug: await uniqueSlug(name),
+      slug: await uniqueSlug(userId, name),
       rank: rankBetween(last?.rank ?? null, null),
     })
     .returning();
@@ -60,17 +74,20 @@ export async function updateSection(
   id: string,
   patch: { name?: string; color?: string; parentId?: string | null },
 ) {
+  const userId = await requireUserId();
   z.uuid().parse(id);
+  await assertOwnSection(userId, id);
   const values: Partial<typeof sections.$inferInsert> = {};
   if (patch.name !== undefined) {
     values.name = nameSchema.parse(patch.name);
-    values.slug = await uniqueSlug(values.name, id);
+    values.slug = await uniqueSlug(userId, values.name, id);
   }
   if (patch.color !== undefined) values.color = dyeSchema.parse(patch.color);
   if (patch.parentId !== undefined) {
     if (patch.parentId === null) values.parentId = null;
     else {
       const parentId = z.uuid().parse(patch.parentId);
+      await assertOwnSection(userId, parentId);
       // Refuse cycles: the new parent may not be this section or one of its descendants.
       const descendants = await db.execute<{ id: string }>(sql`
         with recursive tree as (
@@ -79,40 +96,54 @@ export async function updateSection(
           select s.id from sections s join tree t on s.parent_id = t.id
         ) select id from tree
       `);
-      if (descendants.some((d) => d.id === parentId)) throw new Error("A section cannot sit inside itself.");
+      if (descendants.some((d) => d.id === parentId)) throw new Error("Een sectie kan niet in zichzelf zitten.");
       values.parentId = parentId;
     }
   }
-  const [row] = await db.update(sections).set(values).where(eq(sections.id, id)).returning();
+  const [row] = await db
+    .update(sections)
+    .set(values)
+    .where(and(eq(sections.id, id), eq(sections.userId, userId)))
+    .returning();
   revalidatePath("/", "layout");
   return { slug: row.slug };
 }
 
 /** Moves a section between two neighbours (by id) in the same level. */
 export async function moveSection(id: string, beforeId: string | null, afterId: string | null) {
+  const userId = await requireUserId();
   const ids = [beforeId, afterId].filter(Boolean) as string[];
   const neighbours = ids.length
-    ? await db.select({ id: sections.id, rank: sections.rank }).from(sections).where(inArray(sections.id, ids))
+    ? await db
+        .select({ id: sections.id, rank: sections.rank })
+        .from(sections)
+        .where(and(eq(sections.userId, userId), inArray(sections.id, ids)))
     : [];
   const rankOf = (nid: string | null) => neighbours.find((n) => n.id === nid)?.rank ?? null;
   let before = rankOf(beforeId);
   let after = rankOf(afterId);
   if (before && after && before >= after) [before, after] = [after, before];
-  await db.update(sections).set({ rank: rankBetween(before, after) }).where(eq(sections.id, id));
+  await db
+    .update(sections)
+    .set({ rank: rankBetween(before, after) })
+    .where(and(eq(sections.id, id), eq(sections.userId, userId)));
   revalidatePath("/", "layout");
 }
 
 export async function archiveSection(id: string, archived: boolean) {
+  const userId = await requireUserId();
   await db
     .update(sections)
     .set({ archivedAt: archived ? new Date() : null })
-    .where(eq(sections.id, z.uuid().parse(id)));
+    .where(and(eq(sections.id, z.uuid().parse(id)), eq(sections.userId, userId)));
   revalidatePath("/", "layout");
 }
 
 /** Deletes a section and every document that belongs to no other section. */
 export async function deleteSection(id: string) {
+  const userId = await requireUserId();
   z.uuid().parse(id);
+  await assertOwnSection(userId, id);
   await db.transaction(async (tx) => {
     const own = await tx
       .select({ documentId: documentSections.documentId })
@@ -135,9 +166,10 @@ export async function deleteSection(id: string) {
 }
 
 export async function listSectionOptions() {
+  const userId = await requireUserId();
   return db
     .select({ id: sections.id, name: sections.name, parentId: sections.parentId })
     .from(sections)
-    .where(isNull(sections.archivedAt))
+    .where(and(eq(sections.userId, userId), isNull(sections.archivedAt)))
     .orderBy(asc(sections.rank));
 }

@@ -1,6 +1,7 @@
 import "server-only";
 import { sql } from "drizzle-orm";
 import { db } from "@/db/client";
+import { requireUserId } from "@/server/auth";
 
 export type PlannerTask = {
   id: string;
@@ -73,27 +74,30 @@ const SELECT = sql`
 `;
 
 export async function getTasksInRange(from: string, to: string) {
+  const userId = await requireUserId();
   const rows = await db.execute<Row>(sql`
     ${SELECT}
-    where t.planned_date between ${from}::date and ${to}::date
+    where t.user_id = ${userId} and t.planned_date between ${from}::date and ${to}::date
     order by t.planned_date, t.planned_start nulls last, t.rank
   `);
   return rows.map(shape);
 }
 
 export async function getBacklog(sectionId: string) {
+  const userId = await requireUserId();
   const rows = await db.execute<Row>(sql`
     ${SELECT}
-    where t.section_id = ${sectionId} and t.planned_date is null
+    where t.user_id = ${userId} and t.section_id = ${sectionId} and t.planned_date is null
     order by t.status = 'done', t.rank
   `);
   return rows.map(shape);
 }
 
 export async function getSectionUpcoming(sectionId: string, from: string) {
+  const userId = await requireUserId();
   const rows = await db.execute<Row>(sql`
     ${SELECT}
-    where t.section_id = ${sectionId} and t.planned_date >= ${from}::date
+    where t.user_id = ${userId} and t.section_id = ${sectionId} and t.planned_date >= ${from}::date
     order by t.planned_date, t.planned_start nulls last, t.rank
     limit 50
   `);
@@ -102,9 +106,10 @@ export async function getSectionUpcoming(sectionId: string, from: string) {
 
 /** Open backlog tasks across all active sections, for routing into days. */
 export async function getOpenBacklog() {
+  const userId = await requireUserId();
   const rows = await db.execute<Row>(sql`
     ${SELECT}
-    where t.planned_date is null and t.status <> 'done' and s.archived_at is null
+    where t.user_id = ${userId} and t.planned_date is null and t.status <> 'done' and s.archived_at is null
     order by s.rank, t.rank
     limit 300
   `);
